@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-public-sans);
+  --font-mono: ui-monospace, monospace;
+  --font-heading: var(--font-bricolage);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,39 +48,43 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Brand palette from https://new.pils.mu/ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: #fdf3f6;
+  --foreground: #2a1a20;
+  --card: #ffffff;
+  --card-foreground: #2a1a20;
+  --popover: #ffffff;
+  --popover-foreground: #2a1a20;
+  --primary: #c0264b;
+  --primary-foreground: #ffffff;
+  --secondary: #fbe9ef;
+  --secondary-foreground: #8a1c31;
+  --muted: #fdf3f6;
+  --muted-foreground: #6c565e;
+  --accent: #fbe9ef;
+  --accent-foreground: #8a1c31;
+  --destructive: #a81f42;
+  --border: #efdbe3;
+  --input: #e7ccd6;
+  --ring: #c0264b;
+  --chart-1: #c0264b;
+  --chart-2: #8a1c31;
+  --chart-3: #f173ac;
+  --chart-4: #f7a6c8;
+  --chart-5: #6d1526;
+  --radius: 1.25rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #2a1a20;
+  --sidebar-primary: #c0264b;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #fbe9ef;
+  --sidebar-accent-foreground: #8a1c31;
+  --sidebar-border: #efdbe3;
+  --sidebar-ring: #c0264b;
+  --pils-burgundy: #8a1c31;
+  --pils-crimson-hover: #a81f42;
+  --pils-shadow: 0 1px 2px rgb(138 28 49 / 5%), 0 2px 6px rgb(138 28 49 / 5%);
 }
 
 .dark {
@@ -123,8 +127,105 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: linear-gradient(180deg, var(--background), var(--card) 44rem);
+    line-height: 1.6;
   }
   html {
     @apply font-sans;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-bricolage), sans-serif;
+    text-wrap: balance;
+    letter-spacing: -0.015em;
+  }
+}
+
+@layer components {
+  .pils-header {
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .pils-eyebrow {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--muted);
+    padding: 0.4rem 0.8rem;
+    color: var(--primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .pils-skip-link {
+    position: absolute;
+    left: -9999px;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0 0 12px 0;
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .pils-skip-link:focus { left: 0; }
+
+  .attendance-card {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--card);
+    box-shadow: var(--pils-shadow);
+  }
+  .attendance-card h2 { font-size: 1.15rem; }
+  .attendance-card-present { border-top: 3px solid var(--primary); }
+  .attendance-count {
+    min-width: 2.25rem;
+    border-radius: 999px;
+    background: var(--secondary);
+    padding: 0.2rem 0.65rem;
+    color: var(--secondary-foreground);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .attendance-card-present .attendance-count {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .attendance-page [data-slot='button'] {
+    min-height: 44px;
+    border-radius: 999px;
+    padding-inline: 1.25rem;
+    font-weight: 600;
+  }
+  .attendance-page [data-slot='button'].bg-primary:hover:not(:disabled) {
+    background: var(--pils-crimson-hover);
+  }
+  .attendance-page [data-slot='input'] {
+    min-height: 44px;
+    border-radius: 12px;
+    background: var(--card);
+  }
+  .attendance-review {
+    border-radius: 28px;
+    box-shadow: 0 20px 55px rgb(138 28 49 / 20%);
+  }
+  .attendance-review::backdrop {
+    background: rgb(42 26 32 / 55%);
+    backdrop-filter: blur(3px);
+  }
+  .attendance-review h2 { color: var(--primary); }
+  .attendance-review > div > :first-child,
+  .attendance-review > div > :last-child { background: var(--muted); }
+  .attendance-review th { color: var(--secondary-foreground); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

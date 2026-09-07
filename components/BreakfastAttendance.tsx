@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,12 @@ type Person = {
 };
 
 type AttendanceMap = Record<string, boolean>;
+
+type AttendanceReview = {
+  date: string;
+  attendees: Person[];
+  rows: { record_id: string; uic: string; breakfast_date: string; breakfast_present: '0' | '1'; extra_servings: string }[];
+};
 
 const PEOPLE_STORAGE_KEY = 'pils:breakfast:people';
 
@@ -110,8 +116,19 @@ export default function BreakfastAttendance() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
+  const [review, setReview] = useState<AttendanceReview | null>(null);
+  const [saveError, setSaveError] = useState('');
+  const [extraServings, setExtraServings] = useState<Record<string, string>>({});
+  const reviewDialog = useRef<HTMLDialogElement>(null);
+  const saving = useRef(false);
 
   const today = new Date().toLocaleDateString('en-CA');
+
+  useEffect(() => {
+    if (review && !reviewDialog.current?.open) {
+      reviewDialog.current?.showModal();
+    }
+  }, [review]);
 
   useEffect(() => {
     const storedPeople = readStoredPeople();
@@ -250,26 +267,50 @@ export default function BreakfastAttendance() {
     setMessage('');
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (loading || saving.current || people.length === 0) return;
 
-    try {
-      setSubmitting(true);
-      setMessage('');
-
-      const rows = people.map((person) => ({
+    setMessage('');
+    setSaveError('');
+    setReview({
+      date: today,
+      attendees: people.filter((person) => attendance[person.record_id]),
+      rows: people.map((person) => ({
         record_id: person.record_id,
         uic: person.uic,
         breakfast_date: today,
         breakfast_present: attendance[person.record_id] ? '1' : '0',
-      }));
+        extra_servings: attendance[person.record_id] ? (extraServings[`${today}:${person.record_id}`] ?? '0') : '0',
+      })),
+    });
+  }
+
+  function closeReview() {
+    if (saving.current) return;
+    reviewDialog.current?.close();
+    setReview(null);
+    setSaveError('');
+  }
+
+  async function saveAttendance() {
+    if (!review || saving.current) return;
+    if (review.rows.some((row) => !/^\d+$/.test(row.extra_servings) || !Number.isSafeInteger(Number(row.extra_servings)))) {
+      setSaveError('Enter a whole number of extra servings, zero or more, for each attendee.');
+      return;
+    }
+    saving.current = true;
+
+    try {
+      setSubmitting(true);
+      setSaveError('');
 
       const response = await fetch('/api/redcap/breakfast', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ rows }),
+        body: JSON.stringify({ rows: review.rows.map((row) => ({ ...row, extra_servings: Number(row.extra_servings) })) }),
       });
 
       const body = await response.json();
@@ -278,23 +319,26 @@ export default function BreakfastAttendance() {
         throw new Error(body.error || 'REDCap submission failed.');
       }
 
-      setMessage(`Saved breakfast attendance for ${rows.length} patients.`);
+      setMessage(`Saved breakfast attendance for ${review.date}: ${review.attendees.length} attended.`);
+      reviewDialog.current?.close();
+      setReview(null);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Unable to save attendance.');
+      setSaveError(error instanceof Error ? error.message : 'Unable to save attendance.');
     } finally {
+      saving.current = false;
       setSubmitting(false);
     }
   }
 
   return (
-    <div className='mx-auto max-w-6xl px-4 py-5 sm:p-6'>
+    <div className='attendance-page mx-auto max-w-6xl px-4 py-5 sm:p-6'>
       <form onSubmit={handleSubmit} className='space-y-5 sm:space-y-6'>
         {/* Header */}
         <div className='space-y-3'>
           <div>
-            <h1 className='text-2xl font-semibold'>Breakfast Attendance</h1>
+            <h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>Breakfast Attendance</h1>
 
-            <p className='text-sm text-muted-foreground'>{today}</p>
+            <p className='mt-2 text-sm text-muted-foreground'>{today}</p>
           </div>
 
           {/* Submit */}
@@ -329,10 +373,10 @@ export default function BreakfastAttendance() {
         </div>
 
         <div className='grid gap-4 md:grid-cols-2'>
-          <section className='overflow-hidden rounded-md border' aria-labelledby='not-attended-heading'>
+          <section className='attendance-card' aria-labelledby='not-attended-heading'>
             <div className='flex items-center justify-between border-b bg-muted/40 px-4 py-3'>
               <h2 id='not-attended-heading' className='font-semibold'>Not attended</h2>
-              <span className='text-sm text-muted-foreground'>{people.filter((person) => !attendance[person.record_id]).length}</span>
+              <span className='attendance-count'>{people.filter((person) => !attendance[person.record_id]).length}</span>
             </div>
 
             {loading ? (
@@ -358,10 +402,10 @@ export default function BreakfastAttendance() {
             )}
           </section>
 
-          <section className='overflow-hidden rounded-md border' aria-labelledby='attended-heading'>
+          <section className='attendance-card attendance-card-present' aria-labelledby='attended-heading'>
             <div className='flex items-center justify-between border-b bg-muted/40 px-4 py-3'>
               <h2 id='attended-heading' className='font-semibold'>Attended</h2>
-              <span className='text-sm text-muted-foreground'>{attendedPeople.length}</span>
+              <span className='attendance-count'>{attendedPeople.length}</span>
             </div>
 
             {attendedPeople.length === 0 ? (
@@ -386,6 +430,81 @@ export default function BreakfastAttendance() {
           </section>
         </div>
       </form>
+      <dialog
+        ref={reviewDialog}
+        aria-labelledby='attendance-review-title'
+        aria-describedby='attendance-review-description'
+        onCancel={(event) => {
+          event.preventDefault();
+          closeReview();
+        }}
+        className='attendance-review fixed inset-0 m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg overflow-hidden border bg-card p-0 text-foreground'
+      >
+        {review && (
+          <div className='flex max-h-[85dvh] flex-col'>
+            <div className='border-b px-5 py-4'>
+              <h2 id='attendance-review-title' className='text-lg font-semibold'>Review breakfast attendance</h2>
+              <p id='attendance-review-description' className='mt-1 text-sm text-muted-foreground'>
+                {review.date} · {review.attendees.length} attended. Select Save to send attendance to REDCap.
+              </p>
+            </div>
+            <div className='min-h-0 overflow-y-auto px-5'>
+              {review.attendees.length === 0 ? (
+                <p className='py-6 text-sm text-muted-foreground'>No attendees selected.</p>
+              ) : (
+                <table className='w-full table-fixed text-left'>
+                  <thead className='sticky top-0 bg-card text-sm text-muted-foreground'>
+                    <tr className='border-b'>
+                      <th scope='col' className='py-3 pr-3 font-medium'>Attendee</th>
+                      <th scope='col' className='w-28 py-3 text-center font-medium'>Extra servings</th>
+                    </tr>
+                  </thead>
+                  <tbody className='divide-y'>
+                  {review.attendees.map((person) => (
+                    <tr key={person.record_id}>
+                      <td className='py-3 pr-3 align-middle'>
+                      <p className='break-words text-sm text-muted-foreground'>{person.uic}</p>
+                      <p className='break-words font-medium'>{person.display_name}</p>
+                      </td>
+                      <td className='py-3 align-middle'>
+                        <Input
+                          id={`extra-servings-${person.record_id}`}
+                          aria-label={`Extra servings for ${person.display_name} (${person.uic})`}
+                          type='number'
+                          min={0}
+                          step={1}
+                          required
+                          inputMode='numeric'
+                          className='mx-auto w-20 text-center'
+                          disabled={submitting}
+                          value={review.rows.find((row) => row.record_id === person.record_id)?.extra_servings ?? '0'}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            setExtraServings((current) => ({ ...current, [`${review.date}:${person.record_id}`]: value }));
+                            setReview((current) => current && ({
+                              ...current,
+                              rows: current.rows.map((row) => row.record_id === person.record_id ? { ...row, extra_servings: value } : row),
+                            }));
+                            setSaveError('');
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+            <div className='space-y-3 border-t px-5 py-4'>
+              {saveError && <p role='alert' className='text-sm text-destructive'>{saveError}</p>}
+              <div className='flex justify-end gap-2'>
+                <Button type='button' variant='outline' onClick={closeReview} disabled={submitting}>Cancel</Button>
+                <Button type='button' onClick={saveAttendance} disabled={submitting}>{submitting ? 'Saving...' : 'Save'}</Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </dialog>
     </div>
   );
 }

@@ -8,11 +8,12 @@ type BreakfastRow = {
   uic: string;
   breakfast_date: string;
   breakfast_present: '0' | '1';
+  extra_servings: number;
 };
 
 type ExistingBreakfastRow = {
   uic_ori?: string;
-  breakfast_date?: string;
+  breakfast_date_540791?: string;
   redcap_repeat_instrument?: string;
   redcap_repeat_instance?: string;
 };
@@ -24,7 +25,7 @@ function isBreakfastRow(value: unknown): value is BreakfastRow {
 
   const row = value as Record<string, unknown>;
 
-  return typeof row.record_id === 'string' && row.record_id.trim() !== '' && typeof row.uic === 'string' && row.uic.trim() !== '' && typeof row.breakfast_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(row.breakfast_date) && (row.breakfast_present === '0' || row.breakfast_present === '1');
+  return typeof row.record_id === 'string' && row.record_id.trim() !== '' && typeof row.uic === 'string' && row.uic.trim() !== '' && typeof row.breakfast_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(row.breakfast_date) && (row.breakfast_present === '0' || row.breakfast_present === '1') && typeof row.extra_servings === 'number' && Number.isSafeInteger(row.extra_servings) && row.extra_servings >= 0 && (row.breakfast_present === '1' || row.extra_servings === 0);
 }
 
 export async function POST(request: Request) {
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
       exportDataAccessGroups: 'false',
       returnFormat: 'json',
       'fields[0]': 'uic_ori',
-      'fields[1]': 'breakfast_date',
+      'fields[1]': 'breakfast_date_540791',
       'forms[0]': 'breakfast_attendance',
     });
 
@@ -87,7 +88,7 @@ export async function POST(request: Request) {
       }
 
       const recordId = String(existingRow.uic_ori ?? '').trim();
-      const date = String(existingRow.breakfast_date ?? '').trim();
+      const date = String(existingRow.breakfast_date_540791 ?? '').trim();
       const instance = Number(existingRow.redcap_repeat_instance);
 
       if (!recordId || !Number.isInteger(instance) || instance < 1) {
@@ -112,8 +113,9 @@ export async function POST(request: Request) {
         uic_ori: recordId,
         redcap_repeat_instrument: 'breakfast_attendance',
         redcap_repeat_instance: String(instance),
-        breakfast_date: row.breakfast_date,
-        breakfast_present: row.breakfast_present,
+        breakfast_date_540791: row.breakfast_date,
+        breakfast_present_8edd8b: row.breakfast_present,
+        extra_servings: String(row.extra_servings),
       };
     });
 
@@ -150,7 +152,7 @@ export async function POST(request: Request) {
       }
     }
 
-    if (!response.ok) {
+    if (!response.ok || (result && typeof result === 'object' && 'error' in result)) {
       const error = result && typeof result === 'object' && 'error' in result ? String((result as { error: unknown }).error) : text || `REDCap returned HTTP ${response.status}.`;
 
       return NextResponse.json({ error }, { status: 502 });

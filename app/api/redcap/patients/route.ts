@@ -6,10 +6,16 @@ const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
 type RedcapRow = {
   uic_ori?: string;
   client_first_name?: string;
-  client_middle_names?: string;
+  client_middle_name?: string;
   client_last_name?: string;
   client_alias?: string;
-  client_name_alias?: string;
+  client_kp_type___1?: string;
+  client_kp_type___2?: string;
+  client_kp_type___3?: string;
+  client_kp_type___4?: string;
+  client_kp_type___5?: string;
+  client_kp_type___6?: string;
+  client_kp_type___7?: string;
   redcap_repeat_instrument?: string;
 };
 
@@ -37,10 +43,10 @@ export async function GET() {
 
       "fields[0]": "uic_ori",
       "fields[1]": "client_first_name",
-      "fields[2]": "client_middle_names",
+      "fields[2]": "client_middle_name",
       "fields[3]": "client_last_name",
       "fields[4]": "client_alias",
-      "fields[5]": "client_name_alias",
+      "fields[5]": "client_kp_type",
     });
 
     const response = await fetch(REDCAP_API_URL, {
@@ -77,14 +83,20 @@ export async function GET() {
         return {
           record_id: recordId,
           uic: recordId,
+          first_name: String(row.client_first_name ?? "").trim(),
+          middle_name: String(row.client_middle_name ?? "").trim(),
+          last_name: String(row.client_last_name ?? "").trim(),
+          alias: String(row.client_alias ?? "").trim(),
+          kp_types: [1, 2, 3, 4, 5, 6, 7]
+            .filter((code) => row[`client_kp_type___${code}` as keyof RedcapRow] === "1")
+            .map(String),
           display_name:
-            [row.client_first_name, row.client_middle_names, row.client_last_name]
+            [row.client_first_name, row.client_middle_name, row.client_last_name]
               .map((part) => String(part ?? "").trim())
               .filter(Boolean)
               .join(" ")
               .trim() ||
             String(row.client_alias ?? "").trim() ||
-            String(row.client_name_alias ?? "").trim() ||
             recordId,
         };
       });

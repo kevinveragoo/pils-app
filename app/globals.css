@@ -158,6 +158,94 @@
     text-transform: uppercase;
   }
 
+  .pils-nav {
+    display: flex;
+    max-width: 100%;
+    gap: 0.35rem;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--muted);
+    padding: 0.3rem;
+  }
+  .pils-nav a {
+    flex: 0 0 auto;
+    border-radius: 999px;
+    padding: 0.55rem 0.9rem;
+    color: var(--muted-foreground);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .pils-nav a[aria-current='page'] {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    box-shadow: var(--pils-shadow);
+  }
+
+  .outreach-page {
+    display: flex;
+    flex-direction: column;
+  }
+  .outreach-page > [role='alert'] {
+    order: 90;
+    margin-top: 1.25rem;
+    margin-bottom: 0;
+  }
+  .outreach-page > :last-child {
+    order: 100;
+  }
+  #enrollment .outreach-page > .grid.gap-4 > div:first-child:not(.outreach-card) {
+    order: 90;
+  }
+  .outreach-page [data-slot='button'] { min-height: 44px; border-radius: 999px; }
+  .outreach-page [data-slot='input'],
+  .outreach-page select,
+  .outreach-page textarea {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--input);
+    border-radius: 12px;
+    background: var(--card);
+    padding: 0.65rem 0.8rem;
+  }
+  .outreach-page textarea { min-height: 88px; resize: vertical; }
+  .outreach-card {
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: var(--card);
+    padding: 1.1rem;
+    box-shadow: var(--pils-shadow);
+  }
+  .outreach-field { display: grid; gap: 0.35rem; }
+  .outreach-field > span { font-size: 0.83rem; font-weight: 700; }
+  .outreach-required::after { content: ' *'; color: var(--primary); }
+  .outreach-step {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    font-weight: 800;
+  }
+
+  .dashboard-card {
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--card);
+    padding: clamp(1rem, 2vw, 1.5rem);
+    box-shadow: var(--pils-shadow);
+  }
+  .dashboard-kicker {
+    color: var(--primary);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
   .pils-skip-link {
     position: absolute;
     left: -9999px;

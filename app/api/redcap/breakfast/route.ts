@@ -1,3 +1,4 @@
+import { validDate } from '@/lib/redcap-validation';
 import { NextResponse } from 'next/server';
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
@@ -9,6 +10,8 @@ type BreakfastRow = {
   breakfast_date: string;
   breakfast_present: '0' | '1';
   extra_servings: number;
+  breakfast_recorded_by?: string;
+  breakfast_notes?: string;
 };
 
 type ExistingBreakfastRow = {
@@ -25,7 +28,7 @@ function isBreakfastRow(value: unknown): value is BreakfastRow {
 
   const row = value as Record<string, unknown>;
 
-  return typeof row.record_id === 'string' && row.record_id.trim() !== '' && typeof row.uic === 'string' && row.uic.trim() !== '' && typeof row.breakfast_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(row.breakfast_date) && (row.breakfast_present === '0' || row.breakfast_present === '1') && typeof row.extra_servings === 'number' && Number.isSafeInteger(row.extra_servings) && row.extra_servings >= 0 && (row.breakfast_present === '1' || row.extra_servings === 0);
+  return (row.breakfast_recorded_by === undefined || typeof row.breakfast_recorded_by === 'string') && (row.breakfast_notes === undefined || typeof row.breakfast_notes === 'string') && typeof row.record_id === 'string' && row.record_id.trim() !== '' && typeof row.uic === 'string' && row.uic.trim() !== '' && typeof row.breakfast_date === 'string' && validDate(row.breakfast_date) && (row.breakfast_present === '0' || row.breakfast_present === '1') && typeof row.extra_servings === 'number' && Number.isSafeInteger(row.extra_servings) && row.extra_servings >= 0 && (row.breakfast_present === '1' || row.extra_servings === 0);
 }
 
 export async function POST(request: Request) {
@@ -116,6 +119,8 @@ export async function POST(request: Request) {
         breakfast_date_540791: row.breakfast_date,
         breakfast_present_8edd8b: row.breakfast_present,
         extra_servings: String(row.extra_servings),
+        ...(row.breakfast_recorded_by?.trim() ? { breakfast_recorded_by: row.breakfast_recorded_by.trim() } : {}),
+        ...(row.breakfast_notes?.trim() ? { breakfast_notes: row.breakfast_notes.trim() } : {}),
       };
     });
 

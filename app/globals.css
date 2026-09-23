@@ -168,13 +168,23 @@
     background: var(--muted);
     padding: 0.3rem;
   }
-  .pils-nav a {
+  .pils-nav a,
+  .pils-nav-disabled {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2;
     flex: 0 0 auto;
     border-radius: 999px;
     padding: 0.55rem 0.9rem;
     color: var(--muted-foreground);
     font-size: 0.85rem;
     font-weight: 700;
+  }
+  .pils-nav-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
   .pils-nav a[aria-current='page'] {
     background: var(--primary);

@@ -1,3 +1,4 @@
+import { validateFields } from "@/lib/redcap-validation";
 import { NextResponse } from "next/server";
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
@@ -6,9 +7,9 @@ const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
 type Values = Record<string, string>;
 type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; care?: unknown; monitoring?: unknown; includeMonitoring?: unknown; newCd4?: unknown; newVl?: unknown };
 
-const enrollmentFields = ["enrollment_date_11a07b", "implementing_partner_41a2cd", "district_979c1b", "hotspot", "client_outreach_worker", "client_last_name", "client_first_name", "client_middle_name", "client_alias", "client_dob", "client_gender_identity", "client_kp_type", "phone_primary", "preferred_contact_method", "risk_drug_alcohol_sex", "risk_violence_month", "sw_age_started", "sw_sex_acts_week", "sw_condom_intimate", "msm_age_first_anal", "msm_receptive_anal_week", "msm_condom_anal", "pwid_age_first_inject", "pwid_injections_24h_b12f8a", "pwid_injections_week", "pwid_shared_24h", "pwid_shared_week"];
+const enrollmentFields = ["client_active", "district_other_f71f90", "enrollment_date_11a07b", "implementing_partner_41a2cd", "district_979c1b", "hotspot", "client_outreach_worker", "client_last_name", "client_first_name", "client_middle_name", "client_alias", "client_dob", "client_gender_identity", "client_kp_type", "phone_primary", "preferred_contact_method", "risk_drug_alcohol_sex", "risk_violence_month", "sw_age_started", "sw_sex_acts_week", "sw_condom_intimate", "msm_age_first_anal", "msm_receptive_anal_week", "msm_condom_anal", "pwid_age_first_inject", "pwid_injections_24h_b12f8a", "pwid_injections_week", "pwid_shared_24h", "pwid_shared_week"];
 const careFields = ["hiv_care_navigator", "hiv_care_navigator_2", "hiv_care_navigator_3", "hiv_care_date", "hiv_currently_art", "hiv_art_status_code", "hiv_care_type", "hiv_care_region", "hiv_adherence_counsel", "hiv_psychosocial", "hiv_comprehensive_ref", "hiv_male_condoms", "hiv_female_condoms", "hiv_lube", "hiv_needles", "hc_followup_needed", "hc_followup_date", "hc_notes"];
-const monitoringFields = ["hiv_monitor_date", "art_status", "cd4_date", "cd4_level", "vl_date", "vl_level", "hiv_monitor_notes"];
+const monitoringFields = ["viral_load_detectable", "hiv_monitor_date", "art_status", "cd4_date", "cd4_level", "vl_date", "vl_level", "hiv_monitor_notes"];
 
 function values(value: unknown): Values | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
@@ -81,18 +82,18 @@ export async function POST(request: Request) {
   if ((mode !== "new" && mode !== "existing") || !care || !monitoring || !recordId) return NextResponse.json({ error: "Invalid healthcare navigation submission." }, { status: 400 });
   const requiredCare = ["hiv_care_navigator", "hiv_care_date", "hiv_currently_art", "hiv_art_status_code"];
   if (!requiredCare.every((key) => care[key]?.trim())) return NextResponse.json({ error: "Complete all required HIV Care Support fields." }, { status: 400 });
-  if (care.hc_followup_needed === "1" && !care.hc_followup_date) return NextResponse.json({ error: "A planned follow-up date is required." }, { status: 400 });
   if (includeMonitoring !== (newCd4 || newVl)) return NextResponse.json({ error: "Select the clinical monitoring data being submitted." }, { status: 400 });
   if (includeMonitoring) {
     if (!monitoring.hiv_monitor_date) return NextResponse.json({ error: "A monitoring date is required." }, { status: 400 });
-    if (newCd4 && (!monitoring.cd4_date || !monitoring.cd4_level)) return NextResponse.json({ error: "Complete the new CD4 date and level." }, { status: 400 });
-    if (newVl && (!monitoring.vl_date || !monitoring.vl_level)) return NextResponse.json({ error: "Complete the new viral-load date and level." }, { status: 400 });
   }
   if (mode === "new") {
     const requiredEnrollment = ["enrollment_date_11a07b", "district_979c1b", "hotspot", "client_outreach_worker", "client_last_name", "client_first_name", "client_dob", "client_gender_identity", "client_kp_type"];
     if (!enrollment || !requiredEnrollment.every((key) => enrollment[key]?.trim())) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
     if (buildUic(enrollment) !== recordId) return NextResponse.json({ error: "The generated UIC does not match the enrollment details." }, { status: 400 });
   }
+
+  const validationError = (mode === "new" && enrollment ? validateFields(enrollment, enrollmentFields) : null) || validateFields(care, careFields) || (includeMonitoring ? validateFields(monitoring, monitoringFields) : null);
+  if (validationError) return NextResponse.json({ error: validationError }, { status: 400 });
 
   try {
     const exported = await redcap({ content: "record", action: "export", format: "json", type: "flat", rawOrLabel: "raw", rawOrLabelHeaders: "raw", exportDataAccessGroups: "false", returnFormat: "json", "records[0]": recordId, "forms[0]": "client_enrollment", "forms[1]": "hiv_care_support", "forms[2]": "hiv_clinical_monitoring" });

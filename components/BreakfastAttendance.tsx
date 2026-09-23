@@ -18,7 +18,7 @@ type AttendanceMap = Record<string, boolean>;
 type AttendanceReview = {
   date: string;
   attendees: Person[];
-  rows: { record_id: string; uic: string; breakfast_date: string; breakfast_present: '0' | '1'; extra_servings: string }[];
+  rows: { record_id: string; uic: string; breakfast_date: string; breakfast_present: '0' | '1'; extra_servings: string; breakfast_recorded_by: string; breakfast_notes: string }[];
 };
 
 const PEOPLE_STORAGE_KEY = 'pils:breakfast:people';
@@ -113,6 +113,7 @@ export default function BreakfastAttendance() {
   const [attendance, setAttendance] = useState<AttendanceMap>({});
   const [attendanceOrder, setAttendanceOrder] = useState<string[]>([]);
   const [search, setSearch] = useState('');
+  const [recordedBy, setRecordedBy] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
@@ -280,6 +281,8 @@ export default function BreakfastAttendance() {
         record_id: person.record_id,
         uic: person.uic,
         breakfast_date: today,
+        breakfast_recorded_by: recordedBy.trim(),
+        breakfast_notes: '',
         breakfast_present: attendance[person.record_id] ? '1' : '0',
         extra_servings: attendance[person.record_id] ? (extraServings[`${today}:${person.record_id}`] ?? '0') : '0',
       })),
@@ -355,6 +358,7 @@ export default function BreakfastAttendance() {
           </div>
         </div>
 
+        <label className='grid gap-2 text-sm font-medium'>Recorded by<Input value={recordedBy} onChange={(event) => setRecordedBy(event.target.value)} placeholder='Your name' /></label>
         {/* Search + Reset */}
         <div className='flex flex-col gap-3 sm:flex-row sm:items-center'>
           <div className='relative w-full sm:max-w-sm'>
@@ -445,7 +449,7 @@ export default function BreakfastAttendance() {
             <div className='border-b px-5 py-4'>
               <h2 id='attendance-review-title' className='text-lg font-semibold'>Review breakfast attendance</h2>
               <p id='attendance-review-description' className='mt-1 text-sm text-muted-foreground'>
-                {review.date} · {review.attendees.length} attended. Select Save to send attendance to REDCap.
+                {review.date} · {review.attendees.length} attended. Recorded by: {review.rows[0]?.breakfast_recorded_by || "Not provided"}. Select Save to send attendance to REDCap.
               </p>
             </div>
             <div className='min-h-0 overflow-y-auto px-5'>
@@ -465,6 +469,7 @@ export default function BreakfastAttendance() {
                       <td className='py-3 pr-3 align-middle'>
                       <p className='break-words text-sm text-muted-foreground'>{person.uic}</p>
                       <p className='break-words font-medium'>{person.display_name}</p>
+                      <label className='mt-2 grid gap-1 text-sm'>Notes<textarea disabled={submitting} value={review.rows.find(row => row.record_id === person.record_id)?.breakfast_notes ?? ''} onChange={(event) => { const value = event.target.value; setReview(current => current && ({ ...current, rows: current.rows.map(row => row.record_id === person.record_id ? { ...row, breakfast_notes: value } : row) })); }} /></label>
                       </td>
                       <td className='py-3 align-middle'>
                         <Input

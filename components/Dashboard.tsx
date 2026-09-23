@@ -8,7 +8,7 @@ type Period = "all" | "year" | "quarter" | "month" | "week" | "day";
 type Infection = "hiv" | "syphilis" | "hcv" | "hbv";
 type MetricSet = { encounters: number; totals: Record<Infection, number>; byKp: Record<Infection, Record<string, number>>; sources: Record<Infection, { configured: boolean; labels: string[] }> };
 type Commodity = "maleCondoms" | "femaleCondoms" | "lube" | "syringes" | "needles";
-type DashboardData = { range: { start: string | null; end: string; label: string }; rapid: MetricSet; lab: MetricSet; commodities: { totals: Record<Commodity, number>; byWorker: Record<string, Record<Commodity, number>>; workerLabels: string[]; sources: Record<Commodity, string[]> }; kpLabels: string[]; generatedAt: string };
+type DashboardData = { range: { start: string | null; end: string; label: string }; rapid: MetricSet; lab: MetricSet; commodities: { totals: Record<Commodity, number>; sources: Record<Commodity, string[]> }; kpLabels: string[]; generatedAt: string };
 const infections: { key: Infection; label: string; color: string }[] = [
   { key: "hiv", label: "HIV", color: "#c0264b" }, { key: "syphilis", label: "SYP", color: "#e27a24" },
   { key: "hcv", label: "HCV", color: "#6d4aa2" }, { key: "hbv", label: "HBV", color: "#247b78" },
@@ -42,18 +42,6 @@ function CommodityChart({ data }: { data: DashboardData }) {
   return <div className="h-72 w-full"><canvas ref={canvas} role="img" aria-label="Quantities of commodities provided">Commodity chart: {commodities.map(({ label }, index) => `${label} ${values[index]}`).join(", ")}</canvas></div>;
 }
 
-function WorkerCommodityChart({ data }: { data: DashboardData }) {
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const workerLabels = data.commodities.workerLabels;
-  const series = useMemo(() => commodities.map((commodity) => ({ label: commodity.label, data: workerLabels.map((worker) => data.commodities.byWorker[worker]?.[commodity.key] ?? 0), backgroundColor: commodity.color, borderWidth: 0 })), [data.commodities.byWorker, workerLabels]);
-  useEffect(() => {
-    if (!canvas.current) return;
-    const chart = new Chart(canvas.current, { type: "bar", data: { labels: workerLabels, datasets: series }, options: { responsive: true, maintainAspectRatio: false, legend: { display: true, position: "bottom", labels: { usePointStyle: true, boxWidth: 10 } }, tooltips: { mode: "index", intersect: false, callbacks: { label: (item, chartData) => ` ${chartData.datasets?.[item.datasetIndex ?? 0]?.label}: ${Number(item.value ?? item.yLabel ?? 0).toLocaleString()}` } }, scales: { yAxes: [{ ticks: { beginAtZero: true, precision: 0 }, gridLines: { color: "rgba(138,28,49,.08)", zeroLineColor: "rgba(138,28,49,.18)" }, scaleLabel: { display: true, labelString: "Units provided" } }], xAxes: [{ gridLines: { display: false }, ticks: { autoSkip: false, maxRotation: 45, minRotation: 0 } }] } } });
-    return () => { chart.destroy(); };
-  }, [series, workerLabels]);
-  return <div className="h-96 w-full"><canvas ref={canvas} role="img" aria-label="Commodity quantities by worker">Commodity quantities by outreach, clinic, and healthcare worker.</canvas></div>;
-}
-
 function CombinedMetrics({ data }: { data: DashboardData }) {
   return <section className="grid gap-5" aria-labelledby="testing-heading">
     <div className="dashboard-card"><div className="mb-4"><p className="dashboard-kicker">Rapid and laboratory results</p><h2 id="testing-heading" className="text-2xl font-bold">Tests by infection and method</h2><p className="mt-1 text-sm text-muted-foreground">{data.range.label} · {data.rapid.encounters.toLocaleString()} rapid encounters · {data.lab.encounters.toLocaleString()} laboratory encounters</p></div><ComparisonChart labels={infections.map(({ label }) => label)} rapid={infections.map(({ key }) => data.rapid.totals[key])} laboratory={infections.map(({ key }) => data.lab.totals[key])} ariaLabel="Rapid and laboratory results for HIV, syphilis, HCV and HBV" /></div>
@@ -63,7 +51,7 @@ function CombinedMetrics({ data }: { data: DashboardData }) {
 }
 
 function CommoditiesSection({ data }: { data: DashboardData }) {
-  return <section className="grid gap-5" aria-labelledby="commodities-heading"><div className="dashboard-card"><div className="mb-4"><p className="dashboard-kicker">Prevention commodities</p><h2 id="commodities-heading" className="text-2xl font-bold">Commodities provided</h2><p className="mt-1 text-sm text-muted-foreground">Total units across all current REDCap distribution instruments · {data.range.label}</p></div><CommodityChart data={data} /><details className="mt-4 rounded-xl border p-3 text-xs text-muted-foreground"><summary className="cursor-pointer font-bold text-foreground">Data sources</summary><div className="mt-2 grid gap-2 sm:grid-cols-2">{commodities.map(({ key, label }) => <p key={key}><strong>{label}:</strong> {data.commodities.sources[key].join("; ")}</p>)}</div><p className="mt-2">Clinic Visit and HIV Care Support store needles and syringes in a combined field; each combined quantity is included once under Needles to avoid double-counting.</p></details></div><div className="dashboard-card"><div className="mb-4"><p className="dashboard-kicker">Worker contribution</p><h2 className="text-2xl font-bold">Commodities by worker</h2><p className="mt-1 text-sm text-muted-foreground">Primary outreach, clinic, or healthcare worker · {data.range.label}</p></div><WorkerCommodityChart data={data} /><p className="mt-3 text-xs text-muted-foreground">Testing & Prevention quantities are included in the overall chart but excluded here because that instrument has no worker field. Primary workers are used to avoid attributing the same units to multiple team members.</p></div></section>;
+  return <section className="grid gap-5" aria-labelledby="commodities-heading"><div className="dashboard-card"><div className="mb-4"><p className="dashboard-kicker">Prevention commodities</p><h2 id="commodities-heading" className="text-2xl font-bold">Commodities provided</h2><p className="mt-1 text-sm text-muted-foreground">Total units across all current REDCap distribution instruments · {data.range.label}</p></div><CommodityChart data={data} /><details className="mt-4 rounded-xl border p-3 text-xs text-muted-foreground"><summary className="cursor-pointer font-bold text-foreground">Data sources</summary><div className="mt-2 grid gap-2 sm:grid-cols-2">{commodities.map(({ key, label }) => <p key={key}><strong>{label}:</strong> {data.commodities.sources[key].join("; ")}</p>)}</div><p className="mt-2">Clinic Visit and HIV Care Support store needles and syringes in a combined field; each combined quantity is included once under Needles to avoid double-counting.</p></details></div></section>;
 }
 
 export default function Dashboard() {

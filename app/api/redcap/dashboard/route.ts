@@ -11,46 +11,44 @@ type CommoditySource = { date: string; quantity: string; label: string; worker?:
 
 const periods = new Set<Period>(["all", "year", "quarter", "month", "week", "day"]);
 const rapidSources: Record<Infection, Source[]> = {
-  hiv: [{ date: "outreach_date", result: "outreach_hiv_rapid_result", label: "Outreach Contact — HIV rapid result" }],
-  syphilis: [{ date: "outreach_date", result: "outreach_syp_result", label: "Outreach Contact — syphilis rapid result" }],
-  hcv: [{ date: "outreach_date", result: "outreach_hepc_result", label: "Outreach Contact — HCV rapid result" }],
-  hbv: [{ date: "outreach_date", result: "outreach_hepb_result", label: "Outreach Contact — HBV rapid result" }],
+  hiv: [{ date: "oc_date", result: "oc_hiv_rapid_result", label: "Outreach Contact — HIV rapid result" }],
+  syphilis: [{ date: "oc_date", result: "oc_syp_result", label: "Outreach Contact — syphilis rapid result" }],
+  hcv: [{ date: "oc_date", result: "oc_hepc_result", label: "Outreach Contact — HCV rapid result" }],
+  hbv: [{ date: "oc_date", result: "oc_hepb_result", label: "Outreach Contact — HBV rapid result" }],
 };
 const labSources: Record<Infection, Source[]> = {
-  hiv: [{ date: "clinic_hiv_lab_test_date", result: "clinic_hiv_lab_result", label: "Clinic Visit — HIV laboratory result" }],
-  syphilis: [{ date: "clinic_syp_lab_test_date", result: "clinic_syp_lab_result", label: "Clinic Visit — syphilis laboratory result" }],
-  hcv: [{ date: "clinic_hcv_lab_test_date", result: "clinic_hcv_lab_result", label: "Clinic Visit — HCV laboratory result" }],
-  hbv: [{ date: "clinic_hbv_lab_test_date", result: "clinic_hbv_lab_result", label: "Clinic Visit — HBV laboratory result" }],
+  hiv: [{ date: "cnv_hiv_lab_test_date", result: "cnv_hiv_lab_result", label: "Clinic Visit — HIV laboratory result" }],
+  syphilis: [{ date: "cnv_syp_lab_test_date", result: "cnv_syp_lab_result", label: "Clinic Visit — syphilis laboratory result" }],
+  hcv: [{ date: "cnv_hcv_lab_test_date", result: "cnv_hcv_lab_result", label: "Clinic Visit — HCV laboratory result" }],
+  hbv: [{ date: "cnv_hbv_lab_test_date", result: "cnv_hbv_lab_result", label: "Clinic Visit — HBV laboratory result" }],
 };
 const commoditySources: Record<Commodity, CommoditySource[]> = {
   maleCondoms: [
-    { date: "outreach_date", quantity: "outreach_male_condoms", label: "Outreach Contact", worker: "outreach_worker_1" },
-    { date: "clinic_visit_date", quantity: "clinic_male_condoms", label: "Clinic Visit", worker: "clinic_visit_worker" },
-    { date: "hiv_care_date", quantity: "hiv_male_condoms", label: "HIV Care Support", worker: "hiv_care_navigator" },
+    { date: "oc_date", quantity: "oc_male_condoms", label: "Outreach Contact", worker: "oc_worker_1" },
+    { date: "cnv_date", quantity: "cnv_num_male_condoms", label: "Clinic Visit", worker: "cnv_worker" },
+    { date: "hcs_date", quantity: "hcs_num_male_condoms", label: "HIV Care Support", worker: "hcs_navigator_1" },
   ],
   femaleCondoms: [
-    { date: "outreach_date", quantity: "outreach_female_condoms", label: "Outreach Contact", worker: "outreach_worker_1" },
-    { date: "clinic_visit_date", quantity: "clinic_female_condoms", label: "Clinic Visit", worker: "clinic_visit_worker" },
-    { date: "hiv_care_date", quantity: "hiv_female_condoms", label: "HIV Care Support", worker: "hiv_care_navigator" },
+    { date: "oc_date", quantity: "oc_female_condoms", label: "Outreach Contact", worker: "oc_worker_1" },
+    { date: "cnv_date", quantity: "cnv_num_female_condoms", label: "Clinic Visit", worker: "cnv_worker" },
+    { date: "hcs_date", quantity: "hcs_num_female_condoms", label: "HIV Care Support", worker: "hcs_navigator_1" },
   ],
   lube: [
-    { date: "outreach_date", quantity: "outreach_lubricant", label: "Outreach Contact", worker: "outreach_worker_1" },
-    { date: "clinic_visit_date", quantity: "clinic_lube", label: "Clinic Visit", worker: "clinic_visit_worker" },
-    { date: "hiv_care_date", quantity: "hiv_lube", label: "HIV Care Support", worker: "hiv_care_navigator" },
+    { date: "oc_date", quantity: "oc_lubricant", label: "Outreach Contact", worker: "oc_worker_1" },
+    { date: "cnv_date", quantity: "cnv_num_lube", label: "Clinic Visit", worker: "cnv_worker" },
+    { date: "hcs_date", quantity: "hcs_num_lube", label: "HIV Care Support", worker: "hcs_navigator_1" },
   ],
   syringes: [
-    { date: "outreach_date", quantity: "outreach_syringes", label: "Outreach Contact", worker: "outreach_worker_1" },
-    { date: "intervention_date", quantity: "syringe_count", label: "Testing & Prevention" },
+    { date: "oc_date", quantity: "oc_syringes", label: "Outreach Contact", worker: "oc_worker_1" },
   ],
   needles: [
-    { date: "outreach_date", quantity: "outreach_needles", label: "Outreach Contact", worker: "outreach_worker_1" },
-    { date: "clinic_visit_date", quantity: "clinic_needles", label: "Clinic Visit (combined needles/syringes field)", worker: "clinic_visit_worker" },
-    { date: "hiv_care_date", quantity: "hiv_needles", label: "HIV Care Support (combined needles/syringes field)", worker: "hiv_care_navigator" },
-    { date: "intervention_date", quantity: "needle_count", label: "Testing & Prevention" },
+    { date: "oc_date", quantity: "oc_num_needles", label: "Outreach Contact", worker: "oc_worker_1" },
+    { date: "cnv_date", quantity: "cnv_num_needles", label: "Clinic Visit (combined needles/syringes field)", worker: "cnv_worker" },
+    { date: "hcs_date", quantity: "hcs_num_needles", label: "HIV Care Support (combined needles/syringes field)", worker: "hcs_navigator_1" },
   ],
 };
 const infections: Infection[] = ["hiv", "syphilis", "hcv", "hbv"];
-const kpTypes = [["1", "Sex worker"], ["2", "MSM"], ["3", "PWID"], ["4", "PPWID"], ["5", "Transgender"], ["6", "Former PWID"], ["7", "General"]] as const;
+const kpTypes = [["1", "Sex worker"], ["2", "MSM"], ["3", "PWID"], ["4", "PPWID"], ["5", "Transgender"], ["6", "Former PWID"], ["7", "General"], ["8", "Former Incarcerated People (FIP)"]] as const;
 
 function ymd(date: Date) { return date.toISOString().slice(0, 10); }
 function rangeFor(period: Period) {
@@ -121,13 +119,13 @@ export async function GET(request: Request) {
   try {
     const allSources = [...Object.values(rapidSources).flat(), ...Object.values(labSources).flat()];
     const allCommoditySources = Object.values(commoditySources).flat();
-    const fields = ["uic_ori", "client_kp_type", ...new Set([...allSources.flatMap((source) => [source.date, source.result]), ...allCommoditySources.flatMap((source) => [source.date, source.quantity, ...(source.worker ? [source.worker] : [])])])];
+    const fields = ["uic_ori", "ce_kp_type", ...new Set([...allSources.flatMap((source) => [source.date, source.result]), ...allCommoditySources.flatMap((source) => [source.date, source.quantity, ...(source.worker ? [source.worker] : [])])])];
     const params: Record<string, string> = { content: "record", action: "export", format: "json", type: "flat", rawOrLabel: "raw", rawOrLabelHeaders: "raw", exportCheckboxLabel: "false", exportDataAccessGroups: "false", returnFormat: "json" };
     fields.forEach((field, index) => { params[`fields[${index}]`] = field; });
     const rows = await redcap(params); const clientKp = new Map<string, string[]>();
     for (const row of rows) {
       if (!row.uic_ori) continue;
-      const selected = kpTypes.filter(([code]) => row[`client_kp_type___${code}`] === "1").map(([, label]) => label);
+      const selected = kpTypes.filter(([code]) => row[`ce_kp_type___${code}`] === "1").map(([, label]) => label);
       if (selected.length) clientKp.set(row.uic_ori, selected);
     }
     const sourceDetails = (sources: Record<Infection, Source[]>) => Object.fromEntries(infections.map((infection) => [infection, { configured: sources[infection].length > 0, labels: sources[infection].map(({ label }) => label) }]));

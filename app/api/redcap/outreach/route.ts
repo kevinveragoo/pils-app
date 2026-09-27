@@ -7,10 +7,10 @@ const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
 type Values = Record<string, string>;
 type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; outreach?: unknown; partners?: unknown; children?: unknown };
 
-const enrollmentFields = ["client_active", "district_other_f71f90", "enrollment_date_11a07b","implementing_partner_41a2cd","district_979c1b","hotspot","client_outreach_worker","client_last_name","client_first_name","client_middle_name","client_alias","client_dob","client_gender_identity","client_kp_type","phone_primary","preferred_contact_method","risk_drug_alcohol_sex","risk_violence_month","sw_age_started","sw_sex_acts_week","sw_condom_intimate","msm_age_first_anal","msm_receptive_anal_week","msm_condom_anal","pwid_age_first_inject","pwid_injections_24h_b12f8a","pwid_shared_24h","pwid_injections_week","pwid_shared_week"];
-const outreachFields = ["outreach_worker_1","outreach_worker_2","outreach_worker_3","outreach_date","outreact_contact_type","outreach_hotspot","new_client","outreach_sex_acts_week","outreach_condom_use","outreach_drug_alcohol","outreach_shared_inject","outreach_violence_report","outreach_violence_address","outreach_male_condoms","outreach_female_condoms","outreach_lubricant","outreach_hiv_self_test","outreach_syringes","outreach_needles","outreach_hiv_status","outreach_hiv_rapid_result","outreach_hiv_iec","outreach_hepc_status","outreach_hepc_result","outreach_hepc_iec","outreach_hepb_status","outreach_hepb_result","outreach_hepb_iec","outreach_syp_status","outreach_syp_result","outreach_syp_iec","prep_interested","outreach_referred","ref_other_specify","outreach_followup_needed","outreach_followup_date","outreach_notes"];
-const partnerFields = ["partner_name","partner_nickname","partner_dob","partner_age","partner_gender","partner_description","partner_lives_with","partner_address","partner_address_2","partner_work_hours","partner_phone","partner_phone_alt","partner_relationship","partner_violence","partner_threats","partner_forced_sex","part_not_method","part_not_date","first_cont_date","first_cont_method","second_cont_date","first_cont_method_2","third_cont_date","first_cont_method_3","part_cont_success","part_cont_by_who","contact_result","cont_result_other","part_hiv_result","part_cont_art","partner_enrolled","partner_new_uic","partner_notes"];
-const childFields = ["child_nameprc","child_dobprc","child_ageprc","child_genderprc","partner_addressprc","partner_lives_withprc","partner_violenceprc","partner_threatsprc","partner_forced_sexprc","part_not_methodprc","part_not_dateprc","first_cont_methodprc","part_hiv_resultprc","part_cont_artprc","child_enrolledprc","child_new_uicprc","child_notesprc"];
+const enrollmentFields = ["ce_active", "ce_date","ce_implementing_partner","ce_district","ce_hotspot","ce_outreach_worker","ce_last_name","ce_first_name","ce_middle_name_1", "ce_middle_name_2","ce_alias","ce_dob","ce_gender_identity","ce_vision","ce_kp_type","ce_tel_primary","ce_contact_method","ce_risk_drug_alcohol_sex","ce_risk_violence_1m","ce_sw_age_started","ce_sw_sex_acts_1w","ce_sw_condom_use_1w","ce_msm_age_first_anal","ce_msm_receptive_anal_1w","ce_msm_condom_anal_1w","ce_pwid_age_first_inject","ce_pwid_injections_24h","ce_pwid_shared_24h","ce_pwid_injections_1w","ce_pwid_shared_1w"];
+const outreachFields = ["oc_worker_1","oc_worker_2","oc_worker_3","oc_date","oc_type","oc_hotspot","oc_is_new_client","oc_sex_acts_1w","oc_condom_use","oc_drug_alcohol","oc_shared_inject_equip","oc_violence_report","oc_violence_address","oc_male_condoms","oc_female_condoms","oc_lubricant","oc_hiv_self_test","oc_syringes","oc_num_needles","oc_hiv_status_prev","oc_hiv_rapid_result","oc_hiv_comms","oc_hepc_status_prev","oc_hepc_result","oc_hepc_comms","oc_hepb_status_prev","oc_hepb_result","oc_hepb_comms","oc_syp_status_prev","oc_syp_result","oc_syp_comms","oc_prep_interested","oc_referrals","oc_referral_other","oc_followup_needed","oc_followup_date","oc_notes"];
+const partnerFields = ["itp_name","itp_nickname","itp_dob","itp_age","itp_gender","itp_description","itp_lives_with","itp_address","itp_work_address","itp_work_hours","itp_phone","itp_phone_alt","itp_relationship","itp_violence","itp_threats","itp_forced_sex","itp_notif_method","itp_notif_date","itp_1st_cont_date","itp_1st_cont_method","itp_2nd_cont_date","itp_2nd_cont_method","itp_3rd_cont_date","itp_3rd_cont_method","itp_contact_success","itp_contact_by_who","itp_contact_result","itp_contact_result_other","itp_hiv_result","itp_contact_art","itp_enrolled","itp_new_uic","itp_notes"];
+const childFields = ["itch_name","itch_dob","itch_age","itch_gender","itch_address","itch_lives_with","itch_violence","itch_threats","itch_force_sex","itch_notif_method","itch_notif_date_limit","itch_contact_method","itch_hiv_result","itch_art","itch_enrolled","itch_new_uic","itch_notes"];
 
 function values(value: unknown): Values | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
@@ -24,11 +24,11 @@ function cleanLetters(value: string) {
 }
 
 function buildUic(v: Values) {
-  const prefix = ({ "1": "M", "2": "F", "3": "T", "4": "T", "5": "O", "9": "R" } as Record<string, string>)[v.client_gender_identity] ?? "";
-  const dob = v.client_dob?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  const first = cleanLetters(v.client_first_name ?? "").slice(0, 1);
-  const middle = (v.client_middle_name ?? "").trim().split(/\s+/).filter(Boolean).map((name) => cleanLetters(name).slice(0, 1)).join("");
-  const surname = cleanLetters(v.client_last_name ?? "");
+  const prefix = ({ "1": "M", "2": "F", "3": "T", "4": "T", "5": "O", "9": "R" } as Record<string, string>)[v.ce_gender_identity] ?? "";
+  const dob = v.ce_dob?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const first = cleanLetters(v.ce_first_name ?? "").slice(0, 1);
+  const middle = [v.ce_middle_name_1, v.ce_middle_name_2].filter(Boolean).join(" ").trim().split(/\s+/).filter(Boolean).map((name) => cleanLetters(name).slice(0, 1)).join("");
+  const surname = cleanLetters(v.ce_last_name ?? "");
   if (!prefix || !dob || !first || !surname) return "";
   return `${prefix}${dob[3]}${dob[2]}${dob[1]}${first}${middle}_${surname[0]}${surname.at(-1)}`;
 }
@@ -36,7 +36,7 @@ function buildUic(v: Values) {
 function copyAllowed(source: Values, allowed: string[]) {
   const row: Values = {};
   for (const key of allowed) if (source[key] !== undefined && source[key] !== "") row[key] = source[key];
-  for (const key of ["client_kp_type", "preferred_contact_method", "outreach_referred"]) {
+  for (const key of ["ce_kp_type", "ce_contact_method", "oc_referrals"]) {
     if (!source[key]) continue;
     for (const code of source[key].split(",").filter((item) => /^\d+$/.test(item))) row[`${key}___${code}`] = "1";
     delete row[key];
@@ -79,14 +79,14 @@ export async function POST(request: Request) {
   const partners = Array.isArray(input.partners) ? input.partners.map(values) : [];
   const children = Array.isArray(input.children) ? input.children.map(values) : [];
   if ((mode !== "new" && mode !== "existing") || !outreach || partners.some((x) => !x) || children.some((x) => !x)) return NextResponse.json({ error: "Invalid outreach submission." }, { status: 400 });
-  if (!outreach.outreach_worker_1 || !outreach.outreach_date || !outreach.outreact_contact_type) return NextResponse.json({ error: "Outreach worker, contact date, and contact setting are required." }, { status: 400 });
-  if (outreach.outreach_hiv_rapid_result !== "1" && (partners.length || children.length)) return NextResponse.json({ error: "Partner referrals require a reactive HIV rapid test result." }, { status: 400 });
-  for (const partner of partners as Values[]) if (!["partner_name","partner_gender","partner_violence","partner_threats","partner_forced_sex","part_not_method"].every((key) => partner[key])) return NextResponse.json({ error: "Complete all required partner referral fields." }, { status: 400 });
-  for (const child of children as Values[]) if (!["partner_violenceprc","partner_threatsprc","partner_forced_sexprc","part_not_methodprc"].every((key) => child[key])) return NextResponse.json({ error: "Complete all required child referral fields." }, { status: 400 });
+  if (!outreach.oc_worker_1 || !outreach.oc_date || !outreach.oc_type) return NextResponse.json({ error: "Outreach worker, contact date, and contact setting are required." }, { status: 400 });
+  if (outreach.oc_hiv_rapid_result !== "1" && (partners.length || children.length)) return NextResponse.json({ error: "Partner referrals require a reactive HIV rapid test result." }, { status: 400 });
+  for (const partner of partners as Values[]) if (!["itp_name","itp_gender","itp_violence","itp_threats","itp_forced_sex","itp_notif_method"].every((key) => partner[key])) return NextResponse.json({ error: "Complete all required partner referral fields." }, { status: 400 });
+  for (const child of children as Values[]) if (!["itch_violence","itch_threats","itch_force_sex","itch_notif_method"].every((key) => child[key])) return NextResponse.json({ error: "Complete all required child referral fields." }, { status: 400 });
 
   const recordId = typeof input.recordId === "string" ? input.recordId.trim() : "";
   if (mode === "new") {
-    if (!enrollment || !["enrollment_date_11a07b","district_979c1b","hotspot","client_outreach_worker","client_last_name","client_first_name","client_dob","client_gender_identity","client_kp_type"].every((key) => enrollment[key])) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
+    if (!enrollment || !["ce_date","ce_district","ce_hotspot","ce_outreach_worker","ce_last_name","ce_first_name","ce_dob","ce_gender_identity","ce_kp_type"].every((key) => enrollment[key])) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
     const generated = buildUic(enrollment);
     if (!generated || recordId !== generated) return NextResponse.json({ error: "The generated UIC does not match the enrollment details." }, { status: 400 });
   }

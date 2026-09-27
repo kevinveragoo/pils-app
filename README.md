@@ -1,5 +1,15 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## REDCap configuration
+
+The app uses `REDCAP_API_URL` and `REDCAP_API_TOKEN` from `.env.local` for the cleaned-up project. Field names were checked against its API metadata on 27 September 2026 using `New-old_fields.csv` (new names in row 1, old names in row 2).
+
+`lib/redcap-field-rules.json` holds the current validation rules. `scripts/fixtures/redcap-schema.json` holds the API schema used by the mocked submission tests. Refresh these snapshots when the REDCap schema changes.
+
+Run `npm run test:redcap-fields` to check field names, instrument ownership, checkbox encoding, UIC generation, patient lookup, and dashboard aggregation without contacting REDCap or writing records. Historical sample-generation scripts target the original schema and are separate from the app runtime.
+
+The home page redirects to `/outreach`. Breakfast remains at `/breakfast`; Breakfast and Dashboard navigation links are temporarily disabled.
+
 ## Getting Started
 
 First, run the development server:

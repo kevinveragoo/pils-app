@@ -9,7 +9,7 @@ export default function AppHeader({ current }: { current: "breakfast" | "outreac
         <nav aria-label="Main navigation" className="pils-nav">
           <Link href="/outreach" aria-current={current === "outreach" ? "page" : undefined}><span>Outreach<br />Workflow</span></Link>
           <Link href="/healthcare-nav" aria-current={current === "healthcare-nav" ? "page" : undefined}><span>Healthcare<br />Navigator</span></Link>
-          {/* Temporarily disabled; restore the / Link to re-enable. */}
+          {/* Temporarily disabled; restore the /breakfast Link to re-enable. */}
           <span role="link" aria-disabled="true" className="pils-nav-disabled" title="Breakfast is temporarily unavailable">Breakfast</span>
           {/* Temporarily disabled; restore the /dashboard Link to re-enable. */}
           <span role="link" aria-disabled="true" className="pils-nav-disabled" title="Dashboard is temporarily unavailable">Dashboard</span>

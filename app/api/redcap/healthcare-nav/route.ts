@@ -7,9 +7,9 @@ const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
 type Values = Record<string, string>;
 type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; care?: unknown; monitoring?: unknown; includeMonitoring?: unknown; newCd4?: unknown; newVl?: unknown };
 
-const enrollmentFields = ["client_active", "district_other_f71f90", "enrollment_date_11a07b", "implementing_partner_41a2cd", "district_979c1b", "hotspot", "client_outreach_worker", "client_last_name", "client_first_name", "client_middle_name", "client_alias", "client_dob", "client_gender_identity", "client_kp_type", "phone_primary", "preferred_contact_method", "risk_drug_alcohol_sex", "risk_violence_month", "sw_age_started", "sw_sex_acts_week", "sw_condom_intimate", "msm_age_first_anal", "msm_receptive_anal_week", "msm_condom_anal", "pwid_age_first_inject", "pwid_injections_24h_b12f8a", "pwid_injections_week", "pwid_shared_24h", "pwid_shared_week"];
-const careFields = ["hiv_care_navigator", "hiv_care_navigator_2", "hiv_care_navigator_3", "hiv_care_date", "hiv_currently_art", "hiv_art_status_code", "hiv_care_type", "hiv_care_region", "hiv_adherence_counsel", "hiv_psychosocial", "hiv_comprehensive_ref", "hiv_male_condoms", "hiv_female_condoms", "hiv_lube", "hiv_needles", "hc_followup_needed", "hc_followup_date", "hc_notes"];
-const monitoringFields = ["viral_load_detectable", "hiv_monitor_date", "art_status", "cd4_date", "cd4_level", "vl_date", "vl_level", "hiv_monitor_notes"];
+const enrollmentFields = ["ce_active", "ce_date", "ce_implementing_partner", "ce_district", "ce_hotspot", "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_middle_name_1", "ce_middle_name_2", "ce_alias", "ce_dob", "ce_gender_identity", "ce_vision", "ce_kp_type", "ce_tel_primary", "ce_contact_method", "ce_risk_drug_alcohol_sex", "ce_risk_violence_1m", "ce_sw_age_started", "ce_sw_sex_acts_1w", "ce_sw_condom_use_1w", "ce_msm_age_first_anal", "ce_msm_receptive_anal_1w", "ce_msm_condom_anal_1w", "ce_pwid_age_first_inject", "ce_pwid_injections_24h", "ce_pwid_injections_1w", "ce_pwid_shared_24h", "ce_pwid_shared_1w"];
+const careFields = ["hcs_navigator_1", "hcs_navigator_2", "hcs_navigator_3", "hcs_date", "hcs_currently_art", "hcs_art_status", "hcs_care_type", "hcs_care_region", "hcs_adherence_counsel", "hcs_psychosocial", "hcs_comprehensive_ref", "hcs_num_male_condoms", "hcs_num_female_condoms", "hcs_num_lube", "hcs_num_needles", "hcs_followup_needed", "hcs_followup_date", "hcs_notes"];
+const monitoringFields = ["htm_viral_load_detectable", "htm_date", "htm_art_status", "htm_cd4_date", "htm_cd4_level", "htm_vl_date", "htm_vl_level", "htm_notes"];
 
 function values(value: unknown): Values | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
@@ -22,18 +22,18 @@ function cleanLetters(value: string) {
 }
 
 function buildUic(v: Values) {
-  const prefix = ({ "1": "M", "2": "F", "3": "T", "4": "T", "5": "O", "9": "R" } as Record<string, string>)[v.client_gender_identity] ?? "";
-  const dob = v.client_dob?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  const first = cleanLetters(v.client_first_name ?? "").slice(0, 1);
-  const middle = (v.client_middle_name ?? "").trim().split(/\s+/).filter(Boolean).map((name) => cleanLetters(name).slice(0, 1)).join("");
-  const surname = cleanLetters(v.client_last_name ?? "");
+  const prefix = ({ "1": "M", "2": "F", "3": "T", "4": "T", "5": "O", "9": "R" } as Record<string, string>)[v.ce_gender_identity] ?? "";
+  const dob = v.ce_dob?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const first = cleanLetters(v.ce_first_name ?? "").slice(0, 1);
+  const middle = [v.ce_middle_name_1, v.ce_middle_name_2].filter(Boolean).join(" ").trim().split(/\s+/).filter(Boolean).map((name) => cleanLetters(name).slice(0, 1)).join("");
+  const surname = cleanLetters(v.ce_last_name ?? "");
   return prefix && dob && first && surname ? `${prefix}${dob[3]}${dob[2]}${dob[1]}${first}${middle}_${surname[0]}${surname.at(-1)}` : "";
 }
 
 function copyAllowed(source: Values, allowed: string[]) {
   const row: Values = {};
   for (const key of allowed) if (source[key] !== undefined && source[key] !== "") row[key] = source[key].trim();
-  for (const key of ["client_kp_type", "preferred_contact_method", "hiv_care_type"]) {
+  for (const key of ["ce_kp_type", "ce_contact_method", "hcs_care_type"]) {
     if (!source[key]) continue;
     for (const code of source[key].split(",").filter((item) => /^\d+$/.test(item))) row[`${key}___${code}`] = "1";
     delete row[key];
@@ -80,14 +80,14 @@ export async function POST(request: Request) {
   const recordId = typeof input.recordId === "string" ? input.recordId.trim().toUpperCase() : "";
 
   if ((mode !== "new" && mode !== "existing") || !care || !monitoring || !recordId) return NextResponse.json({ error: "Invalid healthcare navigation submission." }, { status: 400 });
-  const requiredCare = ["hiv_care_navigator", "hiv_care_date", "hiv_currently_art", "hiv_art_status_code"];
+  const requiredCare = ["hcs_navigator_1", "hcs_date", "hcs_currently_art", "hcs_art_status"];
   if (!requiredCare.every((key) => care[key]?.trim())) return NextResponse.json({ error: "Complete all required HIV Care Support fields." }, { status: 400 });
   if (includeMonitoring !== (newCd4 || newVl)) return NextResponse.json({ error: "Select the clinical monitoring data being submitted." }, { status: 400 });
   if (includeMonitoring) {
-    if (!monitoring.hiv_monitor_date) return NextResponse.json({ error: "A monitoring date is required." }, { status: 400 });
+    if (!monitoring.htm_date) return NextResponse.json({ error: "A monitoring date is required." }, { status: 400 });
   }
   if (mode === "new") {
-    const requiredEnrollment = ["enrollment_date_11a07b", "district_979c1b", "hotspot", "client_outreach_worker", "client_last_name", "client_first_name", "client_dob", "client_gender_identity", "client_kp_type"];
+    const requiredEnrollment = ["ce_date", "ce_district", "ce_hotspot", "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_dob", "ce_gender_identity", "ce_kp_type"];
     if (!enrollment || !requiredEnrollment.every((key) => enrollment[key]?.trim())) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
     if (buildUic(enrollment) !== recordId) return NextResponse.json({ error: "The generated UIC does not match the enrollment details." }, { status: 400 });
   }

@@ -1,515 +1,166 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { X } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { FileUp } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
-type Person = {
-  record_id: string;
-  uic: string;
-  display_name: string;
-};
+type RedcapPatient = { alias: string; uic: string; record_id: string; first_name: string; last_name: string; display_name: string };
+type UploadedClient = { alias: string; uic: string; record_id?: string; suggestions?: RedcapPatient[] };
 
-type AttendanceMap = Record<string, boolean>;
-
-type AttendanceReview = {
-  date: string;
-  attendees: Person[];
-  rows: { record_id: string; uic: string; breakfast_date: string; breakfast_present: '0' | '1'; extra_servings: string; breakfast_recorded_by: string; breakfast_notes: string }[];
-};
-
-const PEOPLE_STORAGE_KEY = 'pils:breakfast:people';
-
-function attendanceStorageKey(date: string) {
-  return `pils:breakfast:attendance:${date}`;
+function partialUicKey(uic: string) {
+  return `${uic.charAt(0).toUpperCase()}${uic.replace(/\D/g, '')}`;
 }
 
-function attendanceOrderStorageKey(date: string) {
-  return `pils:breakfast:attendance-order:${date}`;
-}
-
-function readStoredPeople(): Person[] {
-  try {
-    const value = localStorage.getItem(PEOPLE_STORAGE_KEY);
-
-    if (!value) return [];
-
-    const parsed: unknown = JSON.parse(value);
-
-    if (!Array.isArray(parsed)) return [];
-
-    return parsed.filter(
-      (person): person is Person =>
-        typeof person === 'object' &&
-        person !== null &&
-        typeof person.record_id === 'string' &&
-        typeof person.uic === 'string' &&
-        typeof person.display_name === 'string',
-    );
-  } catch {
-    return [];
+function parseCsv(text: string) {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = '';
+  let quoted = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (character === '"') {
+      if (quoted && text[index + 1] === '"') { cell += '"'; index += 1; } else quoted = !quoted;
+    } else if (character === ',' && !quoted) {
+      row.push(cell.trim()); cell = '';
+    } else if ((character === '\n' || character === '\r') && !quoted) {
+      if (character === '\r' && text[index + 1] === '\n') index += 1;
+      row.push(cell.trim());
+      if (row.some(Boolean)) rows.push(row);
+      row = []; cell = '';
+    } else cell += character;
   }
+  if (quoted) throw new Error('The CSV contains an unclosed quoted value.');
+  row.push(cell.trim());
+  if (row.some(Boolean)) rows.push(row);
+  return rows;
 }
 
-function readStoredAttendance(date: string): AttendanceMap {
-  try {
-    const value = localStorage.getItem(attendanceStorageKey(date));
-
-    if (!value) return {};
-
-    const parsed: unknown = JSON.parse(value);
-
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
-
-    return Object.fromEntries(Object.entries(parsed).filter((entry): entry is [string, boolean] => typeof entry[1] === 'boolean'));
-  } catch {
-    return {};
-  }
+function clientsFromCsv(text: string): UploadedClient[] {
+  const rows = parseCsv(text.replace(/^\uFEFF/, ''));
+  if (!rows.length) throw new Error('The CSV file is empty.');
+  const headings = rows[0].map((heading) => heading.trim().toLowerCase());
+  if (headings[0] !== 'alias' || headings[1] !== 'uic') throw new Error('The first two CSV columns must be alias and uic, in that order.');
+  const seen = new Set<string>();
+  const clients: UploadedClient[] = [];
+  rows.slice(1).forEach((values, index) => {
+    const alias = values[0]?.trim() ?? '';
+    const uic = (values[1] ?? '').replace(/\s+/g, '').replace(/-/g, '_').toUpperCase();
+    if (!uic) throw new Error(`Row ${index + 2} has no UIC.`);
+    if (seen.has(uic)) throw new Error(`UIC ${uic} appears more than once in the CSV.`);
+    seen.add(uic);
+    clients.push({ alias, uic });
+  });
+  if (!clients.length) throw new Error('The CSV does not contain any client rows.');
+  return clients;
 }
 
-function readStoredAttendanceOrder(date: string): string[] {
-  try {
-    const value = localStorage.getItem(attendanceOrderStorageKey(date));
-
-    if (!value) return [];
-
-    const parsed: unknown = JSON.parse(value);
-
-    return Array.isArray(parsed) ? parsed.filter((recordId): recordId is string => typeof recordId === 'string') : [];
-  } catch {
-    return [];
-  }
-}
-
-function storePeople(people: Person[]) {
-  try {
-    localStorage.setItem(PEOPLE_STORAGE_KEY, JSON.stringify(people));
-  } catch {
-    // The live REDCap response still works when browser storage is unavailable.
-  }
-}
-
-function storeAttendance(date: string, attendance: AttendanceMap) {
-  try {
-    localStorage.setItem(attendanceStorageKey(date), JSON.stringify(attendance));
-  } catch {
-    // Attendance remains available for the current session in React state.
-  }
-}
-
-function storeAttendanceOrder(date: string, recordIds: string[]) {
-  try {
-    localStorage.setItem(attendanceOrderStorageKey(date), JSON.stringify(recordIds));
-  } catch {
-    // Check-in order remains available for the current session in React state.
-  }
+function ClientTable({ title, clients, emptyMessage, found, onSuggestion }: { title: string; clients: UploadedClient[]; emptyMessage: string; found?: boolean; onSuggestion?: (client: UploadedClient, patient: RedcapPatient) => void }) {
+  return <section className={cn('attendance-card', found && 'attendance-card-present')} aria-label={title}>
+    <div className='flex items-center justify-between border-b bg-muted/40 px-4 py-3'><h2 className='font-semibold'>{title}</h2><span className='attendance-count'>{clients.length}</span></div>
+    {clients.length === 0 ? <p className='px-4 py-10 text-center text-sm text-muted-foreground'>{emptyMessage}</p> : <div className='overflow-x-auto'><table className='w-full text-left text-sm'>
+      <thead className='border-b bg-muted/20 text-muted-foreground'><tr><th className='px-4 py-3 font-medium'>Alias</th><th className='px-4 py-3 font-medium'>UIC</th></tr></thead>
+      <tbody className='divide-y'>{clients.map((client) => <tr key={client.uic}><td className='px-4 py-3 font-medium'>{client.alias || '—'}</td><td className='px-4 py-3'><span className='font-mono'>{client.uic}</span>{client.suggestions?.map((patient) => <button key={patient.record_id} type='button' className='mt-2 block rounded-lg bg-secondary px-3 py-2 text-left text-xs font-medium text-secondary-foreground transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring' onClick={() => onSuggestion?.(client, patient)}>Could be {patient.last_name || '—'}, {patient.first_name || patient.display_name} · <span className='font-mono'>{patient.uic}</span></button>)}</td></tr>)}</tbody>
+    </table></div>}
+  </section>;
 }
 
 export default function BreakfastAttendance() {
-  const [people, setPeople] = useState<Person[]>([]);
-  const [attendance, setAttendance] = useState<AttendanceMap>({});
-  const [attendanceOrder, setAttendanceOrder] = useState<string[]>([]);
-  const [search, setSearch] = useState('');
-  const [recordedBy, setRecordedBy] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+  const [fileName, setFileName] = useState('');
+  const [found, setFound] = useState<UploadedClient[]>([]);
+  const [unfound, setUnfound] = useState<UploadedClient[]>([]);
+  const [busy, setBusy] = useState<'checking' | 'creating' | 'submitting' | null>(null);
   const [message, setMessage] = useState('');
-  const [review, setReview] = useState<AttendanceReview | null>(null);
-  const [saveError, setSaveError] = useState('');
-  const [extraServings, setExtraServings] = useState<Record<string, string>>({});
-  const reviewDialog = useRef<HTMLDialogElement>(null);
-  const saving = useRef(false);
-
+  const [error, setError] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
   const today = new Date().toLocaleDateString('en-CA');
 
-  useEffect(() => {
-    if (review && !reviewDialog.current?.open) {
-      reviewDialog.current?.showModal();
-    }
-  }, [review]);
-
-  useEffect(() => {
-    const storedPeople = readStoredPeople();
-    const storedAttendance = readStoredAttendance(today);
-    const storedAttendanceOrder = readStoredAttendanceOrder(today);
-    let cancelled = false;
-    let refreshInProgress = false;
-
-    if (storedPeople.length > 0) {
-      queueMicrotask(() => {
-        if (cancelled) return;
-
-        setPeople(storedPeople);
-        setAttendance(Object.fromEntries(storedPeople.map((person) => [person.record_id, storedAttendance[person.record_id] ?? false])));
-        setAttendanceOrder([
-          ...storedAttendanceOrder.filter((recordId) => storedAttendance[recordId] && storedPeople.some((person) => person.record_id === recordId)),
-          ...storedPeople.filter((person) => storedAttendance[person.record_id] && !storedAttendanceOrder.includes(person.record_id)).map((person) => person.record_id),
-        ]);
-        setLoading(false);
+  async function upload(file: File | undefined) {
+    if (!file) return;
+    setBusy('checking'); setError(''); setMessage(''); setFound([]); setUnfound([]);
+    try {
+      const uploaded = clientsFromCsv(await file.text());
+      const response = await fetch('/api/redcap/patients', { cache: 'no-store' });
+      const body: unknown = await response.json();
+      if (!response.ok) throw new Error(body && typeof body === 'object' && 'error' in body ? String(body.error) : 'Unable to check UICs in REDCap.');
+      const patients = body as RedcapPatient[];
+      const records = new Map(patients.map((patient) => [patient.uic.toUpperCase(), patient]));
+      const partialMatches = new Map<string, RedcapPatient[]>();
+      patients.forEach((patient) => {
+        const key = partialUicKey(patient.uic);
+        partialMatches.set(key, [...(partialMatches.get(key) ?? []), patient]);
       });
-    }
-
-    async function refreshPeople(showError: boolean) {
-      if (refreshInProgress) return;
-
-      refreshInProgress = true;
-
-      try {
-        if (showError) setMessage('');
-
-        const response = await fetch('/api/redcap/patients', {
-          cache: 'no-store',
-        });
-
-        const body = await response.json();
-
-        if (!response.ok) {
-          throw new Error(body.error || 'Unable to load patients.');
-        }
-
-        if (cancelled) return;
-
-        const patients = body as Person[];
-
-        setPeople(patients);
-        storePeople(patients);
-        setAttendance((current) => {
-          const updated = Object.fromEntries(patients.map((person) => [person.record_id, current[person.record_id] ?? storedAttendance[person.record_id] ?? false]));
-
-          storeAttendance(today, updated);
-          return updated;
-        });
-        setAttendanceOrder((current) => {
-          const patientIds = new Set(patients.map((person) => person.record_id));
-          const updated = current.filter((recordId) => patientIds.has(recordId));
-
-          storeAttendanceOrder(today, updated);
-          return updated;
-        });
-      } catch (error) {
-        if (showError && !cancelled) {
-          const errorMessage = error instanceof Error ? error.message : 'Unable to load patients.';
-          setMessage(storedPeople.length > 0 ? `Showing saved patients. ${errorMessage}` : errorMessage);
-        }
-      } finally {
-        refreshInProgress = false;
-        if (showError && !cancelled) setLoading(false);
-      }
-    }
-
-    void refreshPeople(true);
-
-    const refreshInterval = window.setInterval(() => {
-      void refreshPeople(false);
-    }, 60_000);
-
-    return () => {
-      cancelled = true;
-      window.clearInterval(refreshInterval);
-    };
-  }, [today]);
-
-  const unattendedPeople = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    const unattended = people.filter((person) => !attendance[person.record_id]);
-
-    if (!query) {
-      return unattended;
-    }
-
-    return unattended.filter((person) => person.uic.toLowerCase().startsWith(query) || person.display_name.toLowerCase().includes(query));
-  }, [attendance, people, search]);
-
-  const attendedPeople = useMemo(() => {
-    const peopleById = new Map(people.map((person) => [person.record_id, person]));
-
-    return attendanceOrder
-      .map((recordId) => peopleById.get(recordId))
-      .filter((person): person is Person => person !== undefined)
-      .filter((person) => attendance[person.record_id]);
-  }, [attendance, attendanceOrder, people]);
-
-  function toggleAttendance(recordId: string, checked: boolean) {
-    setAttendance((current) => {
-      const updated = {
-        ...current,
-        [recordId]: checked,
-      };
-
-      storeAttendance(today, updated);
-      return updated;
-    });
-
-    setAttendanceOrder((current) => {
-      const updated = checked ? (current.includes(recordId) ? current : [...current, recordId]) : current.filter((currentRecordId) => currentRecordId !== recordId);
-
-      storeAttendanceOrder(today, updated);
-      return updated;
-    });
-
-    // Clear UIC search when someone is marked present
-    if (checked) {
-      setSearch('');
-    }
+      setFound(uploaded.filter((client) => records.has(client.uic)).map((client) => ({ ...client, record_id: records.get(client.uic)?.record_id })));
+      setUnfound(uploaded.filter((client) => !records.has(client.uic)).map((client) => ({ ...client, suggestions: partialMatches.get(partialUicKey(client.uic)) ?? [] })));
+      setFileName(file.name);
+      setMessage(`Checked ${uploaded.length} UIC${uploaded.length === 1 ? '' : 's'} against REDCap.`);
+    } catch (caught) {
+      setFileName(''); setError(caught instanceof Error ? caught.message : 'Unable to read the CSV file.');
+      if (inputRef.current) inputRef.current.value = '';
+    } finally { setBusy(null); }
   }
 
-  function resetAttendance() {
-    const reset = Object.fromEntries(people.map((person) => [person.record_id, false]));
-
-    setAttendance(reset);
-    storeAttendance(today, reset);
-    setAttendanceOrder([]);
-    storeAttendanceOrder(today, []);
-
-    setSearch('');
-    setMessage('');
-  }
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (loading || saving.current || people.length === 0) return;
-
-    setMessage('');
-    setSaveError('');
-    setReview({
-      date: today,
-      attendees: people.filter((person) => attendance[person.record_id]),
-      rows: people.map((person) => ({
-        record_id: person.record_id,
-        uic: person.uic,
-        breakfast_date: today,
-        breakfast_recorded_by: recordedBy.trim(),
-        breakfast_notes: '',
-        breakfast_present: attendance[person.record_id] ? '1' : '0',
-        extra_servings: attendance[person.record_id] ? (extraServings[`${today}:${person.record_id}`] ?? '0') : '0',
-      })),
-    });
-  }
-
-  function closeReview() {
-    if (saving.current) return;
-    reviewDialog.current?.close();
-    setReview(null);
-    setSaveError('');
-  }
-
-  async function saveAttendance() {
-    if (!review || saving.current) return;
-    if (review.rows.some((row) => !/^\d+$/.test(row.extra_servings) || !Number.isSafeInteger(Number(row.extra_servings)))) {
-      setSaveError('Enter a whole number of extra servings, zero or more, for each attendee.');
+  function useSuggestedUic(client: UploadedClient, patient: RedcapPatient) {
+    if (found.some((item) => item.record_id === patient.record_id)) {
+      setError(`${patient.uic} is already in the found UICs table.`);
       return;
     }
-    saving.current = true;
-
-    try {
-      setSubmitting(true);
-      setSaveError('');
-
-      const response = await fetch('/api/redcap/breakfast', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ rows: review.rows.map((row) => ({ ...row, extra_servings: Number(row.extra_servings) })) }),
-      });
-
-      const body = await response.json();
-
-      if (!response.ok) {
-        throw new Error(body.error || 'REDCap submission failed.');
-      }
-
-      setMessage(`Saved breakfast attendance for ${review.date}: ${review.attendees.length} attended.`);
-      reviewDialog.current?.close();
-      setReview(null);
-    } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Unable to save attendance.');
-    } finally {
-      saving.current = false;
-      setSubmitting(false);
-    }
+    setError('');
+    setUnfound((current) => current.filter((item) => item.uic !== client.uic));
+    setFound((current) => [...current, { alias: client.alias, uic: patient.uic, record_id: patient.record_id }]);
+    setMessage(`Using REDCap UIC ${patient.uic} for ${client.alias || client.uic}.`);
   }
 
-  return (
-    <div className='attendance-page mx-auto max-w-6xl px-4 py-5 sm:p-6'>
-      <form onSubmit={handleSubmit} className='space-y-5 sm:space-y-6'>
-        {/* Header */}
-        <div className='space-y-3'>
-          <div>
-            <h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>Breakfast Attendance</h1>
+  async function createSkeletons() {
+    if (!unfound.length) return;
+    setBusy('creating'); setError(''); setMessage('');
+    try {
+      const response = await fetch('/api/redcap/breakfast/skeletons', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clients: unfound }) });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error || 'Unable to create skeleton records.');
+      const created = unfound.map((client) => ({ ...client, record_id: client.uic }));
+      setFound((current) => [...current, ...created]); setUnfound([]);
+      setMessage(`Created ${created.length} skeleton record${created.length === 1 ? '' : 's'} in REDCap.`);
+    } catch (caught) { setError(caught instanceof Error ? caught.message : 'Unable to create skeleton records.'); }
+    finally { setBusy(null); }
+  }
 
-            <p className='mt-2 text-sm text-muted-foreground'>{today}</p>
-          </div>
+  async function submitAttendance() {
+    if (!found.length || unfound.length) return;
+    setBusy('submitting'); setError(''); setMessage('');
+    try {
+      const rows = found.map((client) => ({ record_id: client.record_id ?? client.uic, uic: client.uic, breakfast_date: today, breakfast_present: '1', extra_servings: 0 }));
+      const response = await fetch('/api/redcap/breakfast', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ rows }) });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error || 'Unable to submit breakfast attendance.');
+      setMessage(`Submitted breakfast attendance for ${found.length} client${found.length === 1 ? '' : 's'} on ${today}.`);
+      setFound([]);
+      setUnfound([]);
+      setFileName('');
+      if (inputRef.current) inputRef.current.value = '';
+    } catch (caught) { setError(caught instanceof Error ? caught.message : 'Unable to submit breakfast attendance.'); }
+    finally { setBusy(null); }
+  }
 
-          {/* Submit */}
-          <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4'>
-            <Button type='submit' className='w-full sm:w-auto' disabled={loading || submitting || people.length === 0}>
-              {submitting ? 'Saving...' : 'Submit Attendance'}
-            </Button>
-
-            {message && (
-              <p aria-live='polite' className='text-sm text-muted-foreground'>
-                {message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <label className='grid gap-2 text-sm font-medium'>Recorded by<Input value={recordedBy} onChange={(event) => setRecordedBy(event.target.value)} placeholder='Your name' /></label>
-        {/* Search + Reset */}
-        <div className='flex flex-col gap-3 sm:flex-row sm:items-center'>
-          <div className='relative w-full sm:max-w-sm'>
-            <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder='Search by UIC or name...' className='pr-10' />
-
-            {search && (
-              <button type='button' onClick={() => setSearch('')} className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground' aria-label='Clear search'>
-                <X className='h-4 w-4' />
-              </button>
-            )}
-          </div>
-
-          <Button type='button' variant='outline' className='w-full sm:w-auto' onClick={resetAttendance} disabled={loading || people.length === 0}>
-            Reset Attendance
-          </Button>
-        </div>
-
-        <div className='grid gap-4 md:grid-cols-2'>
-          <section className='attendance-card' aria-labelledby='not-attended-heading'>
-            <div className='flex items-center justify-between border-b bg-muted/40 px-4 py-3'>
-              <h2 id='not-attended-heading' className='font-semibold'>Not attended</h2>
-              <span className='attendance-count'>{people.filter((person) => !attendance[person.record_id]).length}</span>
-            </div>
-
-            {loading ? (
-              <p className='px-4 py-10 text-center text-sm text-muted-foreground'>Loading patients...</p>
-            ) : unattendedPeople.length === 0 ? (
-              <p className='px-4 py-10 text-center text-sm text-muted-foreground'>{search ? 'No patients found.' : 'Everyone has attended.'}</p>
-            ) : (
-              <div className='divide-y'>
-                {unattendedPeople.map((person) => {
-                  const checkboxId = `not-attended-${person.record_id}`;
-
-                  return (
-                    <label key={person.record_id} htmlFor={checkboxId} className='flex min-h-16 cursor-pointer items-center gap-3 px-4 py-3 hover:bg-muted/40 active:bg-muted/60'>
-                      <Checkbox id={checkboxId} className='size-5 border-2 border-foreground/60' checked={false} onCheckedChange={(checked) => toggleAttendance(person.record_id, checked === true)} aria-label={`Mark ${person.uic} as attended`} />
-                      <span className='min-w-0 flex-1'>
-                        <span className='block text-sm text-muted-foreground'>{person.uic}</span>
-                        <span className='block truncate font-medium'>{person.display_name}</span>
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
-            )}
-          </section>
-
-          <section className='attendance-card attendance-card-present' aria-labelledby='attended-heading'>
-            <div className='flex items-center justify-between border-b bg-muted/40 px-4 py-3'>
-              <h2 id='attended-heading' className='font-semibold'>Attended</h2>
-              <span className='attendance-count'>{attendedPeople.length}</span>
-            </div>
-
-            {attendedPeople.length === 0 ? (
-              <p className='px-4 py-10 text-center text-sm text-muted-foreground'>No attendees yet.</p>
-            ) : (
-              <div className='divide-y'>
-                {attendedPeople.map((person) => {
-                  const checkboxId = `attended-${person.record_id}`;
-
-                  return (
-                    <label key={person.record_id} htmlFor={checkboxId} className='flex min-h-16 cursor-pointer items-center gap-3 px-4 py-3 hover:bg-muted/40 active:bg-muted/60'>
-                      <Checkbox id={checkboxId} className='size-5 border-2 border-foreground/60' checked onCheckedChange={(checked) => toggleAttendance(person.record_id, checked === true)} aria-label={`Mark ${person.uic} as not attended`} />
-                      <span className='min-w-0 flex-1'>
-                        <span className='block text-sm text-muted-foreground'>{person.uic}</span>
-                        <span className='block truncate font-medium'>{person.display_name}</span>
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
-            )}
-          </section>
-        </div>
-      </form>
-      <dialog
-        ref={reviewDialog}
-        aria-labelledby='attendance-review-title'
-        aria-describedby='attendance-review-description'
-        onCancel={(event) => {
-          event.preventDefault();
-          closeReview();
-        }}
-        className='attendance-review fixed inset-0 m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg overflow-hidden border bg-card p-0 text-foreground'
-      >
-        {review && (
-          <div className='flex max-h-[85dvh] flex-col'>
-            <div className='border-b px-5 py-4'>
-              <h2 id='attendance-review-title' className='text-lg font-semibold'>Review breakfast attendance</h2>
-              <p id='attendance-review-description' className='mt-1 text-sm text-muted-foreground'>
-                {review.date} · {review.attendees.length} attended. Recorded by: {review.rows[0]?.breakfast_recorded_by || "Not provided"}. Select Save to send attendance to REDCap.
-              </p>
-            </div>
-            <div className='min-h-0 overflow-y-auto px-5'>
-              {review.attendees.length === 0 ? (
-                <p className='py-6 text-sm text-muted-foreground'>No attendees selected.</p>
-              ) : (
-                <table className='w-full table-fixed text-left'>
-                  <thead className='sticky top-0 bg-card text-sm text-muted-foreground'>
-                    <tr className='border-b'>
-                      <th scope='col' className='py-3 pr-3 font-medium'>Attendee</th>
-                      <th scope='col' className='w-28 py-3 text-center font-medium'>Extra servings</th>
-                    </tr>
-                  </thead>
-                  <tbody className='divide-y'>
-                  {review.attendees.map((person) => (
-                    <tr key={person.record_id}>
-                      <td className='py-3 pr-3 align-middle'>
-                      <p className='break-words text-sm text-muted-foreground'>{person.uic}</p>
-                      <p className='break-words font-medium'>{person.display_name}</p>
-                      <label className='mt-2 grid gap-1 text-sm'>Notes<textarea disabled={submitting} value={review.rows.find(row => row.record_id === person.record_id)?.breakfast_notes ?? ''} onChange={(event) => { const value = event.target.value; setReview(current => current && ({ ...current, rows: current.rows.map(row => row.record_id === person.record_id ? { ...row, breakfast_notes: value } : row) })); }} /></label>
-                      </td>
-                      <td className='py-3 align-middle'>
-                        <Input
-                          id={`extra-servings-${person.record_id}`}
-                          aria-label={`Extra servings for ${person.display_name} (${person.uic})`}
-                          type='number'
-                          min={0}
-                          step={1}
-                          required
-                          inputMode='numeric'
-                          className='mx-auto w-20 text-center'
-                          disabled={submitting}
-                          value={review.rows.find((row) => row.record_id === person.record_id)?.extra_servings ?? '0'}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            setExtraServings((current) => ({ ...current, [`${review.date}:${person.record_id}`]: value }));
-                            setReview((current) => current && ({
-                              ...current,
-                              rows: current.rows.map((row) => row.record_id === person.record_id ? { ...row, extra_servings: value } : row),
-                            }));
-                            setSaveError('');
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-            <div className='space-y-3 border-t px-5 py-4'>
-              {saveError && <p role='alert' className='text-sm text-destructive'>{saveError}</p>}
-              <div className='flex justify-end gap-2'>
-                <Button type='button' variant='outline' onClick={closeReview} disabled={submitting}>Cancel</Button>
-                <Button type='button' onClick={saveAttendance} disabled={submitting}>{submitting ? 'Saving...' : 'Save'}</Button>
-              </div>
-            </div>
-          </div>
-        )}
-      </dialog>
+  return <div className='attendance-page mx-auto max-w-6xl px-4 py-5 sm:p-6'><div className='space-y-6'>
+    <div><h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>Breakfast Attendance</h1><p className='mt-2 text-sm text-muted-foreground'>{today}</p></div>
+    <div className='rounded-2xl border bg-card p-4 shadow-sm sm:p-5'>
+      <h2 className='font-semibold'>Upload today&apos;s attendance</h2>
+      <p className='mt-1 text-sm text-muted-foreground'>Choose a CSV whose first two columns are <strong>alias</strong> and <strong>uic</strong>.</p>
+      <div className='mt-4 flex flex-col items-start gap-3 sm:flex-row sm:items-center'>
+        <label className={cn(buttonVariants({ size: 'lg' }), 'min-h-11 cursor-pointer rounded-full px-5')}><FileUp aria-hidden='true' />{busy === 'checking' ? 'Checking UICs…' : 'Upload CSV file'}<input ref={inputRef} type='file' accept='.csv,text/csv' className='sr-only' disabled={busy !== null} onChange={(event) => void upload(event.target.files?.[0])} /></label>
+        {fileName && <span className='text-sm text-muted-foreground'>{fileName}</span>}
+      </div>
     </div>
-  );
+    {(message || error) && <p role='status' aria-live='polite' className={cn('rounded-xl px-4 py-3 text-sm', error ? 'bg-destructive/10 text-destructive' : 'bg-secondary text-secondary-foreground')}>{error || message}</p>}
+    <div className='grid gap-4 md:grid-cols-2'>
+      <ClientTable title='UICs not found in REDCap' clients={unfound} emptyMessage={fileName ? 'All uploaded UICs were found.' : 'Upload a CSV to check its UICs.'} onSuggestion={useSuggestedUic} />
+      <ClientTable title='UICs found in REDCap' clients={found} emptyMessage={fileName ? 'No uploaded UICs were found.' : 'Upload a CSV to check its UICs.'} found />
+    </div>
+    <div className='flex flex-col gap-3 sm:flex-row'>
+      <Button type='button' size='lg' variant='outline' disabled={!unfound.length || busy !== null} onClick={() => void createSkeletons()}>{busy === 'creating' ? 'Creating skeleton records in REDCap…' : 'Create skeleton records for unfound UICs in REDCap'}</Button>
+      <Button type='button' size='lg' disabled={!found.length || unfound.length > 0 || busy !== null} onClick={() => void submitAttendance()}>{busy === 'submitting' ? 'Submitting attendance to REDCap…' : 'Submit attendance to REDCap'}</Button>
+    </div>
+  </div></div>;
 }

@@ -164,7 +164,7 @@ export default function HealthcareNavWorkflow() {
       {!uic ? "Complete the identity fields to generate a UIC." : uicCheck === "available" ? "UIC is available. You can continue." : uicCheck === "exists" ? "This UIC already exists. Go back and select the existing client." : uicCheck === "error" ? "Unable to check this UIC in REDCap." : "Checking UIC availability in REDCap…"}
       {uicCheck === "error" && <Button variant="outline" className="ml-3" onClick={() => { setError(""); setUicAttempt(attempt => attempt + 1); }}>Retry check</Button>}
     </div>}
-    <div className="mt-5 flex justify-between gap-3"><Button variant="outline" disabled={step === 1 || submitting} onClick={() => { setError(""); setStep((current) => current === 3 && mode === "existing" ? 1 : current - 1); }}><ArrowLeft />Back</Button>{step < 5 ? <Button disabled={(step === 1 && mode !== "new" && !selected) || (step === 2 && mode === "new" && uicCheck !== "available")} onClick={goForward}>Continue<ArrowRight /></Button> : <Button disabled={submitting} onClick={submit}>{submitting ? "Saving…" : "Submit to REDCap"}<Check /></Button>}</div>
+    <div className="mt-5 flex justify-between gap-3"><Button variant="outline" disabled={step === 1 || submitting} onClick={() => { setError(""); setStep((current) => current === 3 && mode === "existing" ? 1 : current - 1); }}><ArrowLeft />Back</Button>{step < 5 ? <Button disabled={(step === 1 && mode !== "new" && !selected) || (step === 2 && mode === "new" && uicCheck !== "available")} onClick={goForward}>Continue<ArrowRight /></Button> : <Button disabled={submitting} onClick={submit}>{submitting ? "Saving to REDCap…" : "Submit to REDCap"}<Check /></Button>}</div>
   </div>;
 }
 

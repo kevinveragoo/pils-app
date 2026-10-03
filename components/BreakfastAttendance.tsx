@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { X } from 'lucide-react';
+import { FileUp, Keyboard, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import BreakfastCsvAttendance from '@/components/BreakfastCsvAttendance';
 
 type Person = {
   record_id: string;
@@ -108,7 +109,7 @@ function storeAttendanceOrder(date: string, recordIds: string[]) {
   }
 }
 
-export default function BreakfastAttendance() {
+function ManualBreakfastAttendance() {
   const [people, setPeople] = useState<Person[]>([]);
   const [attendance, setAttendance] = useState<AttendanceMap>({});
   const [attendanceOrder, setAttendanceOrder] = useState<string[]>([]);
@@ -512,4 +513,9 @@ export default function BreakfastAttendance() {
       </dialog>
     </div>
   );
+}
+
+export default function BreakfastAttendance() {
+  const [entryMode, setEntryMode] = useState<'manual' | 'csv'>('manual');
+  return <div><div className='mx-auto flex max-w-6xl justify-end px-4 pt-4 sm:px-6'><Button type='button' variant='ghost' size='sm' onClick={() => setEntryMode((current) => current === 'manual' ? 'csv' : 'manual')}>{entryMode === 'manual' ? <><FileUp />Load CSV file</> : <><Keyboard />Enter UIC or name</>}</Button></div>{entryMode === 'manual' ? <ManualBreakfastAttendance /> : <BreakfastCsvAttendance />}</div>;
 }

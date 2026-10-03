@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAuthenticatedRequest } from "@/lib/auth";
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
@@ -113,6 +114,7 @@ function aggregateCommodities(rows: Values[], start: string | null, end: string)
 }
 
 export async function GET(request: Request) {
+  if (!await isAuthenticatedRequest()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   const requested = new URL(request.url).searchParams.get("period") ?? "all";
   if (!periods.has(requested as Period)) return NextResponse.json({ error: "Invalid dashboard period." }, { status: 400 });
   const period = requested as Period; const range = rangeFor(period);

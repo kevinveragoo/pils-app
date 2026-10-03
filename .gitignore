@@ -28,6 +28,12 @@ yarn-error.log*
 .env*.local
 .env
 
+# local SQLite database and runtime sidecar files
+/data/*.db
+/data/*.db-*
+/data/*.sqlite
+/data/*.sqlite-*
+
 # vercel
 .vercel
 

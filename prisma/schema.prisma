@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/pils.db"
+}
+
+model User {
+  id                 String    @id @default(cuid())
+  username           String    @unique
+  name               String
+  organization       String    @default("PILS")
+  passwordHash       String
+  role               String
+  requestedRole      String
+  status             String    @default("PENDING")
+  mustChangePassword Boolean   @default(false)
+  approvedAt         DateTime?
+  approvedById       String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  sessions           Session[]
+
+  @@index([status])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  actorId      String?
+  event        String
+  targetUserId String?
+  details      String?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+}

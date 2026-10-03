@@ -1,5 +1,6 @@
 import { validDate } from '@/lib/redcap-validation';
 import { NextResponse } from 'next/server';
+import { isAuthenticatedRequest } from '@/lib/auth';
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
@@ -32,6 +33,7 @@ function isBreakfastRow(value: unknown): value is BreakfastRow {
 }
 
 export async function POST(request: Request) {
+  if (!await isAuthenticatedRequest()) return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
   if (!REDCAP_API_URL || !REDCAP_API_TOKEN) {
     return NextResponse.json({ error: 'REDCap API configuration is missing.' }, { status: 500 });
   }

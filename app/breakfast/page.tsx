@@ -1,7 +1,9 @@
 import BreakfastAttendance from "@/components/BreakfastAttendance";
 import AppHeader from "@/components/AppHeader";
+import { requireUser } from "@/lib/auth";
 
-export default function BreakfastPage() {
+export default async function BreakfastPage() {
+  await requireUser();
   return (
     <div className="flex flex-1 flex-col">
       <a className="pils-skip-link" href="#attendance">Skip to attendance</a>

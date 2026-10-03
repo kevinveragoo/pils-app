@@ -1,5 +1,6 @@
 import { validateFields } from "@/lib/redcap-validation";
 import { NextResponse } from "next/server";
+import { isAuthenticatedRequest } from "@/lib/auth";
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
@@ -55,6 +56,7 @@ async function redcap(params: Record<string, string>) {
 }
 
 export async function GET(request: Request) {
+  if (!await isAuthenticatedRequest()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   const uic = new URL(request.url).searchParams.get("uic")?.trim().toUpperCase() ?? "";
   if (!uic) return NextResponse.json({ error: "A UIC is required." }, { status: 400 });
   try {
@@ -67,6 +69,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!await isAuthenticatedRequest()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   let input: Submission;
   try { input = await request.json() as Submission; } catch { return NextResponse.json({ error: "The request body must be valid JSON." }, { status: 400 }); }
 

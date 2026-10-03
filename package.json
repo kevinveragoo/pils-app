@@ -7,15 +7,19 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:redcap-fields": "node scripts/test-redcap-fields.mjs"
+    "test:redcap-fields": "node scripts/test-redcap-fields.mjs",
+    "test:localization": "node scripts/test-localization.mjs",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "node prisma/seed.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
+    "@prisma/client": "^6.19.0",
     "chart.js": "^2.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.30.0",
-    "next": "16.3.0",
+    "next": "^16.3.6",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "shadcn": "^4.16.2",
@@ -29,7 +33,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "^16.3.6",
+    "prisma": "^6.19.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

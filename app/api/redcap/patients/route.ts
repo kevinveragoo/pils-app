@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAuthenticatedRequest } from "@/lib/auth";
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
@@ -22,6 +23,7 @@ type RedcapRow = {
 };
 
 export async function GET() {
+  if (!await isAuthenticatedRequest()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   try {
     if (!REDCAP_API_URL || !REDCAP_API_TOKEN) {
       return NextResponse.json(

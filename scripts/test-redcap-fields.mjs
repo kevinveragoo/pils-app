@@ -50,6 +50,7 @@ function load(relative) {
     },
     require: (name) => {
       if (name === 'next/server') return { NextResponse: Response };
+      if (name === '@/lib/auth') return { isAuthenticatedRequest: async () => true };
       if (name.startsWith('@/')) return load(`${name.slice(2)}.ts`);
       if (name.endsWith('.json')) return JSON.parse(fs.readFileSync(path.resolve(path.dirname(filename), name), 'utf8'));
       throw Error(`Unexpected dependency: ${name}`);
@@ -120,6 +121,10 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[0].breakfast_recorded_by, 'Tester');
   assert.equal(imported()[0].breakfast_notes, 'Example note');
   existing = [];
+  assert.equal((await post('breakfast/skeletons', { clients: [{ alias: 'Breakfast client', uic: 'M01012000T_EE' }] })).status, 200);
+  assert.equal(imported()[0].ce_alias, 'Breakfast client');
+  assert.equal(imported()[0].ce_dob, '2000-01-01');
+  assert.equal(imported()[0].ce_gender_identity, '1');
   assert.equal((await post('healthcare-nav', { ...healthcare, mode: 'new', recordId: submission.recordId, enrollment })).status, 200);
   assert.equal(imported()[0].ce_first_name, enrollment.ce_first_name);
   assert.equal(imported()[0].ce_active, '1');

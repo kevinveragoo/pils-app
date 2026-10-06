@@ -83,6 +83,11 @@
     "type": "text",
     "form": "client_enrollment"
   },
+  "ce_middle_name_3": {
+    "label": "Middle name",
+    "type": "text",
+    "form": "client_enrollment"
+  },
   "ce_alias": {
     "label": "Preferred name / Alias",
     "type": "text",
@@ -155,6 +160,7 @@
     "type": "radio",
     "form": "client_enrollment",
     "choices": [
+      "0",
       "1",
       "2",
       "3"
@@ -217,7 +223,7 @@
     "label": "Emergency contact phone",
     "type": "number",
     "form": "client_enrollment",
-    "min": 7.0
+    "min": 7
   },
   "ce_marital_status": {
     "label": "Marital status",
@@ -236,7 +242,7 @@
     "label": "Number of children",
     "type": "number",
     "form": "client_enrollment",
-    "max": 15.0
+    "max": 15
   },
   "ce_parent_celib": {
     "label": "Are you a single parent",
@@ -336,15 +342,15 @@
     "label": "Age when sex work began",
     "type": "integer",
     "form": "client_enrollment",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "ce_sw_sex_acts_1w": {
     "label": "Number of vaginal or anal sex acts in the last week",
     "type": "integer",
     "form": "client_enrollment",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_sw_condom_use_1w": {
     "label": "Used a condom every time with boyfriend/intimate partner in the last week?",
@@ -359,15 +365,15 @@
     "label": "Age at first anal sex",
     "type": "integer",
     "form": "client_enrollment",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "ce_msm_receptive_anal_1w": {
     "label": "Number of receptive anal-sex acts in the last week",
     "type": "integer",
     "form": "client_enrollment",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_msm_condom_anal_1w": {
     "label": "Used a condom every time during receptive or penetrative anal sex in the last week?",
@@ -382,36 +388,36 @@
     "label": "Age when first injected drugs",
     "type": "integer",
     "form": "client_enrollment",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "ce_pwid_injections_24h": {
     "label": "Number of injections in the last 24 hours",
     "type": "integer",
     "form": "client_enrollment",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_pwid_injections_1w": {
     "label": "Number of injections in the last week",
     "type": "integer",
     "form": "client_enrollment",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_pwid_shared_24h": {
     "label": "Times shared nonsterile injecting equipment in the last 24 hours",
     "type": "integer",
     "form": "client_enrollment",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_pwid_shared_1w": {
     "label": "Times shared nonsterile injecting equipment in the last week",
     "type": "integer",
     "form": "client_enrollment",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_consent_date": {
     "label": "Consent date",
@@ -490,7 +496,7 @@
     "required": true
   },
   "oc_type": {
-    "label": "Sortie:",
+    "label": "Activity type:",
     "type": "radio",
     "form": "outreach_contact",
     "required": true,
@@ -515,6 +521,23 @@
     "type": "text",
     "form": "outreach_contact"
   },
+  "oc_district": {
+    "label": "District",
+    "type": "radio",
+    "form": "outreach_contact",
+    "required": true,
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ]
+  },
   "oc_is_new_client": {
     "label": "New client?",
     "type": "yesno",
@@ -528,8 +551,8 @@
     "label": "Number of sex acts in the last week",
     "type": "integer",
     "form": "outreach_contact",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "oc_condom_use": {
     "label": "Condom use with sex partners",
@@ -586,42 +609,42 @@
     "label": "Male condoms provided (quantity)",
     "type": "integer",
     "form": "outreach_contact",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "oc_female_condoms": {
     "label": "Female condoms provided (quantity)",
     "type": "integer",
     "form": "outreach_contact",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "oc_lubricant": {
     "label": "Lubricant/ Gel packs provided (quantity)",
     "type": "integer",
     "form": "outreach_contact",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "oc_hiv_self_test": {
-    "label": "HIV self (quantuty)",
+    "label": "HIV self (quantity)",
     "type": "integer",
     "form": "outreach_contact",
-    "min": 0.0
+    "min": 0
   },
   "oc_syringes": {
     "label": "Syringes provided (quantity)",
     "type": "integer",
     "form": "outreach_contact",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "oc_num_needles": {
     "label": "Needles provided (quantity)",
     "type": "integer",
     "form": "outreach_contact",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "oc_hiv_status_prev": {
     "label": "HIV status at this contact",
@@ -737,6 +760,15 @@
       "1"
     ]
   },
+  "oc_prep_com": {
+    "label": "Counselled on PrEP",
+    "type": "yesno",
+    "form": "outreach_contact",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
   "oc_prep_interested": {
     "label": "Interested in PrEP",
     "type": "yesno",
@@ -816,8 +848,8 @@
     "label": "CD4 level",
     "type": "number",
     "form": "hiv_clinical_monitoring",
-    "min": 0.0,
-    "max": 9999.0
+    "min": 0,
+    "max": 9999
   },
   "htm_vl_date": {
     "label": "Viral load test date",
@@ -839,8 +871,8 @@
     "label": "Viral load level (copies/mL)",
     "type": "number",
     "form": "hiv_clinical_monitoring",
-    "min": 0.0,
-    "max": 999999999.0
+    "min": 0,
+    "max": 999999999
   },
   "htm_notes": {
     "label": "Monitoring notes",
@@ -904,7 +936,10 @@
       "7",
       "8",
       "9",
-      "10"
+      "10",
+      "11",
+      "12",
+      "13"
     ]
   },
   "hcs_care_region": {
@@ -951,29 +986,29 @@
     "label": "Male condoms provided",
     "type": "integer",
     "form": "hiv_care_support",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "hcs_num_female_condoms": {
     "label": "Female condoms provided",
     "type": "integer",
     "form": "hiv_care_support",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "hcs_num_lube": {
     "label": "Lubricant provided",
     "type": "integer",
     "form": "hiv_care_support",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "hcs_num_needles": {
     "label": "Needles/syringes provided",
     "type": "integer",
     "form": "hiv_care_support",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "hcs_followup_needed": {
     "label": "Follow-up required?",
@@ -1014,8 +1049,8 @@
     "label": "Partner age if DOB unknown",
     "type": "integer",
     "form": "partner_referral_partner",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "itp_gender": {
     "label": "Partner gender",
@@ -1261,8 +1296,8 @@
     "label": "Child age if DOB unknown",
     "type": "integer",
     "form": "partner_referral_child",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "itch_gender": {
     "label": "Child gender",
@@ -1407,7 +1442,7 @@
     "label": "Extra servings:",
     "type": "integer",
     "form": "breakfast_attendance",
-    "min": 0.0
+    "min": 0
   },
   "breakfast_recorded_by": {
     "label": "Recorded by",
@@ -1418,5 +1453,549 @@
     "label": "Notes",
     "type": "notes",
     "form": "breakfast_attendance"
+  },
+  "ptp_start_date": {
+    "label": "PrEP start date",
+    "type": "date_dmy",
+    "form": "prep_treatment_profile"
+  },
+  "ptp_primary_reason": {
+    "label": "Primary reason for taking PrEP",
+    "type": "notes",
+    "form": "prep_treatment_profile"
+  },
+  "ptp_previous_use": {
+    "label": "Ever received PrEP/nPEP before?",
+    "type": "radio",
+    "form": "prep_treatment_profile",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "ptp_previous_provider": {
+    "label": "Where was prior PrEP/nPEP received?",
+    "type": "text",
+    "form": "prep_treatment_profile"
+  },
+  "ptp_medication": {
+    "label": "Current PrEP medication",
+    "type": "radio",
+    "form": "prep_treatment_profile",
+    "choices": [
+      "1",
+      "2",
+      "6",
+      "99"
+    ]
+  },
+  "ptp_other_medication": {
+    "label": "Other current PrEP medication",
+    "type": "text",
+    "form": "prep_treatment_profile"
+  },
+  "ptp_regimen_notes": {
+    "label": "PrEP regimen notes",
+    "type": "notes",
+    "form": "prep_treatment_profile"
+  },
+  "ptp_status": {
+    "label": "Current PrEP programme status",
+    "type": "radio",
+    "form": "prep_treatment_profile",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ]
+  },
+  "ptp_ltfu": {
+    "label": "Currently lost to follow-up?",
+    "type": "yesno",
+    "form": "prep_treatment_profile",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "ptp_effective_date": {
+    "label": "Profile effective date",
+    "type": "date_dmy",
+    "form": "prep_treatment_profile",
+    "required": true
+  },
+  "ptp_recorded_by": {
+    "label": "Profile recorded by",
+    "type": "text",
+    "form": "prep_treatment_profile",
+    "required": true
+  },
+  "ptp_change_reason": {
+    "label": "Reason for profile update",
+    "type": "notes",
+    "form": "prep_treatment_profile"
+  },
+  "pv_visit_date": {
+    "label": "Visit date",
+    "type": "date_dmy",
+    "form": "prep_visit",
+    "required": true
+  },
+  "pv_visit_purpose": {
+    "label": "Visit purpose (select all that apply)",
+    "type": "checkbox",
+    "form": "prep_visit",
+    "choices": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "pv_recorded_by": {
+    "label": "Visit recorded by",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_next_appointment_date": {
+    "label": "Next appointment date",
+    "type": "date_dmy",
+    "form": "prep_visit"
+  },
+  "pv_followup_stage": {
+    "label": "Follow-up stage",
+    "type": "dropdown",
+    "form": "prep_visit",
+    "choices": [
+      "0",
+      "1",
+      "3",
+      "6",
+      "9",
+      "12",
+      "15",
+      "18",
+      "21",
+      "24",
+      "27",
+      "30",
+      "33",
+      "36",
+      "99"
+    ]
+  },
+  "pv_blood_draw_date": {
+    "label": "Blood draw date",
+    "type": "date_dmy",
+    "form": "prep_visit"
+  },
+  "pv_tests_collected": {
+    "label": "Tests collected",
+    "type": "checkbox",
+    "form": "prep_visit",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "99"
+    ]
+  },
+  "pv_other_test_collected": {
+    "label": "Other test collected",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_sample_reference": {
+    "label": "Sample reference",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_blood_draw_notes": {
+    "label": "Blood draw notes",
+    "type": "notes",
+    "form": "prep_visit"
+  },
+  "pv_hiv_result": {
+    "label": "HIV test result",
+    "type": "radio",
+    "form": "prep_visit",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ]
+  },
+  "pv_syphilis_result": {
+    "label": "TPHA / syphilis result",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_creatinine_result": {
+    "label": "Creatinine clearance / serum creatinine result",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_hbsag_result": {
+    "label": "HBsAg result",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_hcv_result": {
+    "label": "HCV test result",
+    "type": "radio",
+    "form": "prep_visit",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ]
+  },
+  "pv_sti_reported": {
+    "label": "STI / syndrome reported",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_side_effects": {
+    "label": "Side effects",
+    "type": "notes",
+    "form": "prep_visit"
+  },
+  "pv_medication": {
+    "label": "PrEP medication prescribed",
+    "type": "radio",
+    "form": "prep_visit",
+    "choices": [
+      "1",
+      "2",
+      "6"
+    ]
+  },
+  "pv_other_medication": {
+    "label": "Other medication received",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_lot_number": {
+    "label": "PrEP medication lot number",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_medication_dispensed": {
+    "label": "PrEP medication dispensed this visit (tablet/bottle)",
+    "type": "integer",
+    "form": "prep_visit",
+    "min": 0,
+    "max": 9999
+  },
+  "pv_prescription_months": {
+    "label": "Prescription duration (months)",
+    "type": "integer",
+    "form": "prep_visit",
+    "min": 1,
+    "max": 24
+  },
+  "pv_next_collection_date": {
+    "label": "Next medication collection date",
+    "type": "date_dmy",
+    "form": "prep_visit"
+  },
+  "pv_no_medication_reason": {
+    "label": "Reason no PrEP medication was prescribed",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_physician": {
+    "label": "Physician name",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_physician_comments": {
+    "label": "Physician comments",
+    "type": "notes",
+    "form": "prep_visit"
+  },
+  "pv_blood_test_date": {
+    "label": "Blood-test review date",
+    "type": "date_dmy",
+    "form": "prep_visit"
+  },
+  "pv_doctor_review_date": {
+    "label": "Doctor review date",
+    "type": "date_dmy",
+    "form": "prep_visit"
+  },
+  "pv_syphilis_referral": {
+    "label": "Syphilis referral",
+    "type": "radio",
+    "form": "prep_visit",
+    "choices": [
+      "0",
+      "1",
+      "2"
+    ]
+  },
+  "pv_hcv_referral": {
+    "label": "Hepatitis C referral",
+    "type": "yesno",
+    "form": "prep_visit",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_hbv_vaccination_status": {
+    "label": "Hepatitis B vaccination status",
+    "type": "radio",
+    "form": "prep_visit",
+    "choices": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "pv_other_referral": {
+    "label": "Other referral",
+    "type": "text",
+    "form": "prep_visit"
+  },
+  "pv_status_at_visit": {
+    "label": "PrEP programme status at this visit",
+    "type": "radio",
+    "form": "prep_visit",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ]
+  },
+  "pv_profile_updated": {
+    "label": "PrEP Treatment Profile updated this visit?",
+    "type": "yesno",
+    "form": "prep_visit",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "cne_comorbidities": {
+    "label": "Known comorbidities (select all that apply)",
+    "type": "checkbox",
+    "form": "clinic_enrollment",
+    "choices": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "99"
+    ]
+  },
+  "cne_comorbidity_other": {
+    "label": "Other comorbidity — specify",
+    "type": "text",
+    "form": "clinic_enrollment"
+  },
+  "htp_art_regimen_other": {
+    "label": "Other ART regimen — specify",
+    "type": "text",
+    "form": "hiv_treatment_profile"
+  },
+  "htm_is_baseline": {
+    "label": "This is  a Baseline (on-arrival) result?",
+    "type": "yesno",
+    "form": "hiv_clinical_monitoring",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "cnv_reason": {
+    "label": "Reason for visit",
+    "type": "checkbox",
+    "form": "clinic_visit",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "99"
+    ],
+    "required": true
+  },
+  "cnv_art_prescription_months": {
+    "label": "Prescription duration (months)",
+    "type": "integer",
+    "form": "clinic_visit",
+    "min": 0,
+    "max": 24
+  },
+  "cnv_next_blood_test": {
+    "label": "Next blood test date",
+    "type": "date_dmy",
+    "form": "clinic_visit"
+  },
+  "cnv_next_doctor_review": {
+    "label": "Next doctor review date",
+    "type": "date_dmy",
+    "form": "clinic_visit"
+  },
+  "cnv_next_med_collection": {
+    "label": "Next medication collection date",
+    "type": "date_dmy",
+    "form": "clinic_visit"
+  },
+  "htp_effective_date": {
+    "label": "Profile effective date",
+    "type": "date_dmy",
+    "form": "hiv_treatment_profile"
+  },
+  "htp_care_status": {
+    "label": "Current ARV care status",
+    "type": "dropdown",
+    "form": "hiv_treatment_profile",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "99"
+    ]
+  },
+  "htp_care_facility": {
+    "label": "Current care facility or location",
+    "type": "text",
+    "form": "hiv_treatment_profile"
+  },
+  "htp_care_status_other": {
+    "label": "Other care status — specify",
+    "type": "text",
+    "form": "hiv_treatment_profile"
+  },
+  "htp_change_reason": {
+    "label": "Reason for profile change",
+    "type": "notes",
+    "form": "hiv_treatment_profile"
+  },
+  "htp_started_abroad": {
+    "label": "Started ART abroad?",
+    "type": "yesno",
+    "form": "hiv_treatment_profile",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "htp_art_regimen": {
+    "label": "Current ART regimen",
+    "type": "checkbox",
+    "form": "hiv_treatment_profile",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12"
+    ]
+  },
+  "htp_additional_medications": {
+    "label": "Other HIV-related or prophylactic medicines",
+    "type": "notes",
+    "form": "hiv_treatment_profile"
+  },
+  "cnv_syphilis_referral": {
+    "label": "Referred for syphilis care?",
+    "type": "yesno",
+    "form": "clinic_visit",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "cnv_hcv_vl_date": {
+    "label": "HCV viral load date",
+    "type": "date_dmy",
+    "form": "clinic_visit"
+  },
+  "cnv_hcv_vl_result": {
+    "label": "HCV viral load result",
+    "type": "text",
+    "form": "clinic_visit"
+  },
+  "cnv_hbv_vaccination_status": {
+    "label": "Hepatitis B vaccination status",
+    "type": "radio",
+    "form": "clinic_visit",
+    "choices": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "cnv_medication_supplied": {
+    "label": "Medicines supplied",
+    "type": "checkbox",
+    "form": "clinic_visit",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "99"
+    ]
+  },
+  "cnv_other_med_supplied": {
+    "label": "Other medicine — specify",
+    "type": "text",
+    "form": "clinic_visit"
+  },
+  "cnv_no_medication_reason": {
+    "label": "Reason medication was not supplied",
+    "type": "text",
+    "form": "clinic_visit"
   }
 }

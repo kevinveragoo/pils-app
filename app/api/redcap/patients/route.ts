@@ -9,8 +9,11 @@ type RedcapRow = {
   ce_first_name?: string;
   ce_middle_name_1?: string;
   ce_middle_name_2?: string;
+  ce_middle_name_3?: string;
   ce_last_name?: string;
   ce_alias?: string;
+  ce_tel_primary?: string;
+  ce_patient_code?: string;
   ce_kp_type___1?: string;
   ce_kp_type___2?: string;
   ce_kp_type___3?: string;
@@ -52,6 +55,9 @@ export async function GET() {
       "fields[4]": "ce_alias",
       "fields[5]": "ce_kp_type",
       "fields[6]": "ce_middle_name_2",
+      "fields[7]": "ce_tel_primary",
+      "fields[8]": "ce_middle_name_3",
+      "fields[9]": "ce_patient_code",
     });
 
     const response = await fetch(REDCAP_API_URL, {
@@ -89,14 +95,16 @@ export async function GET() {
           record_id: recordId,
           uic: recordId,
           first_name: String(row.ce_first_name ?? "").trim(),
-          middle_name: [row.ce_middle_name_1, row.ce_middle_name_2].map(part => String(part ?? "").trim()).filter(Boolean).join(" "),
+          middle_name: [row.ce_middle_name_1, row.ce_middle_name_2, row.ce_middle_name_3].map(part => String(part ?? "").trim()).filter(Boolean).join(" "),
           last_name: String(row.ce_last_name ?? "").trim(),
           alias: String(row.ce_alias ?? "").trim(),
+          phone: String(row.ce_tel_primary ?? "").trim(),
+          patient_code: String(row.ce_patient_code ?? "").trim(),
           kp_types: [1, 2, 3, 4, 5, 6, 7, 8]
             .filter((code) => row[`ce_kp_type___${code}` as keyof RedcapRow] === "1")
             .map(String),
           display_name:
-            [row.ce_first_name, row.ce_middle_name_1, row.ce_middle_name_2, row.ce_last_name]
+            [row.ce_first_name, row.ce_middle_name_1, row.ce_middle_name_2, row.ce_middle_name_3, row.ce_last_name]
               .map((part) => String(part ?? "").trim())
               .filter(Boolean)
               .join(" ")

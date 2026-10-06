@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## REDCap configuration
 
-The app uses `REDCAP_API_URL` and `REDCAP_API_TOKEN` from `.env.local` for the cleaned-up project. Field names were checked against its API metadata on 27 September 2026 using `New-old_fields.csv` (new names in row 1, old names in row 2).
+The app uses `REDCAP_API_URL` and `REDCAP_API_TOKEN` from `.env.local` for the cleaned-up project. Field names were last checked against its API metadata on 6 October 2026. PrEP data is split between the non-repeating `prep_treatment_profile` instrument (`ptp_` fields) and the repeating `prep_visit` instrument (`pv_` fields).
 
 `lib/redcap-field-rules.json` holds the current validation rules. `scripts/fixtures/redcap-schema.json` holds the API schema used by the mocked submission tests. Refresh these snapshots when the REDCap schema changes.
 

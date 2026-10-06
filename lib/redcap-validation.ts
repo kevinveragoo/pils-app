@@ -1,7 +1,7 @@
 import definitions from "./redcap-field-rules.json";
 
 type Rule = { label: string; type: string; required?: boolean; min?: number; max?: number; choices?: string[] };
-// Snapshot of the configured project's metadata, audited 2026-09-27.
+// Snapshot of the configured project's metadata, audited 2026-10-04.
 const rules: Record<string, Rule> = definitions;
 
 export function isRequiredField(key: string) {

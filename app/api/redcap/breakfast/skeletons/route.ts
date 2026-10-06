@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { isAuthenticatedRequest } from '@/lib/auth';
+import { getCurrentUser, hasAnyRole } from '@/lib/auth';
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
@@ -30,7 +30,9 @@ async function redcap(params: Record<string, string>) {
 }
 
 export async function POST(request: Request) {
-  if (!await isAuthenticatedRequest()) return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+  if (!hasAnyRole(user, ['FACILITY_STAFF', 'ADMIN'])) return NextResponse.json({ error: 'Facility Staff access required.' }, { status: 403 });
   let body: unknown;
   try { body = await request.json(); } catch { return NextResponse.json({ error: 'The request body must be valid JSON.' }, { status: 400 }); }
   const values = body && typeof body === 'object' && 'clients' in body ? (body as { clients?: unknown }).clients : null;

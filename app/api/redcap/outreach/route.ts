@@ -1,6 +1,8 @@
 import { validateFields } from "@/lib/redcap-validation";
+import { generateUic } from "@/lib/uic";
 import { NextResponse } from "next/server";
-import { isAuthenticatedRequest } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
+import { recordRedcapActivity } from "@/lib/redcap-activity";
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
@@ -8,8 +10,8 @@ const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
 type Values = Record<string, string>;
 type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; outreach?: unknown; partners?: unknown; children?: unknown };
 
-const enrollmentFields = ["ce_active", "ce_date","ce_implementing_partner","ce_district","ce_hotspot","ce_outreach_worker","ce_last_name","ce_first_name","ce_middle_name_1", "ce_middle_name_2","ce_alias","ce_dob","ce_gender_identity","ce_vision","ce_kp_type","ce_tel_primary","ce_contact_method","ce_risk_drug_alcohol_sex","ce_risk_violence_1m","ce_sw_age_started","ce_sw_sex_acts_1w","ce_sw_condom_use_1w","ce_msm_age_first_anal","ce_msm_receptive_anal_1w","ce_msm_condom_anal_1w","ce_pwid_age_first_inject","ce_pwid_injections_24h","ce_pwid_shared_24h","ce_pwid_injections_1w","ce_pwid_shared_1w"];
-const outreachFields = ["oc_worker_1","oc_worker_2","oc_worker_3","oc_date","oc_type","oc_hotspot","oc_is_new_client","oc_sex_acts_1w","oc_condom_use","oc_drug_alcohol","oc_shared_inject_equip","oc_violence_report","oc_violence_address","oc_male_condoms","oc_female_condoms","oc_lubricant","oc_hiv_self_test","oc_syringes","oc_num_needles","oc_hiv_status_prev","oc_hiv_rapid_result","oc_hiv_comms","oc_hepc_status_prev","oc_hepc_result","oc_hepc_comms","oc_hepb_status_prev","oc_hepb_result","oc_hepb_comms","oc_syp_status_prev","oc_syp_result","oc_syp_comms","oc_prep_interested","oc_referrals","oc_referral_other","oc_followup_needed","oc_followup_date","oc_notes"];
+const enrollmentFields = ["ce_active", "ce_date","ce_implementing_partner","ce_district","ce_hotspot","ce_outreach_worker","ce_last_name","ce_first_name","ce_middle_name_1", "ce_middle_name_2", "ce_middle_name_3","ce_alias","ce_dob","ce_gender_identity","ce_vision","ce_kp_type","ce_tel_primary","ce_contact_method","ce_risk_drug_alcohol_sex","ce_risk_violence_1m","ce_sw_age_started","ce_sw_sex_acts_1w","ce_sw_condom_use_1w","ce_msm_age_first_anal","ce_msm_receptive_anal_1w","ce_msm_condom_anal_1w","ce_pwid_age_first_inject","ce_pwid_injections_24h","ce_pwid_shared_24h","ce_pwid_injections_1w","ce_pwid_shared_1w"];
+const outreachFields = ["oc_worker_1","oc_worker_2","oc_worker_3","oc_date","oc_type","oc_hotspot","oc_district","oc_is_new_client","oc_sex_acts_1w","oc_condom_use","oc_drug_alcohol","oc_shared_inject_equip","oc_violence_report","oc_violence_address","oc_male_condoms","oc_female_condoms","oc_lubricant","oc_hiv_self_test","oc_syringes","oc_num_needles","oc_hiv_status_prev","oc_hiv_rapid_result","oc_hiv_comms","oc_hepc_status_prev","oc_hepc_result","oc_hepc_comms","oc_hepb_status_prev","oc_hepb_result","oc_hepb_comms","oc_syp_status_prev","oc_syp_result","oc_syp_comms","oc_prep_com","oc_prep_interested","oc_referrals","oc_referral_other","oc_followup_needed","oc_followup_date","oc_notes"];
 const partnerFields = ["itp_name","itp_nickname","itp_dob","itp_age","itp_gender","itp_description","itp_lives_with","itp_address","itp_work_address","itp_work_hours","itp_phone","itp_phone_alt","itp_relationship","itp_violence","itp_threats","itp_forced_sex","itp_notif_method","itp_notif_date","itp_1st_cont_date","itp_1st_cont_method","itp_2nd_cont_date","itp_2nd_cont_method","itp_3rd_cont_date","itp_3rd_cont_method","itp_contact_success","itp_contact_by_who","itp_contact_result","itp_contact_result_other","itp_hiv_result","itp_contact_art","itp_enrolled","itp_new_uic","itp_notes"];
 const childFields = ["itch_name","itch_dob","itch_age","itch_gender","itch_address","itch_lives_with","itch_violence","itch_threats","itch_force_sex","itch_notif_method","itch_notif_date_limit","itch_contact_method","itch_hiv_result","itch_art","itch_enrolled","itch_new_uic","itch_notes"];
 
@@ -20,19 +22,6 @@ function values(value: unknown): Values | null {
   return Object.fromEntries(entries) as Values;
 }
 
-function cleanLetters(value: string) {
-  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/gi, "").toUpperCase();
-}
-
-function buildUic(v: Values) {
-  const prefix = ({ "1": "M", "2": "F", "3": "T", "4": "T", "5": "O", "9": "R" } as Record<string, string>)[v.ce_gender_identity] ?? "";
-  const dob = v.ce_dob?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  const first = cleanLetters(v.ce_first_name ?? "").slice(0, 1);
-  const middle = [v.ce_middle_name_1, v.ce_middle_name_2].filter(Boolean).join(" ").trim().split(/\s+/).filter(Boolean).map((name) => cleanLetters(name).slice(0, 1)).join("");
-  const surname = cleanLetters(v.ce_last_name ?? "");
-  if (!prefix || !dob || !first || !surname) return "";
-  return `${prefix}${dob[3]}${dob[2]}${dob[1]}${first}${middle}_${surname[0]}${surname.at(-1)}`;
-}
 
 function copyAllowed(source: Values, allowed: string[]) {
   const row: Values = {};
@@ -59,7 +48,7 @@ async function redcap(params: Record<string, string>) {
 }
 
 export async function GET(request: Request) {
-  if (!await isAuthenticatedRequest()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  if (!await getCurrentUser()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   const uic = new URL(request.url).searchParams.get("uic")?.trim().toUpperCase() ?? "";
   if (!uic) return NextResponse.json({ error: "A UIC is required." }, { status: 400 });
   try {
@@ -73,7 +62,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (!await isAuthenticatedRequest()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   let input: Submission;
   try { input = await request.json() as Submission; } catch { return NextResponse.json({ error: "The request body must be valid JSON." }, { status: 400 }); }
   const mode = input.mode;
@@ -82,7 +72,7 @@ export async function POST(request: Request) {
   const partners = Array.isArray(input.partners) ? input.partners.map(values) : [];
   const children = Array.isArray(input.children) ? input.children.map(values) : [];
   if ((mode !== "new" && mode !== "existing") || !outreach || partners.some((x) => !x) || children.some((x) => !x)) return NextResponse.json({ error: "Invalid outreach submission." }, { status: 400 });
-  if (!outreach.oc_worker_1 || !outreach.oc_date || !outreach.oc_type) return NextResponse.json({ error: "Outreach worker, contact date, and contact setting are required." }, { status: 400 });
+  if (!outreach.oc_worker_1 || !outreach.oc_date || !outreach.oc_type || !outreach.oc_district) return NextResponse.json({ error: "Outreach worker, contact date, activity type, and district are required." }, { status: 400 });
   if (outreach.oc_hiv_rapid_result !== "1" && (partners.length || children.length)) return NextResponse.json({ error: "Partner referrals require a reactive HIV rapid test result." }, { status: 400 });
   for (const partner of partners as Values[]) if (!["itp_name","itp_gender","itp_violence","itp_threats","itp_forced_sex","itp_notif_method"].every((key) => partner[key])) return NextResponse.json({ error: "Complete all required partner referral fields." }, { status: 400 });
   for (const child of children as Values[]) if (!["itch_violence","itch_threats","itch_force_sex","itch_notif_method"].every((key) => child[key])) return NextResponse.json({ error: "Complete all required child referral fields." }, { status: 400 });
@@ -90,7 +80,7 @@ export async function POST(request: Request) {
   const recordId = typeof input.recordId === "string" ? input.recordId.trim() : "";
   if (mode === "new") {
     if (!enrollment || !["ce_date","ce_district","ce_hotspot","ce_outreach_worker","ce_last_name","ce_first_name","ce_dob","ce_gender_identity","ce_kp_type"].every((key) => enrollment[key])) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
-    const generated = buildUic(enrollment);
+    const generated = generateUic(enrollment);
     if (!generated || recordId !== generated) return NextResponse.json({ error: "The generated UIC does not match the enrollment details." }, { status: 400 });
   }
   if (!recordId) return NextResponse.json({ error: "A client record is required." }, { status: 400 });
@@ -117,7 +107,8 @@ export async function POST(request: Request) {
     (partners as Values[]).forEach((partner, index) => records.push({ uic_ori: recordId, redcap_repeat_instrument: "partner_referral_partner", redcap_repeat_instance: next("partner_referral_partner", index), ...copyAllowed(partner, partnerFields) }));
     (children as Values[]).forEach((child, index) => records.push({ uic_ori: recordId, redcap_repeat_instrument: "partner_referral_child", redcap_repeat_instance: next("partner_referral_child", index), ...copyAllowed(child, childFields) }));
     const result = await redcap({ content: "record", action: "import", format: "json", type: "flat", overwriteBehavior: "normal", forceAutoNumber: "false", dateFormat: "YMD", data: JSON.stringify(records), returnContent: "count", returnFormat: "json" });
-    return NextResponse.json({ success: true, recordId, savedRows: records.length, result });
+    const activityLogged = await recordRedcapActivity({ user, workflow: "outreach", recordId, staffName: outreach.oc_worker_1, serviceDate: outreach.oc_date, instrumentInstances: records.filter(row => row.redcap_repeat_instrument).map(row => ({ instrument: row.redcap_repeat_instrument, instance: Number(row.redcap_repeat_instance) })), submittedData: records });
+    return NextResponse.json({ success: true, recordId, savedRows: records.length, activityLogged, result });
   } catch (error) {
     console.error("REDCap outreach import error:", error);
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to save outreach contact to REDCap." }, { status: 502 });

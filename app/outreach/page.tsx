@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import AppHeader from "@/components/AppHeader";
 import OutreachWorkflow from "@/components/OutreachWorkflow";
-import { requireUser } from "@/lib/auth";
+import { requireAnyRole } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Outreach Contact | PILS",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function OutreachPage() {
-  await requireUser();
+  await requireAnyRole(["OUTREACH_WORKER", "HEALTHCARE_ASSISTANT", "ADMIN"]);
   return (
     <div className="flex flex-1 flex-col">
       <a className="pils-skip-link" href="#outreach">Skip to outreach form</a>

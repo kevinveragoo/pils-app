@@ -23,6 +23,7 @@ if (!existing) {
       organization: "PILS",
       passwordHash: await hashPassword("admin"),
       role: "ADMIN",
+      roles: JSON.stringify(["ADMIN"]),
       requestedRole: "ADMIN",
       status: "APPROVED",
       mustChangePassword: true,

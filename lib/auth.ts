@@ -53,7 +53,39 @@ export async function requireUser(options?: { allowPasswordChange?: boolean }) {
 
 export async function requireAdmin() {
   const user = await requireUser();
-  if (user.role !== "ADMIN") redirect("/outreach");
+  if (!hasRole(user, "ADMIN")) redirect("/outreach");
+  return user;
+}
+
+export async function requireLogsAccess() {
+  return requireUser();
+}
+
+export function userRoles(user: { role: string; roles?: string | null }) {
+  let saved: unknown = [];
+  try { saved = JSON.parse(user.roles || "[]"); } catch { /* Fall back to the legacy role. */ }
+  return [...new Set([...(Array.isArray(saved) ? saved.filter((role): role is string => typeof role === "string") : []), user.role].filter(Boolean))];
+}
+
+export function hasRole(user: { role: string; roles?: string | null }, role: string) {
+  return userRoles(user).includes(role);
+}
+
+export function hasAnyRole(user: { role: string; roles?: string | null }, allowed: string[]) {
+  const assigned = new Set(userRoles(user));
+  return allowed.some(role => assigned.has(role));
+}
+
+export function defaultRouteForUser(user: { role: string; roles?: string | null }) {
+  if (hasAnyRole(user, ["OUTREACH_WORKER", "HEALTHCARE_ASSISTANT", "ADMIN"])) return "/outreach";
+  if (hasRole(user, "HEALTHCARE_NAVIGATOR")) return "/healthcare-nav";
+  if (hasRole(user, "FACILITY_STAFF")) return "/breakfast";
+  return "/change-password";
+}
+
+export async function requireAnyRole(allowed: string[]) {
+  const user = await requireUser();
+  if (!hasAnyRole(user, allowed)) redirect(defaultRouteForUser(user));
   return user;
 }
 

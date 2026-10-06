@@ -2,12 +2,12 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createSession, deleteCurrentSession, requireAdmin, requireUser } from "@/lib/auth";
+import { createSession, defaultRouteForUser, deleteCurrentSession, requireAdmin, requireUser } from "@/lib/auth";
 import { AdminActionState, AuthActionState, ORGANIZATIONS, Organization, USER_ROLES, UserRole } from "@/lib/auth-types";
 import { db } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/password";
 
-const registrationRoles = new Set<UserRole>(["OUTREACH_WORKER", "HEALTHCARE_NAVIGATOR", "PROGRAMME_STAFF"]);
+const registrationRoles = new Set<UserRole>(["OUTREACH_WORKER", "HEALTHCARE_ASSISTANT", "HEALTHCARE_NAVIGATOR", "FACILITY_STAFF"]);
 const allRoles = new Set<UserRole>(Object.keys(USER_ROLES) as UserRole[]);
 const organizations = new Set<Organization>(Object.keys(ORGANIZATIONS) as Organization[]);
 const dummyHash = `scrypt$${"0".repeat(32)}$${"0".repeat(128)}`;
@@ -33,7 +33,7 @@ export async function loginAction(_state: AuthActionState, formData: FormData): 
 
   await createSession(user.id);
   await db.auditLog.create({ data: { actorId: user.id, event: "LOGIN", targetUserId: user.id } });
-  redirect(user.mustChangePassword ? "/change-password" : "/outreach");
+  redirect(user.mustChangePassword ? "/change-password" : defaultRouteForUser(user));
 }
 
 export async function registerAction(_state: AuthActionState, formData: FormData): Promise<AuthActionState> {
@@ -54,7 +54,7 @@ export async function registerAction(_state: AuthActionState, formData: FormData
 
   try {
     const user = await db.user.create({
-      data: { name, username, organization, passwordHash: await hashPassword(password), role: requestedRole, requestedRole, status: "PENDING" },
+      data: { name, username, organization, passwordHash: await hashPassword(password), role: requestedRole, roles: JSON.stringify([requestedRole]), requestedRole, status: "PENDING" },
     });
     await db.auditLog.create({ data: { event: "REGISTRATION_REQUESTED", targetUserId: user.id } });
   } catch (error) {
@@ -81,7 +81,7 @@ export async function changePasswordAction(_state: AuthActionState, formData: Fo
   ]);
   await deleteCurrentSession();
   await createSession(user.id);
-  redirect("/outreach");
+  redirect(defaultRouteForUser(user));
 }
 
 export async function logoutAction() {
@@ -99,7 +99,7 @@ export async function approveUserAction(formData: FormData) {
   const target = await db.user.findUnique({ where: { id: userId } });
   if (!target || target.status !== "PENDING") return;
   await db.$transaction([
-    db.user.update({ where: { id: userId }, data: { role, status: "APPROVED", approvedAt: new Date(), approvedById: admin.id } }),
+    db.user.update({ where: { id: userId }, data: { role, roles: JSON.stringify([role]), status: "APPROVED", approvedAt: new Date(), approvedById: admin.id } }),
     db.auditLog.create({ data: { actorId: admin.id, event: "USER_APPROVED", targetUserId: userId, details: JSON.stringify({ role }) } }),
   ]);
   revalidatePath("/admin/users");
@@ -124,20 +124,21 @@ export async function updateUserAction(_state: AdminActionState, formData: FormD
   const name = value(formData, "name");
   const username = value(formData, "username").toLowerCase();
   const organization = value(formData, "organization") as Organization;
-  const role = value(formData, "role") as UserRole;
+  const roles = [...new Set(formData.getAll("roles").map(item => String(item).trim() as UserRole).filter(role => allRoles.has(role)))];
   const status = value(formData, "status");
   if (!userId || name.length < 2) return { error: "Enter the user’s full name." };
   if (!/^[a-z0-9._-]{3,40}$/.test(username)) return { error: "Username must be 3–40 characters using letters, numbers, dots, hyphens, or underscores." };
-  if (!organizations.has(organization) || !allRoles.has(role)) return { error: "Select valid organisation and role values." };
+  if (!organizations.has(organization) || roles.length === 0) return { error: "Select a valid organisation and at least one role." };
   if (!new Set(["PENDING", "APPROVED", "REJECTED", "SUSPENDED"]).has(status)) return { error: "Select a valid account status." };
   const target = await db.user.findUnique({ where: { id: userId } });
   if (!target) return { error: "User not found." };
-  if (target.id === admin.id && (role !== "ADMIN" || status !== "APPROVED")) return { error: "You cannot remove your own administrator access or suspend your own account." };
+  if (target.id === admin.id && (!roles.includes("ADMIN") || status !== "APPROVED")) return { error: "You cannot remove your own administrator access or suspend your own account." };
+  const role = roles[0];
   try {
     await db.$transaction([
-      db.user.update({ where: { id: userId }, data: { name, username, organization, role, status, ...(status === "APPROVED" ? { approvedAt: target.approvedAt ?? new Date(), approvedById: target.approvedById ?? admin.id } : {}) } }),
+      db.user.update({ where: { id: userId }, data: { name, username, organization, role, roles: JSON.stringify(roles), status, ...(status === "APPROVED" ? { approvedAt: target.approvedAt ?? new Date(), approvedById: target.approvedById ?? admin.id } : {}) } }),
       ...(status === "APPROVED" ? [] : [db.session.deleteMany({ where: { userId } })]),
-      db.auditLog.create({ data: { actorId: admin.id, event: "USER_UPDATED", targetUserId: userId, details: JSON.stringify({ name, username, organization, role, status }) } }),
+      db.auditLog.create({ data: { actorId: admin.id, event: "USER_UPDATED", targetUserId: userId, details: JSON.stringify({ name, username, organization, roles, status }) } }),
     ]);
   } catch (error) {
     if (error && typeof error === "object" && "code" in error && error.code === "P2002") return { error: "That username is already in use." };

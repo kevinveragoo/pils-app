@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import { resetUserPasswordAction, updateUserAction } from "@/app/auth-actions";
 import { ORGANIZATIONS, USER_ROLES } from "@/lib/auth-types";
 
-type UserDetails = { id: string; name: string; username: string; organization: string; role: string; status: string };
+type UserDetails = { id: string; name: string; username: string; organization: string; roles: string[]; status: string };
 
 function Submit({ children }: { children: React.ReactNode }) {
   const { pending } = useFormStatus();
@@ -21,7 +21,7 @@ function Result({ state }: { state: { error?: string; success?: string } }) {
 export function UserDetailsForm({ user, currentAdminId }: { user: UserDetails; currentAdminId: string }) {
   const [state, action] = useActionState(updateUserAction, {});
   const ownAccount = user.id === currentAdminId;
-  return <form action={action} className="auth-form"><input type="hidden" name="userId" value={user.id} /><Result state={state} /><div className="grid gap-4 sm:grid-cols-2"><label>Full name<input name="name" required defaultValue={user.name} /></label><label>Username<input name="username" required defaultValue={user.username} /></label><label>Organisation<select name="organization" defaultValue={user.organization}>{Object.entries(ORGANIZATIONS).map(([code, label]) => <option key={code} value={code}>{label}</option>)}</select></label><label>Role<select name="role" defaultValue={user.role} disabled={ownAccount}>{Object.entries(USER_ROLES).map(([code, label]) => <option key={code} value={code}>{label}</option>)}</select>{ownAccount && <input type="hidden" name="role" value="ADMIN" />}</label><label>Account status<select name="status" defaultValue={user.status} disabled={ownAccount}><option value="PENDING">Pending approval</option><option value="APPROVED">Active</option><option value="REJECTED">Rejected</option><option value="SUSPENDED">Suspended</option></select>{ownAccount && <input type="hidden" name="status" value="APPROVED" />}</label></div><Submit>Save user details</Submit></form>;
+  return <form action={action} className="auth-form"><input type="hidden" name="userId" value={user.id} /><Result state={state} /><div className="grid gap-4 sm:grid-cols-2"><label>Full name<input name="name" required defaultValue={user.name} /></label><label>Username<input name="username" required defaultValue={user.username} /></label><label>Organisation<select name="organization" defaultValue={user.organization}>{Object.entries(ORGANIZATIONS).map(([code, label]) => <option key={code} value={code}>{label}</option>)}</select></label><fieldset className="role-fieldset"><legend>Roles</legend><div className="role-options">{Object.entries(USER_ROLES).map(([code, label]) => { const locked = ownAccount && code === "ADMIN"; return <label key={code} className="role-option"><input type="checkbox" name="roles" value={code} defaultChecked={user.roles.includes(code)} disabled={locked} />{label}{locked && <input type="hidden" name="roles" value="ADMIN" />}</label>; })}</div></fieldset><label>Account status<select name="status" defaultValue={user.status} disabled={ownAccount}><option value="PENDING">Pending approval</option><option value="APPROVED">Active</option><option value="REJECTED">Rejected</option><option value="SUSPENDED">Suspended</option></select>{ownAccount && <input type="hidden" name="status" value="APPROVED" />}</label></div><Submit>Save user details</Submit></form>;
 }
 
 export function AdminPasswordResetForm({ userId, ownAccount }: { userId: string; ownAccount: boolean }) {

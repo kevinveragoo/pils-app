@@ -1,9 +1,9 @@
 import BreakfastAttendance from "@/components/BreakfastAttendance";
 import AppHeader from "@/components/AppHeader";
-import { requireUser } from "@/lib/auth";
+import { requireAnyRole } from "@/lib/auth";
 
 export default async function BreakfastPage() {
-  await requireUser();
+  await requireAnyRole(["FACILITY_STAFF", "ADMIN"]);
   return (
     <div className="flex flex-1 flex-col">
       <a className="pils-skip-link" href="#attendance">Skip to attendance</a>

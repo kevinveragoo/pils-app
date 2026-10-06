@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 import ts from 'typescript';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-// Independent schema snapshot exported from the cleaned project on 2026-09-27.
+// Independent schema snapshot exported from the cleaned project on 2026-10-04.
 const schema = JSON.parse(fs.readFileSync(path.join(root, 'scripts/fixtures/redcap-schema.json'), 'utf8'));
 const forms = new Set(Object.values(schema).map(field => field.form));
 function checkField(name) {
@@ -50,7 +50,9 @@ function load(relative) {
     },
     require: (name) => {
       if (name === 'next/server') return { NextResponse: Response };
-      if (name === '@/lib/auth') return { isAuthenticatedRequest: async () => true };
+      if (name === '@/lib/auth') return { isAuthenticatedRequest: async () => true, getCurrentUser: async () => ({ id: 'test-user', name: 'Test User', username: 'tester', role: 'ADMIN', roles: '["ADMIN"]' }), hasRole: () => true, hasAnyRole: () => true };
+      if (name === '@/lib/redcap-activity') return { recordRedcapActivity: async () => true };
+      if (name === '@/lib/clinic-queue') return { completeQueueEntry: async () => false };
       if (name.startsWith('@/')) return load(`${name.slice(2)}.ts`);
       if (name.endsWith('.json')) return JSON.parse(fs.readFileSync(path.resolve(path.dirname(filename), name), 'utf8'));
       throw Error(`Unexpected dependency: ${name}`);
@@ -73,8 +75,8 @@ assert.equal(validDate('2025-02-29'), false);
 assert.equal(validDate('2026-04-31'), false);
 assert.equal(completedAge('2000-10-01', new Date('2026-09-23')), 25);
 assert.equal(completedAge('2000-09-23', new Date('2026-09-23')), 26);
-for (const [key, value] of [['ce_sw_age_started', '121'], ['oc_male_condoms', '-1'], ['ce_pwid_shared_24h', '1.5'], ['htm_cd4_level', '10000'], ['htm_vl_level', '1000000000'], ['ce_num_children', '16'], ['ce_emergency_tel', 'abc'], ['oc_date', '31/02/2026'], ['hcs_care_type', '11'], ['itp_phone', 'abc']]) assert.ok(validateFields({ [key]: value }), `${key} rejects ${value}`);
-assert.equal(validateFields({ hcs_care_type: '1,9', htm_cd4_level: '0', htm_vl_level: '999999999', itp_notif_date: 'Within seven days', itp_phone: '123-456-7890' }), null);
+for (const [key, value] of [['ce_sw_age_started', '121'], ['oc_male_condoms', '-1'], ['ce_pwid_shared_24h', '1.5'], ['htm_cd4_level', '10000'], ['htm_vl_level', '1000000000'], ['ce_num_children', '16'], ['ce_emergency_tel', 'abc'], ['oc_date', '31/02/2026'], ['hcs_care_type', '14'], ['itp_phone', 'abc']]) assert.ok(validateFields({ [key]: value }), `${key} rejects ${value}`);
+assert.equal(validateFields({ hcs_care_type: '1,9,11,12,13', htm_cd4_level: '0', htm_vl_level: '999999999', itp_notif_date: 'Within seven days', itp_phone: '123-456-7890' }), null);
 assert.ok(validateFields({ ce_active: '' }));
 assert.equal(validateFields({ itch_name: '', itch_gender: '' }), null);
 async function post(route, body) {
@@ -84,14 +86,18 @@ async function post(route, body) {
 function imported() { return JSON.parse(requests.find(body => body.get('action') === 'import').get('data')); }
 (async () => {
   const enrollment = { ce_date: '2026-09-23', ce_district: '1', ce_hotspot: '1', ce_active: '1', ce_outreach_worker: 'Tester', ce_first_name: 'Test', ce_last_name: 'Example', ce_dob: '2000-01-01', ce_gender_identity: '1', ce_vision: '2', ce_kp_type: '3,8', ce_pwid_injections_24h: '4', ce_pwid_shared_24h: '2' };
-  const outreach = { oc_worker_1: 'Tester', oc_date: '2026-09-23', oc_type: '13', oc_is_new_client: '1' };
+  const outreach = { oc_worker_1: 'Tester', oc_date: '2026-09-23', oc_type: '13', oc_district: '1', oc_prep_com: '1', oc_is_new_client: '1' };
   const submission = { mode: 'new', recordId: 'M01012000T_EE', enrollment, outreach, partners: [], children: [] };
   existing = [];
   assert.equal((await post('outreach', submission)).status, 200);
   const rows = imported();
   for (const key of ['ce_pwid_injections_24h', 'ce_pwid_shared_24h', 'ce_active']) assert.equal(rows[0][key], enrollment[key]);
   assert.equal(rows[1].oc_type, '13');
+  assert.equal(rows[1].oc_district, '1');
+  assert.equal(rows[1].oc_prep_com, '1');
   assert.equal(rows[1].sortie_type, undefined);
+  assert.equal((await post('outreach', { ...submission, outreach: { ...outreach, oc_district: '' } })).status, 400);
+  assert.equal(requests.length, 0);
   assert.equal((await post('outreach', { ...submission, enrollment: { ...enrollment, ce_district: '99' } })).status, 400);
   assert.equal(requests.length, 0);
   const twoMiddleNames = { ...enrollment, ce_middle_name_1: 'Alpha', ce_middle_name_2: 'Beta' };
@@ -100,6 +106,9 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[0].ce_middle_name_2, 'Beta');
   assert.equal(imported()[0].ce_vision, '2');
   assert.equal(imported()[0].ce_kp_type___8, '1');
+  const threeMiddleNames = { ...enrollment, ce_middle_name_1: 'Alpha', ce_middle_name_2: 'Beta', ce_middle_name_3: 'Charlie' };
+  assert.equal((await post('outreach', { ...submission, recordId: 'M01012000TABC_EE', enrollment: threeMiddleNames })).status, 200);
+  assert.equal(imported()[0].ce_middle_name_3, 'Charlie');
   assert.equal((await post('outreach', { ...submission, outreach: { ...outreach, oc_male_condoms: '100000' } })).status, 400);
   assert.equal(requests.length, 0);
   assert.equal((await post('outreach', { ...submission, outreach: { ...outreach, oc_hiv_rapid_result: '1' }, children: [{ itch_violence: '0', itch_threats: '0', itch_force_sex: '0', itch_notif_method: '1', itch_notif_date_limit: 'Within 30 days' }] })).status, 200);
@@ -109,11 +118,13 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[1].oc_referrals___12, '1');
   assert.equal(imported()[2].itp_name, 'Example Partner');
   existing = [{ uic_ori: 'TEST' }];
-  const care = { hcs_navigator_1: 'Tester', hcs_date: '2026-09-23', hcs_currently_art: '0', hcs_art_status: '1', hcs_care_type: '9,10', hcs_followup_needed: '1', hcs_followup_date: '' };
+  const care = { hcs_navigator_1: 'Tester', hcs_date: '2026-09-23', hcs_currently_art: '0', hcs_art_status: '1', hcs_care_type: '9,10,11,12', hcs_followup_needed: '1', hcs_followup_date: '' };
   const healthcare = { mode: 'existing', recordId: 'TEST', care, monitoring: { htm_date: '2026-09-23', htm_viral_load_detectable: '2' }, newVl: true, newCd4: false, includeMonitoring: true };
   assert.equal((await post('healthcare-nav', healthcare)).status, 200);
   assert.equal(imported()[0].hcs_care_type___9, '1');
   assert.equal(imported()[0].hcs_care_type___10, '1');
+  assert.equal(imported()[0].hcs_care_type___11, '1');
+  assert.equal(imported()[0].hcs_care_type___12, '1');
   assert.equal(imported()[1].htm_viral_load_detectable, '2');
   assert.equal((await post('healthcare-nav', { ...healthcare, monitoring: { ...healthcare.monitoring, htm_cd4_level: '-1' } })).status, 400);
   assert.equal(requests.length, 0);
@@ -131,10 +142,52 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[1].redcap_repeat_instrument, 'hiv_care_support');
   assert.equal((await post('healthcare-nav', { ...healthcare, mode: 'new', recordId: 'M01012000TAB_EE', enrollment: twoMiddleNames })).status, 200);
   assert.equal(imported()[0].ce_middle_name_2, 'Beta');
-  existing = [{ uic_ori: 'TEST', ce_first_name: 'Test', ce_middle_name_1: 'Alpha', ce_middle_name_2: 'Beta', ce_last_name: 'Example', ce_kp_type___3: '1', ce_kp_type___8: '1' }];
+  existing = [];
+  const prepProfile = { ptp_start_date: '2026-09-23', ptp_primary_reason: 'Prevention', ptp_previous_use: '0', ptp_previous_provider: '', ptp_status: '1', ptp_ltfu: '0', ptp_effective_date: '2026-09-23', ptp_recorded_by: 'Tester', ptp_change_reason: '' };
+  const prepVisit = { pv_visit_date: '2026-09-23', pv_visit_purpose: '2,3', pv_recorded_by: 'Tester', pv_followup_stage: '0', pv_doctor_review_date: '2026-09-23', pv_physician: 'Dr Test', pv_medication: '1', pv_medication_dispensed: '30', pv_prescription_months: '1', pv_status_at_visit: '1' };
+  assert.equal((await post('prep', { mode: 'new', recordId: submission.recordId, enrollment, profile: prepProfile, includeProfile: true, visit: prepVisit })).status, 200);
+  assert.equal(imported()[1].redcap_repeat_instrument, 'prep_treatment_profile');
+  assert.equal(imported()[1].redcap_repeat_instance, '1');
+  assert.equal(imported()[2].redcap_repeat_instrument, 'prep_visit');
+  assert.equal(imported()[2].pv_medication_dispensed, '30');
+  assert.equal(imported()[2].pv_visit_purpose___2, '1');
+  assert.equal(imported()[2].pv_visit_purpose___3, '1');
+  assert.equal(imported()[2].pv_profile_updated, '1');
+  existing = [{ uic_ori: 'TEST' }, { uic_ori: 'TEST', redcap_repeat_instrument: 'prep_treatment_profile', redcap_repeat_instance: '2', ...prepProfile }, { uic_ori: 'TEST', redcap_repeat_instrument: 'prep_visit', redcap_repeat_instance: '3', ...prepVisit }];
+  assert.equal((await post('prep', { mode: 'existing', recordId: 'TEST', includeProfile: false, visit: { ...prepVisit, pv_visit_date: '2026-10-03' } })).status, 200);
+  assert.equal(imported().length, 1);
+  assert.equal(imported()[0].redcap_repeat_instance, '4');
+  assert.equal((await post('prep', { mode: 'existing', recordId: 'TEST', includeProfile: true, profile: { ...prepProfile, ptp_status: '2', ptp_effective_date: '2026-10-03', ptp_change_reason: 'Follow-up status changed' }, visit: { ...prepVisit, pv_visit_date: '2026-10-03' } })).status, 200);
+  assert.equal(imported()[0].redcap_repeat_instrument, 'prep_treatment_profile');
+  assert.equal(imported()[0].redcap_repeat_instance, '3');
+  assert.equal(imported()[0].ptp_ltfu, '1');
+  existing = [{ uic_ori: 'TEST' }, { uic_ori: 'TEST', redcap_repeat_instrument: 'hiv_treatment_profile', redcap_repeat_instance: '1', htp_art_start_date: '2020-01-01', htp_art_regimen___1: '1' }];
+  const arvVisit = { cnv_worker: 'Tester', cnv_date: '2026-10-04', cnv_reason: '4,9', cnv_medication_supplied: '1,2,10', cnv_art_prescription_months: '3', cnv_next_med_collection: '2027-01-04', cnv_syphilis_referral: '1', cnv_hcv_reported: '1', cnv_hcv_treat: '1', cnv_hcv_vl_date: '2026-10-03', cnv_hcv_vl_result: 'Not detected', cnv_hbv_vaccination_status: '1' };
+  const arvMonitoring = { htm_date: '2026-10-04', htm_is_baseline: '0', htm_art_status: '1', htm_cd4_date: '2026-10-03', htm_cd4_level: '450' };
+  assert.equal((await post('arv', { mode: 'existing', recordId: 'TEST', includeProfile: false, visit: arvVisit, includeMonitoring: true, monitoring: arvMonitoring })).status, 200);
+  assert.equal(imported()[0].redcap_repeat_instrument, 'clinic_visit');
+  assert.equal(imported()[0].cnv_reason___9, '1');
+  assert.equal(imported()[0].cnv_medication_supplied___2, '1');
+  assert.equal(imported()[0].cnv_medication_supplied___10, '1');
+  assert.equal(imported()[0].cnv_hcv_vl_result, 'Not detected');
+  assert.equal(imported()[1].redcap_repeat_instrument, 'hiv_clinical_monitoring');
+  assert.equal(imported()[1].htm_is_baseline, '0');
+  const changedCareProfile = { htp_effective_date: '2026-10-04', htp_care_status: '2', htp_care_facility: 'NDDCI', htp_change_reason: 'Transferred for continued care', htp_started_abroad: '0', htp_art_start_date: '2020-01-01', htp_art_regimen: '1,12', htp_additional_medications: 'Bactrim' };
+  assert.equal((await post('arv', { mode: 'existing', recordId: 'TEST', includeProfile: true, profile: changedCareProfile, visit: arvVisit, includeMonitoring: false })).status, 200);
+  assert.equal(imported()[0].redcap_repeat_instrument, 'hiv_treatment_profile');
+  assert.equal(imported()[0].redcap_repeat_instance, '2');
+  assert.equal(imported()[0].htp_care_status, '2');
+  assert.equal(imported()[0].htp_care_facility, 'NDDCI');
+  assert.equal(imported()[0].htp_art_regimen___12, '1');
+  assert.equal((await post('arv', { mode: 'existing', recordId: 'TEST', includeClientStatus: true, clientStatus: { ce_active: '0', ce_vital_status: '2', ce_exit_date: '2026-10-04', ce_exit_reason: 'Confirmed deceased' }, includeProfile: false, visit: arvVisit, includeMonitoring: false })).status, 200);
+  assert.equal(imported()[0].ce_vital_status, '2');
+  assert.equal(imported()[0].ce_active, '0');
+  assert.equal(imported()[0].ce_exit_date, '2026-10-04');
+  existing = [{ uic_ori: 'TEST', ce_first_name: 'Test', ce_middle_name_1: 'Alpha', ce_middle_name_2: 'Beta', ce_middle_name_3: 'Charlie', ce_last_name: 'Example', ce_tel_primary: '123-456-7890', ce_kp_type___3: '1', ce_kp_type___8: '1' }];
   const patients = await (await load('app/api/redcap/patients/route.ts').GET()).json();
-  assert.equal(patients[0].middle_name, 'Alpha Beta');
-  assert.equal(patients[0].display_name, 'Test Alpha Beta Example');
+  assert.equal(patients[0].middle_name, 'Alpha Beta Charlie');
+  assert.equal(patients[0].display_name, 'Test Alpha Beta Charlie Example');
+  assert.equal(patients[0].phone, '123-456-7890');
   assert.deepEqual(patients[0].kp_types, ['3', '8']);
   existing.push({ uic_ori: 'TEST', redcap_repeat_instrument: 'outreach_contact', redcap_repeat_instance: '1', oc_date: '2026-09-23', oc_hiv_rapid_result: '2', oc_syringes: '7', oc_num_needles: '9', oc_male_condoms: '12' });
   const dashboard = await (await load('app/api/redcap/dashboard/route.ts').GET(new Request('http://localhost/api?period=all'))).json();

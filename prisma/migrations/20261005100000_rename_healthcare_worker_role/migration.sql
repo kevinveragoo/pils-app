@@ -1,0 +1,11 @@
+UPDATE "User"
+SET "role" = 'HEALTHCARE_ASSISTANT'
+WHERE "role" = 'HEALTHCARE_WORKER';
+
+UPDATE "User"
+SET "requestedRole" = 'HEALTHCARE_ASSISTANT'
+WHERE "requestedRole" = 'HEALTHCARE_WORKER';
+
+UPDATE "User"
+SET "roles" = replace("roles", '"HEALTHCARE_WORKER"', '"HEALTHCARE_ASSISTANT"')
+WHERE "roles" LIKE '%"HEALTHCARE_WORKER"%';

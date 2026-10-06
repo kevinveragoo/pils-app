@@ -14,6 +14,7 @@ model User {
   organization       String    @default("PILS")
   passwordHash       String
   role               String
+  roles              String    @default("[]")
   requestedRole      String
   status             String    @default("PENDING")
   mustChangePassword Boolean   @default(false)
@@ -22,8 +23,29 @@ model User {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   sessions           Session[]
+  redcapActivities   RedcapActivity[]
 
   @@index([status])
+}
+
+model RedcapActivity {
+  id                  String   @id @default(cuid())
+  userId              String
+  actorName            String
+  actorUsername        String
+  workflow             String
+  recordId             String
+  staffName            String?
+  serviceDate          String?
+  instrumentInstances String
+  submittedData        String
+  createdAt            DateTime @default(now())
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([createdAt])
+  @@index([recordId])
+  @@index([workflow])
+  @@index([userId])
 }
 
 model Session {
@@ -47,4 +69,50 @@ model AuditLog {
   createdAt    DateTime @default(now())
 
   @@index([createdAt])
+}
+
+model ClinicQueueEntry {
+  id                 String             @id @default(cuid())
+  queueDate          String
+  recordId           String?
+  displayName        String
+  alias              String?
+  patientCode        String?
+  phone              String?
+  source             String             @default("WALK_IN")
+  isNewClient        Boolean            @default(false)
+  status             String             @default("EXPECTED")
+  currentStation     String             @default("RECEPTION")
+  queueNumber        Int?
+  tasks              String             @default("[]")
+  appointmentSources String             @default("[]")
+  notes              String?
+  checkedInAt        DateTime?
+  readyAt            DateTime?
+  completedAt        DateTime?
+  createdById        String
+  createdByName      String
+  updatedById        String
+  updatedByName      String
+  version            Int                @default(1)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  events             ClinicQueueEvent[]
+
+  @@index([queueDate, status])
+  @@index([queueDate, queueNumber])
+  @@index([recordId, queueDate])
+}
+
+model ClinicQueueEvent {
+  id           String           @id @default(cuid())
+  queueEntryId String
+  actorId      String
+  actorName    String
+  action       String
+  details      String?
+  createdAt    DateTime         @default(now())
+  entry        ClinicQueueEntry @relation(fields: [queueEntryId], references: [id], onDelete: Cascade)
+
+  @@index([queueEntryId, createdAt])
 }

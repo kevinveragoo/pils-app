@@ -17,8 +17,9 @@ export type Organization = keyof typeof ORGANIZATIONS;
 
 export const USER_ROLES = {
   OUTREACH_WORKER: "Outreach Worker",
+  HEALTHCARE_ASSISTANT: "Healthcare Assistant",
   HEALTHCARE_NAVIGATOR: "Healthcare Navigator",
-  PROGRAMME_STAFF: "Programme Staff",
+  FACILITY_STAFF: "Facility Staff",
   ADMIN: "Administrator",
 } as const;
 

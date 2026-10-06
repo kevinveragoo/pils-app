@@ -262,6 +262,35 @@
   .admin-user { display: flex; flex-wrap: wrap; align-items: end; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1rem; }
   .admin-user > div { margin-right: auto; }
   .admin-user form { display: flex; flex-wrap: wrap; align-items: end; gap: 0.5rem; }
+  .role-fieldset { display: grid; gap: 0.5rem; border: 0; }
+  .role-fieldset legend { font-weight: 700; }
+  .role-options { display: grid; gap: 0.45rem; }
+  .role-option { display: flex !important; min-height: 40px; grid-template-columns: none !important; flex-direction: row; align-items: center; gap: 0.6rem !important; border: 1px solid var(--border); border-radius: 0.75rem; padding: 0.55rem 0.7rem; font-weight: 500 !important; }
+  .role-option input { min-height: auto !important; width: 1rem !important; }
+
+  .logs-page { margin: 0 auto; display: grid; width: 100%; max-width: 90rem; gap: 1.25rem; padding: 2rem 1rem; }
+  .logs-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; align-items: end; gap: 0.75rem; }
+  .logs-filters label { display: grid; gap: 0.35rem; font-size: 0.82rem; font-weight: 700; }
+  .logs-filters input, .logs-filters select { min-height: 44px; width: 100%; border: 1px solid var(--input); border-radius: 0.75rem; background: var(--card); padding: 0.6rem 0.75rem; font-weight: 400; }
+  .logs-card { overflow: hidden; border: 1px solid var(--border); border-radius: 1.25rem; background: var(--card); box-shadow: var(--pils-shadow); }
+  .logs-table-wrap { overflow-x: auto; }
+  .logs-table { width: 100%; min-width: 70rem; border-collapse: collapse; font-size: 0.88rem; }
+  .logs-table th { background: var(--muted); text-align: left; }
+  .logs-table th, .logs-table td { border-bottom: 1px solid var(--border); padding: 0.75rem; vertical-align: top; }
+  .logs-table tbody tr:last-child td { border-bottom: 0; }
+  .logs-table tbody tr[role='link'] { cursor: pointer; }
+  .logs-table tbody tr:hover, .logs-table tbody tr:focus-visible, .logs-table tbody tr.is-selected { background: var(--secondary); outline: none; }
+  .logs-entry-link { color: var(--primary); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+  .logs-detail { display: grid; gap: 1rem; padding: 1.25rem; }
+  .logs-detail h1, .logs-detail h2 { font-size: 1.35rem; font-weight: 800; }
+  .logs-detail-heading { display: flex; justify-content: flex-start; }
+  .logs-detail > div > p:not(.pils-eyebrow) { color: var(--muted-foreground); }
+  .logs-detail dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .logs-detail dl > div { min-width: 0; border-radius: 0.85rem; background: var(--muted); padding: 0.75rem; }
+  .logs-detail dt { font-size: 0.75rem; font-weight: 800; }
+  .logs-detail dd { margin-top: 0.25rem; overflow-wrap: anywhere; white-space: pre-wrap; }
+  @media (max-width: 900px) { .logs-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } .logs-detail dl { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .logs-filters { grid-template-columns: 1fr; } }
 
   .outreach-page {
     display: flex;
@@ -388,6 +417,23 @@
   .attendance-review > div > :first-child,
   .attendance-review > div > :last-child { background: var(--muted); }
   .attendance-review th { color: var(--secondary-foreground); }
+
+  .clinic-queue-section { overflow: hidden; border: 1px solid var(--border); border-radius: 20px; background: var(--card); box-shadow: var(--pils-shadow); }
+  .clinic-queue-expected { border-left: 4px solid #64748b; }
+  .clinic-queue-waiting { border-left: 4px solid #d97706; }
+  .clinic-queue-ready { border-left: 4px solid var(--primary); }
+  .clinic-queue-done { border-left: 4px solid #15803d; }
+  .clinic-queue-page select { min-height: 36px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); padding: 0.35rem 0.65rem; }
+  .clinic-queue-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; border: 1px solid var(--border); border-radius: 18px; background: var(--card); padding: 0.45rem; box-shadow: var(--pils-shadow); }
+  .clinic-queue-toolbar label { display: flex; align-items: center; gap: 0.45rem; padding-left: 0.45rem; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
+  .clinic-queue-toolbar label > svg { width: 1rem; height: 1rem; color: var(--primary); }
+  .clinic-queue-toolbar [data-slot='input'] { width: 9.25rem; min-height: 36px; }
+  @media (max-width: 560px) { .clinic-queue-toolbar { align-items: stretch; } .clinic-queue-toolbar label { width: 100%; justify-content: space-between; } .clinic-queue-toolbar [data-slot='input'] { width: auto; flex: 1; } }
+  .queue-number { display: grid; min-width: 3.5rem; place-items: center; align-self: stretch; border-radius: 12px; background: var(--primary); padding: 0.35rem 0.45rem; color: var(--primary-foreground); text-align: center; }
+  .queue-number strong { font-size: 1.45rem; line-height: 1; font-variant-numeric: tabular-nums; }
+  .queue-number small { margin-top: 0.25rem; font-size: 0.62rem; line-height: 1.1; white-space: nowrap; }
+  .clinic-queue-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgb(42 26 32 / 55%); padding: 1rem; backdrop-filter: blur(3px); }
+  .clinic-queue-dialog { width: min(100%, 30rem); border: 1px solid var(--border); border-radius: 24px; background: var(--card); padding: 1.5rem; box-shadow: 0 24px 70px rgb(42 26 32 / 28%); }
 
   .pils-brand { display: flex; flex-direction: column; align-items: flex-start; gap: 0.35rem; }
   .auth-card .pils-brand { align-items: center; }

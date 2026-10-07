@@ -9,6 +9,8 @@
     "lint": "eslint",
     "test:redcap-fields": "node scripts/test-redcap-fields.mjs",
     "test:localization": "node scripts/test-localization.mjs",
+    "setup:local": "node scripts/setup-local.mjs",
+    "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "node prisma/seed.mjs"
   },

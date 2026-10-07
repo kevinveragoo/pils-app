@@ -1,73 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PILS application
 
-## REDCap configuration
+PILS is a Next.js application for client enrollment, outreach, healthcare navigation, clinic queues, breakfast attendance, PrEP/ARV workflows, and REDCap reporting. Client and programme records remain in REDCap. Local users, sessions, activity logs, and clinic queue data are stored in SQLite through Prisma.
 
-The app uses `REDCAP_API_URL` and `REDCAP_API_TOKEN` from `.env.local` for the cleaned-up project. Field names were last checked against its API metadata on 6 October 2026. PrEP data is split between the non-repeating `prep_treatment_profile` instrument (`ptp_` fields) and the repeating `prep_visit` instrument (`pv_` fields).
+## Requirements
 
-`lib/redcap-field-rules.json` holds the current validation rules. `scripts/fixtures/redcap-schema.json` holds the API schema used by the mocked submission tests. Refresh these snapshots when the REDCap schema changes.
+- Node.js 20.9 or newer
+- npm
+- Git
+- A REDCap API URL and token for the cleaned PILS REDCap project
 
-Run `npm run test:redcap-fields` to check field names, instrument ownership, checkbox encoding, UIC generation, patient lookup, and dashboard aggregation without contacting REDCap or writing records. Historical sample-generation scripts target the original schema and are separate from the app runtime.
+## Set up a new working copy
 
-The home page redirects to `/outreach`. Breakfast remains at `/breakfast`; Breakfast and Dashboard navigation links are temporarily disabled.
+Clone the repository and enter its directory:
 
-## Local authentication database
-
-Application users and sessions are stored in `data/pils.db` through Prisma. The database and SQLite WAL/SHM sidecar files are intentionally ignored by Git. REDCap remains the source of client and programme data.
-
-After installing dependencies, prepare or update the database with:
-
-```bash
-npm run db:migrate
-npm run db:seed
+```powershell
+git clone https://github.com/kevinveragoo/pils-app.git
+cd pils-app
 ```
 
-The seed is idempotent. On a new database it creates the original administrator with username `kevin` and temporary password `admin`; it never resets an existing account. The temporary password must be changed at first sign-in.
+Run the complete local bootstrap:
 
-Back up the live database while the application is stopped, or use SQLite's `.backup` command while it is running. Keep the copied database outside the project checkout. Restoring requires the database file and a deployment containing the matching `prisma/migrations` history.
+```powershell
+npm run setup:local
+```
 
-Set `AUTH_COOKIE_SECURE=true` once the site is served through HTTPS. Leave it unset while the current site is accessed over plain HTTP, otherwise browsers will not return the login cookie.
+Stop any running PILS development server before running this command. On Windows, the server can lock native files that `npm ci` needs to replace.
+
+This command:
+
+1. Installs the exact dependencies in `package-lock.json` with `npm ci`.
+2. Creates `.env.local` from `.env.example` if `.env.local` does not exist.
+3. Generates the Prisma Client.
+4. Creates or updates `data/pils.db` using all committed migrations.
+5. Runs the idempotent database seed.
+
+The setup command never replaces an existing `.env.local` and never resets an existing administrator.
+
+## Configure REDCap
+
+Open `.env.local` and replace the placeholder values:
+
+```dotenv
+REDCAP_API_URL=https://your-redcap.example/api/
+REDCAP_API_TOKEN=replace-with-your-redcap-api-token
+AUTH_COOKIE_SECURE=false
+```
+
+`REDCAP_API_URL` and `REDCAP_API_TOKEN` are required for REDCap lookups and submissions. Keep `AUTH_COOKIE_SECURE=false` for local HTTP development. Set it to `true` only when the application is served through HTTPS, otherwise the browser will not return the login cookie.
+
+Do not commit `.env.local` or real REDCap credentials. Local environment files are ignored by Git.
+
+## Start the application
+
+```powershell
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+On a new database, use the temporary administrator account:
+
+- Username: `kevin`
+- Password: `admin`
+
+The application requires this password to be changed at first sign-in.
+
+## Update an existing working copy
+
+After pulling changes, rerun the bootstrap command when dependencies or database migrations may have changed:
+
+```powershell
+git pull --ff-only
+npm run setup:local
+```
+
+The migration and seed steps are safe to rerun. Existing account passwords and data are retained.
+
+If dependencies are already installed and only the Prisma/database steps need to be rerun, use:
+
+```powershell
+npm run setup:local -- --skip-install
+```
+
+## Database commands
+
+The local SQLite database is `data/pils.db`. It and its WAL/SHM sidecar files are intentionally ignored by Git.
+
+```powershell
+npm run db:generate  # Generate Prisma Client after schema/dependency changes
+npm run db:migrate   # Apply committed migrations
+npm run db:seed      # Create the initial admin only when it does not exist
+```
+
+To create a completely new development database, stop the development server, move `data/pils.db` and any `data/pils.db-*` sidecars to a backup location, then run `npm run setup:local`. Do not delete or replace a database containing data you need.
+
+Back up a database while the application is stopped, or use SQLite's `.backup` command while it is running. Keep backups outside the repository. A restore needs both the database file and application code containing the matching `prisma/migrations` history.
+
+## Checks
+
+```powershell
+npm run lint
+npm run build
+npm run test:redcap-fields
+npm run test:localization
+```
+
+The REDCap field tests use committed fixtures and do not contact REDCap or write records. When the REDCap schema changes, refresh `lib/redcap-field-rules.json` and `scripts/fixtures/redcap-schema.json` before updating the tests.
 
 ## Localization
 
-English is the development language and fallback. French and Mauritian Creole use the ISO language identifiers `fr` and `mfe`. Following Apple's localized-resource layout, translations live in matching files under:
+English is the fallback language. French and Mauritian Creole use the identifiers `fr` and `mfe`. Translations live in:
 
 - `locales/en.lproj/Localizable.strings`
 - `locales/fr.lproj/Localizable.strings`
 - `locales/mfe.lproj/Localizable.strings`
 
-Keep the same keys in all three catalogs and run `npm run test:localization` after editing them. The language picker stores the selected language in the `pils_locale` cookie; first-time visitors default to English.
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Keep the same keys in all three catalogs and run `npm run test:localization` after editing them.

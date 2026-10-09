@@ -9,9 +9,9 @@ type Actor = { id: string; name: string };
 type PatientRow = Record<string, string>;
 
 const appointmentFields: [string, QueueTask, string][] = [
-  ["cnv_next_doctor_review", "DOCTOR", "ARV doctor review"],
-  ["cnv_next_blood_test", "BLOOD_TEST", "ARV blood test"],
-  ["cnv_next_med_collection", "MEDICATION", "ARV medication collection"],
+  ["cnv_next_doctor_review", "DOCTOR", "Clinic doctor review"],
+  ["cnv_next_blood_test", "BLOOD_TEST", "Clinic blood test"],
+  ["cnv_next_med_collection", "MEDICATION", "Clinic medication collection"],
   ["pv_next_appointment_date", "PREP", "PrEP appointment"],
   ["pv_next_collection_date", "MEDICATION", "PrEP medication collection"],
 ];

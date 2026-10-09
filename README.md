@@ -1,6 +1,6 @@
 # PILS application
 
-PILS is a Next.js application for client enrollment, outreach, healthcare navigation, clinic queues, breakfast attendance, PrEP/ARV workflows, and REDCap reporting. Client and programme records remain in REDCap. Local users, sessions, activity logs, and clinic queue data are stored in SQLite through Prisma.
+PILS is a Next.js application for client enrollment, outreach, healthcare navigation, clinic workflows and queues, breakfast attendance, and REDCap reporting. Client and programme records remain in REDCap. Local users, sessions, activity logs, and clinic queue data are stored in SQLite through Prisma.
 
 ## Requirements
 

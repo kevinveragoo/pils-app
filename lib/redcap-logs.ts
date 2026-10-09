@@ -118,7 +118,7 @@ export async function loadActivities({ from, to }: { from: string; to: string })
     const fields = localFields(item.submittedData, metadata);
     let instances = "";
     try { instances = (JSON.parse(item.instrumentInstances) as { instrument: string; instance?: number }[]).map(value => `${value.instrument}${value.instance ? ` #${value.instance}` : ""}`).join(", "); } catch { /* Keep it blank. */ }
-    return { id: `app:${item.id}`, source: "app" as const, timestamp: item.createdAt.toISOString(), workflow: workflows.find(value => value.prefixes.some(prefix => item.workflow.startsWith(prefix)))?.name ?? ({ outreach: "Outreach", "healthcare-nav": "Healthcare Navigator", prep: "PrEP", arv: "ARV", breakfast: "Breakfast" }[item.workflow] ?? item.workflow), recordId: item.recordId, enteredBy: `${item.actorName} (@${item.actorUsername})`, staffName: item.staffName ?? "", serviceDate: item.serviceDate ?? "", action: "Submitted through app", fields, instances };
+    return { id: `app:${item.id}`, source: "app" as const, timestamp: item.createdAt.toISOString(), workflow: workflows.find(value => value.prefixes.some(prefix => item.workflow.startsWith(prefix)))?.name ?? ({ outreach: "Outreach", "healthcare-nav": "Healthcare Navigator", prep: "PrEP", clinic: "Clinic", arv: "Clinic", breakfast: "Breakfast" }[item.workflow] ?? item.workflow), recordId: item.recordId, enteredBy: `${item.actorName} (@${item.actorUsername})`, staffName: item.staffName ?? "", serviceDate: item.serviceDate ?? "", action: "Submitted through app", fields, instances };
   });
 
   const redcapEntries: ActivityEntry[] = logRows.map((row, index) => {

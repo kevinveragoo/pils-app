@@ -1228,10 +1228,6 @@
     "form": "clinic_visit",
     "type": "yesno"
   },
-  "cnv_pep": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
   "cnv_condom_demo": {
     "form": "clinic_visit",
     "type": "yesno"
@@ -1352,6 +1348,38 @@
     "type": "yesno"
   },
   "cnv_other_facility": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_blood_collected": {
+    "form": "clinic_visit",
+    "type": "yesno"
+  },
+  "cnv_syphilis_refer_where": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_gbv_refer_where": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_alcohol_refer_where": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_ost_refer_where": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_cervical_refer_where": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_abscess_refer_where": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_other_refer_where": {
     "form": "clinic_visit",
     "type": "text"
   },

@@ -49,5 +49,5 @@ export function useLocalization() {
 export function LanguagePicker() {
   const pathname = usePathname();
   const { locale } = useLocalization();
-  return <form action="/api/locale" method="post" className="language-picker"><input type="hidden" name="pathname" value={pathname} /><label><span className="language-flag" aria-hidden="true" /><span className="language-label">Language</span><select aria-label="Language" name="locale" value={locale} onChange={(event) => event.currentTarget.form?.requestSubmit()}><option value="en">English</option><option value="fr">Français</option><option value="mfe">Kreol Morisien</option></select></label></form>;
+  return <form action="/api/locale" method="post" className="language-picker"><input type="hidden" name="pathname" value={pathname} /><label><span className={`language-flag language-flag-${locale}`} aria-hidden="true" /><span className="language-label">Language</span><select aria-label="Language" name="locale" value={locale} onChange={(event) => event.currentTarget.form?.requestSubmit()}><option value="en">English</option><option value="fr">Français</option><option value="mfe">Kreol Morisien</option></select></label></form>;
 }

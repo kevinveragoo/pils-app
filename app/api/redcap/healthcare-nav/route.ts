@@ -8,11 +8,12 @@ const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
 
 type Values = Record<string, string>;
-type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; care?: unknown; monitoring?: unknown; includeMonitoring?: unknown; newCd4?: unknown; newVl?: unknown };
+type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; care?: unknown; profile?: unknown; includeProfile?: unknown; monitoring?: unknown; includeMonitoring?: unknown; newCd4?: unknown; newVl?: unknown };
 
 const enrollmentFields = ["ce_active", "ce_date", "ce_implementing_partner", "ce_district", "ce_hotspot", "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_middle_name_1", "ce_middle_name_2", "ce_middle_name_3", "ce_alias", "ce_dob", "ce_gender_identity", "ce_vision", "ce_kp_type", "ce_tel_primary", "ce_contact_method", "ce_risk_drug_alcohol_sex", "ce_risk_violence_1m", "ce_sw_age_started", "ce_sw_sex_acts_1w", "ce_sw_condom_use_1w", "ce_msm_age_first_anal", "ce_msm_receptive_anal_1w", "ce_msm_condom_anal_1w", "ce_pwid_age_first_inject", "ce_pwid_injections_24h", "ce_pwid_injections_1w", "ce_pwid_shared_24h", "ce_pwid_shared_1w"];
 const careFields = ["hcs_navigator_1", "hcs_navigator_2", "hcs_navigator_3", "hcs_date", "hcs_currently_art", "hcs_art_status", "hcs_care_type", "hcs_care_region", "hcs_adherence_counsel", "hcs_psychosocial", "hcs_comprehensive_ref", "hcs_num_male_condoms", "hcs_num_female_condoms", "hcs_num_lube", "hcs_num_needles", "hcs_followup_needed", "hcs_followup_date", "hcs_notes"];
-const monitoringFields = ["htm_viral_load_detectable", "htm_date", "htm_art_status", "htm_cd4_date", "htm_cd4_level", "htm_vl_date", "htm_vl_level", "htm_notes"];
+const monitoringFields = ["htm_date", "htm_is_baseline", "htm_art_status", "htm_cd4_date", "htm_cd4_level", "htm_vl_date", "htm_viral_load_detectable", "htm_vl_level", "htm_notes"];
+const profileFields = ["htp_diagnosis_date", "htp_prev_ltfu", "htp_art_reg_date", "htp_art_reg_place", "htp_started_abroad", "htp_art_start_date", "htp_art_regimen", "htp_art_regimen_other", "htp_additional_medications", "htp_art_adherence", "htp_effective_date", "htp_care_status", "htp_care_facility", "htp_care_status_other", "htp_change_reason", "htp_notes"];
 
 function values(value: unknown): Values | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
@@ -24,7 +25,7 @@ function values(value: unknown): Values | null {
 function copyAllowed(source: Values, allowed: string[]) {
   const row: Values = {};
   for (const key of allowed) if (source[key] !== undefined && source[key] !== "") row[key] = source[key].trim();
-  for (const key of ["ce_kp_type", "ce_contact_method", "hcs_care_type"]) {
+  for (const key of ["ce_kp_type", "ce_contact_method", "hcs_care_type", "htp_art_regimen"]) {
     if (!source[key]) continue;
     for (const code of source[key].split(",").filter((item) => /^\d+$/.test(item))) row[`${key}___${code}`] = "1";
     delete row[key];
@@ -67,7 +68,9 @@ export async function POST(request: Request) {
   const mode = input.mode;
   const enrollment = values(input.enrollment);
   const care = values(input.care);
+  const profile = values(input.profile);
   const monitoring = values(input.monitoring);
+  const includeProfile = input.includeProfile === true;
   const includeMonitoring = input.includeMonitoring === true;
   const newCd4 = input.newCd4 === true;
   const newVl = input.newVl === true;
@@ -80,17 +83,18 @@ export async function POST(request: Request) {
   if (includeMonitoring) {
     if (!monitoring.htm_date) return NextResponse.json({ error: "A monitoring date is required." }, { status: 400 });
   }
+  if (includeProfile && (!profile || !profile.htp_effective_date?.trim() || !profile.htp_care_status?.trim() || !profile.htp_art_start_date?.trim())) return NextResponse.json({ error: "Profile effective date, care status, and ART start date are required for a treatment profile." }, { status: 400 });
   if (mode === "new") {
     const requiredEnrollment = ["ce_date", "ce_district", "ce_hotspot", "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_dob", "ce_gender_identity", "ce_kp_type"];
     if (!enrollment || !requiredEnrollment.every((key) => enrollment[key]?.trim())) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
     if (generateUic(enrollment) !== recordId) return NextResponse.json({ error: "The generated UIC does not match the enrollment details." }, { status: 400 });
   }
 
-  const validationError = (mode === "new" && enrollment ? validateFields(enrollment, enrollmentFields) : null) || validateFields(care, careFields) || (includeMonitoring ? validateFields(monitoring, monitoringFields) : null);
+  const validationError = (mode === "new" && enrollment ? validateFields(enrollment, enrollmentFields) : null) || validateFields(care, careFields) || (includeProfile && profile ? validateFields(profile, profileFields) : null) || (includeMonitoring ? validateFields(monitoring, monitoringFields) : null);
   if (validationError) return NextResponse.json({ error: validationError }, { status: 400 });
 
   try {
-    const exported = await redcap({ content: "record", action: "export", format: "json", type: "flat", rawOrLabel: "raw", rawOrLabelHeaders: "raw", exportDataAccessGroups: "false", returnFormat: "json", "records[0]": recordId, "forms[0]": "client_enrollment", "forms[1]": "hiv_care_support", "forms[2]": "hiv_clinical_monitoring" });
+    const exported = await redcap({ content: "record", action: "export", format: "json", type: "flat", rawOrLabel: "raw", rawOrLabelHeaders: "raw", exportDataAccessGroups: "false", returnFormat: "json", "records[0]": recordId, "forms[0]": "client_enrollment", "forms[1]": "hiv_care_support", "forms[2]": "hiv_clinical_monitoring", "forms[3]": "hiv_treatment_profile" });
     const existing = Array.isArray(exported) ? exported as Values[] : [];
     const recordExists = existing.some((row) => row.uic_ori === recordId);
     if (mode === "new" && recordExists) return NextResponse.json({ error: `UIC ${recordId} already exists. Use Existing client.` }, { status: 409 });
@@ -106,6 +110,7 @@ export async function POST(request: Request) {
     const records: Values[] = [];
     if (mode === "new" && enrollment) records.push({ uic_ori: recordId, ...copyAllowed(enrollment, enrollmentFields) });
     records.push({ uic_ori: recordId, redcap_repeat_instrument: "hiv_care_support", redcap_repeat_instance: next("hiv_care_support"), ...copyAllowed(care, careFields) });
+    if (includeProfile && profile) records.push({ uic_ori: recordId, redcap_repeat_instrument: "hiv_treatment_profile", redcap_repeat_instance: next("hiv_treatment_profile"), ...copyAllowed(profile, profileFields) });
     if (includeMonitoring) records.push({ uic_ori: recordId, redcap_repeat_instrument: "hiv_clinical_monitoring", redcap_repeat_instance: next("hiv_clinical_monitoring"), ...copyAllowed(monitoring, monitoringFields) });
 
     const result = await redcap({ content: "record", action: "import", format: "json", type: "flat", overwriteBehavior: "normal", forceAutoNumber: "false", dateFormat: "YMD", data: JSON.stringify(records), returnContent: "count", returnFormat: "json" });

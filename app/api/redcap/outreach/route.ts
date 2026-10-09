@@ -72,7 +72,7 @@ export async function POST(request: Request) {
   const partners = Array.isArray(input.partners) ? input.partners.map(values) : [];
   const children = Array.isArray(input.children) ? input.children.map(values) : [];
   if ((mode !== "new" && mode !== "existing") || !outreach || partners.some((x) => !x) || children.some((x) => !x)) return NextResponse.json({ error: "Invalid outreach submission." }, { status: 400 });
-  if (!outreach.oc_worker_1 || !outreach.oc_date || !outreach.oc_type || !outreach.oc_district) return NextResponse.json({ error: "Outreach worker, contact date, activity type, and district are required." }, { status: 400 });
+  if (!outreach.oc_worker_1 || !outreach.oc_date || !outreach.oc_type || !outreach.oc_district || !outreach.oc_prep_com) return NextResponse.json({ error: "Outreach worker, contact date, activity type, district, and PrEP counselling are required." }, { status: 400 });
   if (outreach.oc_hiv_rapid_result !== "1" && (partners.length || children.length)) return NextResponse.json({ error: "Partner referrals require a reactive HIV rapid test result." }, { status: 400 });
   for (const partner of partners as Values[]) if (!["itp_name","itp_gender","itp_violence","itp_threats","itp_forced_sex","itp_notif_method"].every((key) => partner[key])) return NextResponse.json({ error: "Complete all required partner referral fields." }, { status: 400 });
   for (const child of children as Values[]) if (!["itch_violence","itch_threats","itch_force_sex","itch_notif_method"].every((key) => child[key])) return NextResponse.json({ error: "Complete all required child referral fields." }, { status: 400 });

@@ -439,7 +439,10 @@
   .auth-card .pils-brand { align-items: center; }
   .language-picker { position: static; width: max-content; }
   .language-picker label { display: flex; align-items: center; gap: 0.4rem; border: 1px solid var(--border); border-radius: 999px; background: var(--card); padding: 0.25rem 0.35rem 0.25rem 0.7rem; box-shadow: var(--pils-shadow); font-size: 0.75rem; font-weight: 700; }
-  .language-flag { width: 1.15rem; height: 1.15rem; flex: 0 0 auto; overflow: hidden; border: 1px solid rgb(42 26 32 / 12%); border-radius: 999px; background: linear-gradient(to bottom, #ea2839 0 25%, #1a206d 25% 50%, #ffd500 50% 75%, #00a551 75% 100%); box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 35%); }
+  .language-flag { width: 1.25rem; height: 1.25rem; flex: 0 0 auto; overflow: hidden; border: 1px solid rgb(42 26 32 / 18%); border-radius: 999px; background-color: white; box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 35%); }
+  .language-flag-en { background: #012169 url("/flags/en.svg") center / cover no-repeat; }
+  .language-flag-fr { background: linear-gradient(90deg, #002395 0 33.333%, #fff 33.333% 66.666%, #ed2939 66.666% 100%); }
+  .language-flag-mfe { background: linear-gradient(to bottom, #ea2839 0 25%, #1a206d 25% 50%, #ffd500 50% 75%, #00a551 75% 100%); }
   .language-picker select { border: 0; border-radius: 999px; background: var(--muted); padding: 0.3rem 0.55rem; color: var(--foreground); }
   @media (max-width: 640px) { .language-picker .language-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); } }
 }

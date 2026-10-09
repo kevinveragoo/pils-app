@@ -68,7 +68,8 @@ export function userRoles(user: { role: string; roles?: string | null }) {
 }
 
 export function hasRole(user: { role: string; roles?: string | null }, role: string) {
-  return userRoles(user).includes(role);
+  const assigned = userRoles(user);
+  return assigned.includes("ADMIN") || assigned.includes(role);
 }
 
 export function hasAnyRole(user: { role: string; roles?: string | null }, allowed: string[]) {

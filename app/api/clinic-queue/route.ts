@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, hasRole } from "@/lib/auth";
 import { createQueueEntry, mauritiusToday, queueForDate, QUEUE_STATIONS, QUEUE_TASKS } from "@/lib/clinic-queue";
 
 export async function GET(request: Request) {
-  if (!await getCurrentUser()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  if (!hasRole(user, "HEALTHCARE_ASSISTANT")) return NextResponse.json({ error: "Healthcare Assistant access is required." }, { status: 403 });
   const date = new URL(request.url).searchParams.get("date") || mauritiusToday();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return NextResponse.json({ error: "Invalid queue date." }, { status: 400 });
   try { return NextResponse.json(await queueForDate(date)); } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to load the clinic queue." }, { status: 502 }); }
@@ -12,6 +14,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  if (!hasRole(user, "HEALTHCARE_ASSISTANT")) return NextResponse.json({ error: "Healthcare Assistant access is required." }, { status: 403 });
   try {
     const body = await request.json() as Record<string, unknown>;
     const displayName = typeof body.displayName === "string" ? body.displayName.trim() : "";
@@ -27,6 +30,7 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  if (!hasRole(user, "HEALTHCARE_ASSISTANT")) return NextResponse.json({ error: "Healthcare Assistant access is required." }, { status: 403 });
   const date = new URL(request.url).searchParams.get("date") || mauritiusToday();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return NextResponse.json({ error: "Invalid queue date." }, { status: 400 });
   try {

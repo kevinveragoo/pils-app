@@ -364,3 +364,171 @@
 "Name" = "Nom";
 "Phone" = "Telefonn";
 "Patient details" = "Detay pasian";
+
+"Reason not interested in PrEP" = "Rezon pa interese avek PrEP";
+"Reason not interested in PrEP is required." = "Bizin donn rezon kifer pa interese avek PrEP.";
+
+"Who perpetrated the violence?" = "Kisannla finn fer sa violans-la?";
+"Where did you seek help?" = "Kot ou finn rod led?";
+"To whom did you disclose your HIV status?" = "Ar kisannla ou finn partaz ou stati VIH?";
+"Local leader(s)" = "Responsab lokal";
+"Police" = "Lapolis";
+"Military" = "Militer";
+"Security guard(s)" = "Gard sekirite";
+"Madam(s)/pimp(s)/bar manager(s)/owner(s)" = "Proksenet/zeran/proprieter bar";
+"Local gang(s)" = "Gang lokal";
+"General community" = "Kominote";
+"Family member(s)" = "Manb fami";
+"Regular/past partner" = "Partner regilie/ansien partner";
+"Sex-work client(s)" = "Kliyan travay sexiel";
+"Health-care facility staff" = "Personel sant lasante";
+"Medical/hospital" = "Servis medikal/lopital";
+"Legal/police" = "Servis legal/lapolis";
+"Family" = "Fami";
+"Peers" = "Kamarad pair";
+"Friends" = "Kamarad";
+"Religious leader" = "Responsab relizie";
+"Chief/village elder" = "Sef/ansien vilaz";
+"HIV program" = "Program VIH";
+"Intimate/regular partner" = "Partner intim/regilie";
+"Regular client" = "Kliyan regilie";
+"Friend/relative" = "Kamarad/manb fami";
+"Who perpetrated the violence? — other, specify" = "Kisannla finn fer sa violans-la? — lezot, presize";
+"Where did you seek help? — other, specify" = "Kot ou finn rod led? — lezot, presize";
+"To whom did you disclose your HIV status? — other, specify" = "Ar kisannla ou finn partaz ou stati VIH? — lezot, presize";
+
+"Comorbidities" = "Komorbidite";
+
+"Clinic details" = "Detay klinik";
+
+"STI" = "IST";
+
+"Reproductive health" = "Lasante reproduktif";
+
+"Safety" = "Sekirite";
+
+"HIV history" = "Listwar VIH";
+
+"STI diagnosed" = "IST diagnostike";
+
+"Other STI diagnosed — specify" = "Lezot IST diagnostike — presize";
+
+"Diagnoses in the past six months. Select all that apply. Select None diagnosed or Unknown on its own." = "Diagnostik dan dernie sis mwa. Swazir tou seki aplikab. Swazir Okenn diagnostik ouswa Pa kone tousel.";
+
+"Select None diagnosed or Unknown on its own." = "Swazir Okenn diagnostik ouswa Pa kone tousel.";
+
+"Chlamydia" = "Chlamydia";
+
+"Gonorrhea" = "Gonore";
+
+"Syphilis" = "Sifilis";
+
+"Trichomoniasis" = "Trikomoniasis";
+
+"Genital herpes (HSV)" = "Erpes zenital (HSV)";
+
+"Human papillomavirus (HPV) / genital warts" = "Papillomavirus imin (HPV) / veri zenital";
+
+"Mycoplasma genitalium" = "Mycoplasma genitalium";
+
+"Chancroid" = "Sank mou";
+
+"Lymphogranuloma venereum (LGV)" = "Lymphogranuloma venereum (LGV)";
+
+"Donovanosis (granuloma inguinale)" = "Donovanoz (granulom inginal)";
+
+"HIV" = "VIH";
+
+"Hepatitis B" = "Epatit B";
+
+"Hepatitis C" = "Epatit C";
+
+"Pubic lice" = "Pou pibien";
+
+"Scabies" = "Gal";
+
+"Molluscum contagiosum" = "Molluscum contagiosum";
+
+"Hepatitis A" = "Epatit A";
+
+"None diagnosed" = "Okenn diagnostik";
+
+"Unknown" = "Pa kone";
+
+"UIC, name, or patient code" = "UIC, nom ouswa kod pasian";
+
+"Download" = "Telechargé";
+
+"Downloading…" = "Pe telechargé…";
+
+"Unable to download the index. Please try again." = "Pa kapav telecharg index-la. Eseye ankor.";
+
+"Not interested" = "Pa interese";
+
+"In prison" = "Dan prizon";
+
+"Transferred to another facility" = "Transfer dan enn lot sant";
+
+"Returned to PILS" = "Retour kot PILS";
+
+"Treatment interrupted" = "Tretman inn interonpi";
+
+"Deported" = "Deporte";
+
+"Current PrEP programme status" = "Statir aktyel program PrEP";
+
+"Reason for status change" = "Rezon sanzman statir";
+
+"HIV programme status" = "Statir program VIH";
+
+"PrEP programme status" = "Statir program PrEP";
+
+"Status update" = "Miz azour statir";
+
+"PROFILE UPDATE" = "MIZ AZOUR PROFIL";
+
+"Did the doctor change the PrEP regimen?" = "Eski dokter finn sanz tretman PrEP?";
+
+"Create a new repeat for a regimen or other treatment details change." = "Kree enn nouvo anrezistreman pou enn sanzman tretman ouswa lezot detay tretman.";
+
+"Lookup" = "Resers";
+
+"Skip to Lookup" = "Al dan resers";
+
+"Search for a client to view their complete REDCap record." = "Rod enn kliyan pou get so dosie REDCap konple.";
+
+"Search by UIC, name, or patient code" = "Rod par UIC, nom ouswa kod pasian";
+
+"Enter UIC, name, or patient code" = "Met UIC, nom ouswa kod pasian";
+
+"No matching client. Try another UIC, name, or patient code." = "Pena kliyan korespondan. Esey enn lot UIC, nom ouswa kod pasian.";
+
+"Loading record…" = "Pe sarz dosie…";
+
+"Read only · Data grouped by instrument" = "Lektir selman · Done groupe par instriman";
+
+"Repeating instruments" = "Instriman repetitif";
+
+"Instance" = "Anrezistreman";
+
+"Event" = "Evennman";
+
+"No recorded instances." = "Pena anrezistreman.";
+
+"Unable to load clients." = "Pa pe kapav sarz bann kliyan.";
+
+"Unable to load the record from REDCap." = "Pa pe kapav sarz dosie depi REDCap.";
+
+"The selected record was not found." = "Pa finn trouv dosie ki finn swazir.";
+
+"None selected" = "Okenn pa finn swazir";
+
+"Form completion" = "Leta formiler";
+
+"Record details" = "Detay dosie";
+
+"Sort ascending" = "Tri dan lord krwasan";
+
+"Sort descending" = "Tri dan lord dekrwasan";
+
+"Select a column heading to sort; select it again to reverse the order." = "Seleksionn enn tit kolonn pou tri; seleksionn li ankor pou invers lord.";

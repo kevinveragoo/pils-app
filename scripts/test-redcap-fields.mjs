@@ -26,7 +26,10 @@ function checkRequest(body) {
       for (const name of Object.keys(row)) {
         if (name.startsWith('redcap_')) continue;
         const field = checkField(name);
-        if (name !== 'uic_ori') assert.equal(field.form, form, `${name} must belong to ${form}`);
+        if (name !== 'uic_ori') {
+          if (!row.redcap_repeat_instrument) assert.ok(['client_enrollment', 'clinic_enrollment'].includes(field.form), `${name} must belong to a nonrepeating enrollment form`);
+          else assert.equal(field.form, form, `${name} must belong to ${form}`);
+        }
       }
     }
   }
@@ -55,6 +58,7 @@ function load(relative) {
       if (name === '@/lib/clinic-queue') return { completeQueueEntry: async () => false };
       if (name.startsWith('@/')) return load(`${name.slice(2)}.ts`);
       if (name.endsWith('.json')) return JSON.parse(fs.readFileSync(path.resolve(path.dirname(filename), name), 'utf8'));
+      if (name.startsWith('.')) return load(path.relative(root, path.resolve(path.dirname(filename), `${name}.ts`)));
       throw Error(`Unexpected dependency: ${name}`);
     },
   };
@@ -63,6 +67,18 @@ function load(relative) {
   return loadedModule.exports;
 }
 const { validateFields, validDate, completedAge, parseDob } = load('lib/redcap-validation.ts');
+const {prepStatusChoices,hivStatusChoices}=load('lib/treatment-status.ts');
+const normalizeStatus=label=>label.replace('Active at PILS','Active').replace('NDCCI','NDDCI');
+assert.deepEqual(prepStatusChoices.map(([,label])=>normalizeStatus(label)).sort(),hivStatusChoices.map(([,label])=>normalizeStatus(label)).sort());
+for(const [field,choices] of [['ptp_status',prepStatusChoices],['pv_status_at_visit',prepStatusChoices],['htp_care_status',hivStatusChoices]]){
+  assert.deepEqual(Array.from(choices,([code])=>code),schema[field].codes);
+  for(const [code] of choices)assert.equal(validateFields({[field]:code}),null,`${field} accepts ${code}`);
+}
+assert.equal(Object.fromEntries(prepStatusChoices)['2'],'Lost to follow-up');
+assert.equal(Object.fromEntries(hivStatusChoices)['2'],'Transferred to NDDCI');
+assert.equal(Object.fromEntries(prepStatusChoices)['9'],'Transferred to another facility');
+assert.equal(Object.fromEntries(hivStatusChoices)['9'],'Deported');
+
 const dobNow = new Date('2026-09-23');
 for (const input of ['01/09/1979', '01091979', '01.09.1979', '01/09/79', '1979-09-01', ' 01/09/1979 ']) assert.equal(parseDob(input, true, dobNow), '1979-09-01');
 assert.equal(parseDob('01/09/19', false, dobNow), '');
@@ -96,6 +112,16 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(rows[1].oc_district, '1');
   assert.equal(rows[1].oc_prep_com, '1');
   assert.equal(rows[1].sortie_type, undefined);
+  for (const reason of ['', '   ']) {
+    assert.equal((await post('outreach', { ...submission, outreach: { ...outreach, oc_prep_interested: '0', oc_prep_no_reason: reason } })).status, 400);
+    assert.equal(requests.length, 0);
+  }
+  assert.equal((await post('outreach', { ...submission, outreach: { ...outreach, oc_prep_interested: '0', oc_prep_no_reason: 'Concerned about side effects' } })).status, 200);
+  assert.equal(imported()[1].oc_prep_no_reason, 'Concerned about side effects');
+  for (const interested of ['1', '']) {
+    assert.equal((await post('outreach', { ...submission, outreach: { ...outreach, oc_prep_interested: interested, oc_prep_no_reason: 'Stale reason' } })).status, 200);
+    assert.equal(imported()[1].oc_prep_no_reason, undefined);
+  }
   assert.equal((await post('outreach', { ...submission, outreach: { ...outreach, oc_district: '' } })).status, 400);
   assert.equal(requests.length, 0);
   assert.equal((await post('outreach', { ...submission, outreach: { ...outreach, oc_prep_com: '' } })).status, 400);
@@ -169,7 +195,8 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal((await post('prep', { mode: 'existing', recordId: 'TEST', includeProfile: true, profile: { ...prepProfile, ptp_status: '2', ptp_effective_date: '2026-10-03', ptp_change_reason: 'Follow-up status changed' }, visit: { ...prepVisit, pv_visit_date: '2026-10-03' } })).status, 200);
   assert.equal(imported()[0].redcap_repeat_instrument, 'prep_treatment_profile');
   assert.equal(imported()[0].redcap_repeat_instance, '3');
-  assert.equal(imported()[0].ptp_ltfu, '1');
+  assert.equal(imported()[0].ptp_ltfu, undefined);
+  assert.equal(imported()[0].ptp_status, undefined);
   existing = [{ uic_ori: 'TEST' }, { uic_ori: 'TEST', redcap_repeat_instrument: 'hiv_treatment_profile', redcap_repeat_instance: '1', htp_art_start_date: '2020-01-01', htp_art_regimen___1: '1' }];
   const arvVisit = { cnv_worker: 'Tester', cnv_date: '2026-10-04', cnv_reason: '4,9', cnv_medication_supplied: '1,2,10', cnv_art_prescription_months: '3', cnv_next_med_collection: '2027-01-04', cnv_blood_collected: '1', cnv_syphilis_referral: '1', cnv_syphilis_refer_where: 'PILS clinic', cnv_hcv_reported: '1', cnv_hcv_treat: '1', cnv_hcv_vl_date: '2026-10-03', cnv_hcv_vl_result: 'Not detected', cnv_hbv_vaccination_status: '1', cnv_gbv_screen: '1', cl_gbv_refer: '1', cnv_gbv_refer_where: 'Partner organisation', cnv_alcohol_screen: '1', cnv_alcohol_refer: '1', cnv_alcohol_refer_where: 'Counselling service', cnv_ost_screen: '1', cnv_ost_refer: '1', cnv_ost_refer_where: 'Methadone centre', cnv_cervical_screen: '1', cnv_cervical_refer: '1', cnv_cervical_refer_where: 'Hospital', cnv_abscess_screen: '1', cnv_abscess_refer: '1', cnv_abscess_refer_where: 'Clinic', cnv_other_screen: '1', cnv_other_refer: '1', cnv_other_refer_where: 'Other facility' };
   Object.assign(arvVisit, { cnv_complaints: 'Routine review', cnv_referred_by: '2', cnv_exam_done: '1', cnv_exam_findings: 'Stable', cnv_hiv_reported: '1', cnv_hiv_lab_test_done: '1', cnv_hiv_lab_test_date: '2026-10-03', cnv_hiv_lab_result_received: '1', cnv_hiv_lab_result: '2', cnv_hbv_reported: '2', cnv_hbv_lab_test_done: '1', cnv_hbv_lab_test_date: '2026-10-03', cnv_hbv_lab_result_received: '1', cnv_hbv_lab_result: '2', cnv_hbv_treat: '0', cnv_syp_reported: '2', cnv_syp_lab_test_done: '1', cnv_syp_lab_test_date: '2026-10-03', cnv_syp_lab_result_received: '1', cnv_syp_lab_result: '2', cnv_sti_syndrome: '1,8', cnv_sti_screened: '1', cnv_sti_treatment: 'Counselling', cnv_sti_treated: '1', cnv_fp_counselling: '1', cnv_post_abortion: '0', cnv_risk_reduction: '1', cnv_condom_demo: '1', cnv_num_male_condoms: '12', cnv_num_female_condoms: '4', cnv_num_lube: '12', cnv_num_hiv_selftest_kits: '2', cnv_num_needles: '5', cnv_lab_ref: '1', cnv_lab_tests: '2,3,4', cnv_lab_location: 'Central laboratory', cnv_other_fac_ref: '1', cnv_other_facility: 'Regional hospital', cnv_next_appt: '2026-11-04 09:30', cnv_next_reason: 'Review' });
@@ -191,13 +218,89 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[0].cnv_other_facility, 'Regional hospital');
   assert.equal(imported()[1].redcap_repeat_instrument, 'hiv_clinical_monitoring');
   assert.equal(imported()[1].htm_is_baseline, '0');
+  const clinicAnswers = { cne_date: '2026-10-11', cne_pregnancies: '2', cne_pregnant_now: '1', cne_antenatal: '1', cne_num_children: '1', cne_contraception_type: '5', cne_violence_3m: '1', cne_violence_help: '1', cne_violence_perpetrator: '2,99', cne_violence_perpetrator_other: 'Other perpetrator', cne_violence_help_source: '1,8,99', cne_violence_help_source_other: 'Other source', cne_hiv_prev_test: '1', cne_hiv_prev_result: '1', cne_hiv_prev_result_disclosed: '1', cne_hiv_disclosure_recipient: '1,3,99', cne_hiv_disclosure_recipient_other: 'Other recipient' };
+  for (const sex of ['1', '2', '3', '9', '']) {
+    existing = [{ uic_ori: 'TEST', ce_sex_assigned_birth: sex }];
+    assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', includeClinicEnrollment: true, clinicEnrollment: clinicAnswers, visit: arvVisit })).status, 200);
+    const base = imported()[0];
+    assert.equal(base.cne_pregnancies, sex === '2' ? '2' : undefined);
+    assert.equal(base.cne_antenatal, sex === '2' ? '1' : undefined);
+    assert.equal(base.cne_contraception_type___5, sex === '2' ? '1' : undefined);
+    assert.equal(base.cne_violence_perpetrator___2, '1');
+    assert.equal(base.cne_violence_perpetrator___99, '1');
+    assert.equal(base.cne_violence_help_source___8, '1');
+    assert.equal(base.cne_hiv_disclosure_recipient___3, '1');
+    assert.equal(base.cne_hiv_disclosure_recipient_other, 'Other recipient');
+  }
+  existing = [{ uic_ori: 'TEST', ce_sex_assigned_birth: '1' }];
+  assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', enrollment: { ce_sex_assigned_birth: '2' }, includeClinicEnrollment: true, clinicEnrollment: { ...clinicAnswers, cne_violence_3m: '0', cne_hiv_prev_result_disclosed: '0' }, visit: arvVisit })).status, 200);
+  assert.equal(imported()[0].ce_sex_assigned_birth, undefined);
+  assert.equal(imported()[0].cne_pregnancies, undefined);
+  assert.equal(imported()[0].cne_violence_perpetrator___2, undefined);
+  assert.equal(imported()[0].cne_violence_help_source___1, undefined);
+  assert.equal(imported()[0].cne_hiv_disclosure_recipient___1, undefined);
+  existing = [{ uic_ori: 'TEST' }];
+  assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', enrollment: { ce_sex_assigned_birth: '2' }, includeClinicEnrollment: true, clinicEnrollment: { ...clinicAnswers, cne_pregnant_now: '0', cne_violence_help: '0', cne_hiv_prev_test: '0' }, visit: arvVisit })).status, 200);
+  assert.equal(imported()[0].ce_sex_assigned_birth, undefined);
+  assert.equal(imported()[0].cne_pregnancies, undefined);
+  assert.equal(imported()[0].cne_antenatal, undefined);
+  assert.equal(imported()[0].cne_violence_help_source___1, undefined);
+  assert.equal(imported()[0].cne_hiv_disclosure_recipient___1, undefined);
+  assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', includeClinicEnrollment: true, clinicEnrollment: { ...clinicAnswers, cne_violence_perpetrator: '100' }, visit: arvVisit })).status, 400);
+  existing = [{ uic_ori: 'TEST', ce_sex_assigned_birth: '2', ce_dob: '2000-01-01' }];
+  const identityLookup = await (await load('app/api/redcap/clinic/route.ts').GET(new Request('http://localhost/api?uic=TEST'))).json();
+  assert.equal(identityLookup.clientIdentity.ce_sex_assigned_birth, '2');
+  assert.equal(identityLookup.clientIdentity.ce_dob, '2000-01-01');
+  assert.ok(requests.some(body => body.get('forms[5]') === 'clinic_enrollment'));
+  existing = [{ uic_ori: 'TEST', cne_date: '2026-10-01' }];
+  assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', includeClinicEnrollment: true, clinicEnrollment: clinicAnswers, visit: arvVisit })).status, 409);
+  assert.ok(requests.every(body => body.get('action') !== 'import'));
+
+  existing = [{ uic_ori: 'TEST' }, { uic_ori: 'TEST', redcap_repeat_instrument: 'hiv_treatment_profile', redcap_repeat_instance: '1', htp_art_start_date: '2020-01-01', htp_art_regimen___1: '1' }];
+  existing = [{ uic_ori: 'TEST' }];
+  const stiSubmission = { mode: 'existing', recordId: 'TEST', includeClinicEnrollment: true, clinicEnrollment: { cne_date: '2026-10-11', cne_sti_diagnosed: '1,3,99', cne_sti_diagnosed_other: 'Other diagnosed infection' }, visit: arvVisit };
+  assert.equal((await post('clinic', stiSubmission)).status, 200);
+  assert.equal(imported()[0].cne_sti_diagnosed___1, '1');
+  assert.equal(imported()[0].cne_sti_diagnosed___3, '1');
+  assert.equal(imported()[0].cne_sti_diagnosed___99, '1');
+  assert.equal(imported()[0].cne_sti_diagnosed_other, 'Other diagnosed infection');
+  for (const selection of ['0', '98', '2,12,17']) {
+    assert.equal((await post('clinic', { ...stiSubmission, clinicEnrollment: { ...stiSubmission.clinicEnrollment, cne_sti_diagnosed: selection } })).status, 200);
+    assert.equal(imported()[0].cne_sti_diagnosed_other, undefined);
+  }
+  for (const selection of ['0,1', '98,3', '0,98', '100']) {
+    assert.equal((await post('clinic', { ...stiSubmission, clinicEnrollment: { ...stiSubmission.clinicEnrollment, cne_sti_diagnosed: selection } })).status, 400);
+    assert.equal(requests.length, 0);
+  }
+  for (const kpTypes of [[], ['1'], ['2'], ['1', '2'], ['5'], ['3', '8']]) {
+    existing = [{ uic_ori: 'TEST', ...Object.fromEntries(kpTypes.map(code => [`ce_kp_type___${code}`, '1'])) }];
+    const lookup = await (await load('app/api/redcap/clinic/route.ts').GET(new Request('http://localhost/api?uic=TEST'))).json();
+    assert.equal(lookup.clientIdentity.ce_kp_type, kpTypes.join(','));
+    assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', enrollment: { ce_kp_type: '2' }, includeClinicEnrollment: true, clinicEnrollment: { cne_date: '2026-10-11', cne_msm_sex_type: '1,3' }, visit: arvVisit })).status, 200);
+    assert.equal(imported()[0].cne_msm_sex_type___1, kpTypes.includes('2') ? '1' : undefined);
+    assert.equal(imported()[0].cne_msm_sex_type___3, kpTypes.includes('2') ? '1' : undefined);
+  }
+  existing = [{ uic_ori: 'TEST' }, { uic_ori: 'TEST', redcap_repeat_instrument: 'hiv_treatment_profile', redcap_repeat_instance: '1', htp_art_start_date: '2020-01-01', htp_art_regimen___1: '1' }];
   const changedCareProfile = { htp_effective_date: '2026-10-04', htp_care_status: '2', htp_care_facility: 'NDDCI', htp_change_reason: 'Transferred for continued care', htp_started_abroad: '0', htp_art_start_date: '2020-01-01', htp_art_regimen: '1,12', htp_additional_medications: 'Bactrim' };
   assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', includeProfile: true, profile: changedCareProfile, visit: arvVisit, includeMonitoring: false })).status, 200);
   assert.equal(imported()[0].redcap_repeat_instrument, 'hiv_treatment_profile');
   assert.equal(imported()[0].redcap_repeat_instance, '2');
-  assert.equal(imported()[0].htp_care_status, '2');
-  assert.equal(imported()[0].htp_care_facility, 'NDDCI');
+  assert.equal(imported()[0].htp_care_status, undefined);
+  assert.equal(imported()[0].htp_care_facility, undefined);
   assert.equal(imported()[0].htp_art_regimen___12, '1');
+  assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', visit: arvVisit, statusChanges: { hiv: '8', hivOriginal: '', reason: 'Moved abroad' } })).status, 200);
+  assert.equal(imported()[0].redcap_repeat_instrument, 'hiv_care_support');
+  assert.equal(imported()[0].hcs_care_status, '8');
+  assert.equal(imported()[0].hcs_status_only, '1');
+  assert.equal(imported()[0].hcs_status_date, arvVisit.cnv_date);
+  assert.equal(imported().some(row => row.redcap_repeat_instrument === 'hiv_treatment_profile'), false);
+  assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', visit: arvVisit, statusChanges: { hiv: '8', hivOriginal: '1' } })).status, 409);
+  assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', visit: arvVisit, statusChanges: { prep: '5' } })).status, 409);
+  existing.push({ uic_ori: 'TEST', redcap_repeat_instrument: 'hiv_care_support', redcap_repeat_instance: 5, hcs_care_status: '8', hcs_status_date: arvVisit.cnv_date });
+  assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', visit: arvVisit, statusChanges: { hiv: '8', hivOriginal: '8' } })).status, 200);
+  assert.equal(imported().length, 1);
+  assert.equal(imported()[0].redcap_repeat_instrument, 'clinic_visit');
+
   assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', includeClientStatus: true, clientStatus: { ce_active: '0', ce_vital_status: '2', ce_exit_date: '2026-10-04', ce_exit_reason: 'Confirmed deceased' }, includeProfile: false, visit: arvVisit, includeMonitoring: false })).status, 200);
   assert.equal(imported()[0].ce_vital_status, '2');
   assert.equal(imported()[0].ce_active, '0');

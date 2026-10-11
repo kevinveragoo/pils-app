@@ -46,6 +46,13 @@ export function completedAge(dob: string, now = new Date()) {
 }
 
 export function validateFields(values: Record<string, string>, fields = Object.keys(values)): string | null {
+  if (fields.includes("oc_prep_interested") && values.oc_prep_interested === "0" && !values.oc_prep_no_reason?.trim()) {
+    return "Reason not interested in PrEP is required.";
+  }
+  if (fields.includes("cne_sti_diagnosed")) {
+    const diagnoses = values.cne_sti_diagnosed?.split(",").filter(Boolean) ?? [];
+    if (diagnoses.length > 1 && diagnoses.some(code => ["0", "98"].includes(code))) return "Select None diagnosed or Unknown on its own.";
+  }
   for (const key of fields) {
     const rule = rules[key];
     if (!rule) continue;

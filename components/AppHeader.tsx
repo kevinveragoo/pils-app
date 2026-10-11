@@ -4,7 +4,7 @@ import { logoutAction } from "@/app/auth-actions";
 import { getCurrentUser, hasAnyRole, hasRole } from "@/lib/auth";
 import { LanguagePicker } from "@/components/Localization";
 
-export default async function AppHeader({ current }: { current: "breakfast" | "outreach" | "healthcare-nav" | "prep" | "clinic" | "clinic-queue" | "export-index" | "dashboard" | "logs" }) {
+export default async function AppHeader({ current }: { current: "lookup" | "breakfast" | "outreach" | "healthcare-nav" | "prep" | "clinic" | "clinic-queue" | "export-index" | "dashboard" | "logs" }) {
   const user = await getCurrentUser();
   const showOutreach = Boolean(user && hasAnyRole(user, ["OUTREACH_WORKER", "HEALTHCARE_ASSISTANT", "ADMIN"]));
   const showHealthcareNavigator = Boolean(user && hasAnyRole(user, ["HEALTHCARE_NAVIGATOR", "ADMIN"]));
@@ -24,6 +24,7 @@ export default async function AppHeader({ current }: { current: "breakfast" | "o
           {showClinicalWorkflows && <Link href="/export-index" aria-current={current === "export-index" ? "page" : undefined}><span>Export<br />Index</span></Link>}
           {showBreakfast && <Link href="/breakfast" aria-current={current === "breakfast" ? "page" : undefined}>Breakfast</Link>}
           {showDashboard && <Link href="/dashboard" aria-current={current === "dashboard" ? "page" : undefined}>Dashboard</Link>}
+          {user && <Link href="/lookup" aria-current={current === "lookup" ? "page" : undefined}>Lookup</Link>}
           {showLogs && <Link href="/logs" aria-current={current === "logs" ? "page" : undefined}>Logs</Link>}
           {user && hasRole(user, "ADMIN") && <Link href="/admin/users"><span>Admin<br />Users</span></Link>}
           <Link href="/change-password"><span>Change<br />Password</span></Link>

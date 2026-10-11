@@ -364,3 +364,171 @@
 "Name" = "Name";
 "Phone" = "Phone";
 "Patient details" = "Patient details";
+
+"Reason not interested in PrEP" = "Reason not interested in PrEP";
+"Reason not interested in PrEP is required." = "Reason not interested in PrEP is required.";
+
+"Who perpetrated the violence?" = "Who perpetrated the violence?";
+"Where did you seek help?" = "Where did you seek help?";
+"To whom did you disclose your HIV status?" = "To whom did you disclose your HIV status?";
+"Local leader(s)" = "Local leader(s)";
+"Police" = "Police";
+"Military" = "Military";
+"Security guard(s)" = "Security guard(s)";
+"Madam(s)/pimp(s)/bar manager(s)/owner(s)" = "Madam(s)/pimp(s)/bar manager(s)/owner(s)";
+"Local gang(s)" = "Local gang(s)";
+"General community" = "General community";
+"Family member(s)" = "Family member(s)";
+"Regular/past partner" = "Regular/past partner";
+"Sex-work client(s)" = "Sex-work client(s)";
+"Health-care facility staff" = "Health-care facility staff";
+"Medical/hospital" = "Medical/hospital";
+"Legal/police" = "Legal/police";
+"Family" = "Family";
+"Peers" = "Peers";
+"Friends" = "Friends";
+"Religious leader" = "Religious leader";
+"Chief/village elder" = "Chief/village elder";
+"HIV program" = "HIV program";
+"Intimate/regular partner" = "Intimate/regular partner";
+"Regular client" = "Regular client";
+"Friend/relative" = "Friend/relative";
+"Who perpetrated the violence? — other, specify" = "Who perpetrated the violence? — other, specify";
+"Where did you seek help? — other, specify" = "Where did you seek help? — other, specify";
+"To whom did you disclose your HIV status? — other, specify" = "To whom did you disclose your HIV status? — other, specify";
+
+"Comorbidities" = "Comorbidities";
+
+"Clinic details" = "Clinic details";
+
+"STI" = "STI";
+
+"Reproductive health" = "Reproductive health";
+
+"Safety" = "Safety";
+
+"HIV history" = "HIV history";
+
+"STI diagnosed" = "STI diagnosed";
+
+"Other STI diagnosed — specify" = "Other STI diagnosed — specify";
+
+"Diagnoses in the past six months. Select all that apply. Select None diagnosed or Unknown on its own." = "Diagnoses in the past six months. Select all that apply. Select None diagnosed or Unknown on its own.";
+
+"Select None diagnosed or Unknown on its own." = "Select None diagnosed or Unknown on its own.";
+
+"Chlamydia" = "Chlamydia";
+
+"Gonorrhea" = "Gonorrhea";
+
+"Syphilis" = "Syphilis";
+
+"Trichomoniasis" = "Trichomoniasis";
+
+"Genital herpes (HSV)" = "Genital herpes (HSV)";
+
+"Human papillomavirus (HPV) / genital warts" = "Human papillomavirus (HPV) / genital warts";
+
+"Mycoplasma genitalium" = "Mycoplasma genitalium";
+
+"Chancroid" = "Chancroid";
+
+"Lymphogranuloma venereum (LGV)" = "Lymphogranuloma venereum (LGV)";
+
+"Donovanosis (granuloma inguinale)" = "Donovanosis (granuloma inguinale)";
+
+"HIV" = "HIV";
+
+"Hepatitis B" = "Hepatitis B";
+
+"Hepatitis C" = "Hepatitis C";
+
+"Pubic lice" = "Pubic lice";
+
+"Scabies" = "Scabies";
+
+"Molluscum contagiosum" = "Molluscum contagiosum";
+
+"Hepatitis A" = "Hepatitis A";
+
+"None diagnosed" = "None diagnosed";
+
+"Unknown" = "Unknown";
+
+"UIC, name, or patient code" = "UIC, name, or patient code";
+
+"Download" = "Download";
+
+"Downloading…" = "Downloading…";
+
+"Unable to download the index. Please try again." = "Unable to download the index. Please try again.";
+
+"Not interested" = "Not interested";
+
+"In prison" = "In prison";
+
+"Transferred to another facility" = "Transferred to another facility";
+
+"Returned to PILS" = "Returned to PILS";
+
+"Treatment interrupted" = "Treatment interrupted";
+
+"Deported" = "Deported";
+
+"Current PrEP programme status" = "Current PrEP programme status";
+
+"Reason for status change" = "Reason for status change";
+
+"HIV programme status" = "HIV programme status";
+
+"PrEP programme status" = "PrEP programme status";
+
+"Status update" = "Status update";
+
+"PROFILE UPDATE" = "PROFILE UPDATE";
+
+"Did the doctor change the PrEP regimen?" = "Did the doctor change the PrEP regimen?";
+
+"Create a new repeat for a regimen or other treatment details change." = "Create a new repeat for a regimen or other treatment details change.";
+
+"Lookup" = "Lookup";
+
+"Skip to Lookup" = "Skip to Lookup";
+
+"Search for a client to view their complete REDCap record." = "Search for a client to view their complete REDCap record.";
+
+"Search by UIC, name, or patient code" = "Search by UIC, name, or patient code";
+
+"Enter UIC, name, or patient code" = "Enter UIC, name, or patient code";
+
+"No matching client. Try another UIC, name, or patient code." = "No matching client. Try another UIC, name, or patient code.";
+
+"Loading record…" = "Loading record…";
+
+"Read only · Data grouped by instrument" = "Read only · Data grouped by instrument";
+
+"Repeating instruments" = "Repeating instruments";
+
+"Instance" = "Instance";
+
+"Event" = "Event";
+
+"No recorded instances." = "No recorded instances.";
+
+"Unable to load clients." = "Unable to load clients.";
+
+"Unable to load the record from REDCap." = "Unable to load the record from REDCap.";
+
+"The selected record was not found." = "The selected record was not found.";
+
+"None selected" = "None selected";
+
+"Form completion" = "Form completion";
+
+"Record details" = "Record details";
+
+"Sort ascending" = "Sort ascending";
+
+"Sort descending" = "Sort descending";
+
+"Select a column heading to sort; select it again to reverse the order." = "Select a column heading to sort; select it again to reverse the order.";

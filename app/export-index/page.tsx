@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ExportIndexDownload from "@/components/ExportIndexDownload";
 import AppHeader from "@/components/AppHeader";
 import { requireAnyRole } from "@/lib/auth";
 
@@ -19,7 +20,7 @@ export default async function ExportIndexPage() {
           <section className="outreach-card py-12 text-center">
             <p className="text-sm font-bold uppercase tracking-widest text-primary">Clinic services</p>
             <h1 className="mt-2 text-3xl font-bold">Export Index</h1>
-            <p className="mt-3 text-muted-foreground">To be implemented.</p>
+            <ExportIndexDownload />
           </section>
         </div>
       </main>

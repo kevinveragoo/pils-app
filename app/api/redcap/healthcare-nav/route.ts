@@ -1,3 +1,4 @@
+import { hivHistoryFields, latestStatus } from "@/lib/status-history";
 import { validateFields } from "@/lib/redcap-validation";
 import { generateUic } from "@/lib/uic";
 import { NextResponse } from "next/server";
@@ -11,9 +12,9 @@ type Values = Record<string, string>;
 type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; care?: unknown; profile?: unknown; includeProfile?: unknown; monitoring?: unknown; includeMonitoring?: unknown; newCd4?: unknown; newVl?: unknown };
 
 const enrollmentFields = ["ce_active", "ce_date", "ce_implementing_partner", "ce_district", "ce_hotspot", "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_middle_name_1", "ce_middle_name_2", "ce_middle_name_3", "ce_alias", "ce_dob", "ce_gender_identity", "ce_vision", "ce_kp_type", "ce_tel_primary", "ce_contact_method", "ce_risk_drug_alcohol_sex", "ce_risk_violence_1m", "ce_sw_age_started", "ce_sw_sex_acts_1w", "ce_sw_condom_use_1w", "ce_msm_age_first_anal", "ce_msm_receptive_anal_1w", "ce_msm_condom_anal_1w", "ce_pwid_age_first_inject", "ce_pwid_injections_24h", "ce_pwid_injections_1w", "ce_pwid_shared_24h", "ce_pwid_shared_1w"];
-const careFields = ["hcs_navigator_1", "hcs_navigator_2", "hcs_navigator_3", "hcs_date", "hcs_currently_art", "hcs_art_status", "hcs_care_type", "hcs_care_region", "hcs_adherence_counsel", "hcs_psychosocial", "hcs_comprehensive_ref", "hcs_num_male_condoms", "hcs_num_female_condoms", "hcs_num_lube", "hcs_num_needles", "hcs_followup_needed", "hcs_followup_date", "hcs_notes"];
+const careFields = [...hivHistoryFields,"hcs_navigator_1", "hcs_navigator_2", "hcs_navigator_3", "hcs_date", "hcs_currently_art", "hcs_art_status", "hcs_care_type", "hcs_care_region", "hcs_adherence_counsel", "hcs_psychosocial", "hcs_comprehensive_ref", "hcs_num_male_condoms", "hcs_num_female_condoms", "hcs_num_lube", "hcs_num_needles", "hcs_followup_needed", "hcs_followup_date", "hcs_notes"];
 const monitoringFields = ["htm_date", "htm_is_baseline", "htm_art_status", "htm_cd4_date", "htm_cd4_level", "htm_vl_date", "htm_viral_load_detectable", "htm_vl_level", "htm_notes"];
-const profileFields = ["htp_diagnosis_date", "htp_prev_ltfu", "htp_art_reg_date", "htp_art_reg_place", "htp_started_abroad", "htp_art_start_date", "htp_art_regimen", "htp_art_regimen_other", "htp_additional_medications", "htp_art_adherence", "htp_effective_date", "htp_care_status", "htp_care_facility", "htp_care_status_other", "htp_change_reason", "htp_notes"];
+const profileFields = ["htp_diagnosis_date", "htp_prev_ltfu", "htp_art_reg_date", "htp_art_reg_place", "htp_started_abroad", "htp_art_start_date", "htp_art_regimen", "htp_art_regimen_other", "htp_additional_medications", "htp_art_adherence", "htp_effective_date",  "htp_change_reason", "htp_notes"];
 
 function values(value: unknown): Values | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
@@ -51,9 +52,9 @@ export async function GET(request: Request) {
   const uic = new URL(request.url).searchParams.get("uic")?.trim().toUpperCase() ?? "";
   if (!uic) return NextResponse.json({ error: "A UIC is required." }, { status: 400 });
   try {
-    const exported = await redcap({ content: "record", action: "export", format: "json", type: "flat", rawOrLabel: "raw", rawOrLabelHeaders: "raw", returnFormat: "json", "records[0]": uic, "fields[0]": "uic_ori" });
+    const exported = await redcap({ content: "record", action: "export", format: "json", type: "flat", rawOrLabel: "raw", rawOrLabelHeaders: "raw", returnFormat: "json", "records[0]": uic, "forms[0]": "client_enrollment", "forms[1]": "hiv_treatment_profile", "forms[2]": "hiv_care_support" });
     const rows = Array.isArray(exported) ? exported as Values[] : [];
-    return NextResponse.json({ exists: rows.some((row) => row.uic_ori === uic) });
+    return NextResponse.json({ exists: rows.some((row) => row.uic_ori === uic), programmeStatus: latestStatus(rows, "hiv") });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to check the UIC in REDCap." }, { status: 502 });
   }
@@ -83,7 +84,7 @@ export async function POST(request: Request) {
   if (includeMonitoring) {
     if (!monitoring.htm_date) return NextResponse.json({ error: "A monitoring date is required." }, { status: 400 });
   }
-  if (includeProfile && (!profile || !profile.htp_effective_date?.trim() || !profile.htp_care_status?.trim() || !profile.htp_art_start_date?.trim())) return NextResponse.json({ error: "Profile effective date, care status, and ART start date are required for a treatment profile." }, { status: 400 });
+  if (includeProfile && (!profile || !profile.htp_effective_date?.trim()  || !profile.htp_art_start_date?.trim())) return NextResponse.json({ error: "Profile effective date and ART start date are required for a treatment profile." }, { status: 400 });
   if (mode === "new") {
     const requiredEnrollment = ["ce_date", "ce_district", "ce_hotspot", "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_dob", "ce_gender_identity", "ce_kp_type"];
     if (!enrollment || !requiredEnrollment.every((key) => enrollment[key]?.trim())) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
@@ -109,6 +110,7 @@ export async function POST(request: Request) {
     const next = (form: string) => String((maximum.get(form) ?? 0) + 1);
     const records: Values[] = [];
     if (mode === "new" && enrollment) records.push({ uic_ori: recordId, ...copyAllowed(enrollment, enrollmentFields) });
+    if(care.hcs_care_status){care.hcs_status_date=care.hcs_status_date||care.hcs_date;care.hcs_status_date_unknown="0";}else if(mode==="new"&&includeProfile){care.hcs_care_status="1";care.hcs_status_date=care.hcs_date;}else {const current=latestStatus(existing,"hiv");if(current.status){care.hcs_care_status=current.status;care.hcs_status_date=care.hcs_date;}}
     records.push({ uic_ori: recordId, redcap_repeat_instrument: "hiv_care_support", redcap_repeat_instance: next("hiv_care_support"), ...copyAllowed(care, careFields) });
     if (includeProfile && profile) records.push({ uic_ori: recordId, redcap_repeat_instrument: "hiv_treatment_profile", redcap_repeat_instance: next("hiv_treatment_profile"), ...copyAllowed(profile, profileFields) });
     if (includeMonitoring) records.push({ uic_ori: recordId, redcap_repeat_instrument: "hiv_clinical_monitoring", redcap_repeat_instance: next("hiv_clinical_monitoring"), ...copyAllowed(monitoring, monitoringFields) });

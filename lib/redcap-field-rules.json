@@ -778,6 +778,10 @@
       "1"
     ]
   },
+  "oc_prep_no_reason": {
+    "label": "Reason not interested in PrEP",
+    "type": "notes"
+  },
   "oc_referrals": {
     "label": "Referred for?",
     "type": "checkbox",
@@ -1510,7 +1514,13 @@
       "4",
       "5",
       "6",
-      "7"
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "99"
     ]
   },
   "ptp_ltfu": {
@@ -1546,13 +1556,13 @@
     "required": true
   },
   "pv_visit_purpose": {
-    "label": "Visit purpose (select all that apply)",
+    "label": "Visit purpose",
     "type": "checkbox",
-    "form": "prep_visit",
     "choices": [
       "1",
       "2",
-      "3"
+      "3",
+      "4"
     ]
   },
   "pv_recorded_by": {
@@ -1772,7 +1782,6 @@
   "pv_status_at_visit": {
     "label": "PrEP programme status at this visit",
     "type": "radio",
-    "form": "prep_visit",
     "choices": [
       "1",
       "2",
@@ -1780,7 +1789,13 @@
       "4",
       "5",
       "6",
-      "7"
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "99"
     ]
   },
   "pv_profile_updated": {
@@ -1887,7 +1902,10 @@
       "7",
       "8",
       "9",
-      "99"
+      "99",
+      "10",
+      "11",
+      "12"
     ]
   },
   "htp_care_facility": {
@@ -1997,5 +2015,149 @@
     "label": "Reason medication was not supplied",
     "type": "text",
     "form": "clinic_visit"
+  },
+  "cne_violence_perpetrator": {
+    "label": "Who perpetrated the violence?",
+    "type": "checkbox",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "99"
+    ]
+  },
+  "cne_violence_perpetrator_other": {
+    "label": "Who perpetrated the violence? — other, specify",
+    "type": "text"
+  },
+  "cne_violence_help_source": {
+    "label": "Where did you seek help?",
+    "type": "checkbox",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "99"
+    ]
+  },
+  "cne_violence_help_source_other": {
+    "label": "Where did you seek help? — other, specify",
+    "type": "text"
+  },
+  "cne_hiv_disclosure_recipient": {
+    "label": "To whom did you disclose your HIV status?",
+    "type": "checkbox",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "99"
+    ]
+  },
+  "cne_hiv_disclosure_recipient_other": {
+    "label": "To whom did you disclose your HIV status? — other, specify",
+    "type": "text"
+  },
+  "cne_sti_diagnosed": {
+    "label": "STI diagnosed",
+    "type": "checkbox",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "99",
+      "0",
+      "98"
+    ]
+  },
+  "cne_sti_diagnosed_other": {
+    "label": "Other STI diagnosed — specify",
+    "type": "text"
+  },
+  "pv_status_only": {
+    "label": "Status update only?",
+    "type": "yesno"
+  },
+  "pv_status_date": {
+    "label": "Status effective date (leave blank if unknown)",
+    "type": "date_dmy"
+  },
+  "pv_status_date_unknown": {
+    "label": "Historical status date unknown?",
+    "type": "yesno"
+  },
+  "pv_status_reason": {
+    "label": "Reason for status change",
+    "type": "notes"
+  },
+  "pv_status_source": {
+    "label": "Status migration source",
+    "type": "text"
+  },
+  "hcs_status_only": {
+    "label": "Status update only?",
+    "type": "yesno"
+  },
+  "hcs_care_status": {
+    "label": "Current ARV care status",
+    "type": "dropdown",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "99",
+      "10",
+      "11",
+      "12"
+    ]
+  },
+  "hcs_status_date": {
+    "label": "Status effective date (leave blank if unknown)",
+    "type": "date_dmy"
+  },
+  "hcs_status_date_unknown": {
+    "label": "Historical status date unknown?",
+    "type": "yesno"
+  },
+  "hcs_status_reason": {
+    "label": "Reason for status change",
+    "type": "notes"
+  },
+  "hcs_status_source": {
+    "label": "Status migration source",
+    "type": "text"
   }
 }

@@ -622,6 +622,10 @@
     "form": "outreach_contact",
     "type": "yesno"
   },
+  "oc_prep_no_reason": {
+    "form": "outreach_contact",
+    "type": "notes"
+  },
   "oc_referrals": {
     "form": "outreach_contact",
     "type": "checkbox",
@@ -1447,7 +1451,13 @@
       "4",
       "5",
       "6",
-      "7"
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "99"
     ]
   },
   "ptp_ltfu": {
@@ -1484,7 +1494,8 @@
     "codes": [
       "1",
       "2",
-      "3"
+      "3",
+      "4"
     ]
   },
   "pv_followup_stage": {
@@ -1657,7 +1668,13 @@
       "4",
       "5",
       "6",
-      "7"
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "99"
     ]
   },
   "pv_profile_updated": {
@@ -1756,7 +1773,10 @@
       "7",
       "8",
       "9",
-      "99"
+      "99",
+      "10",
+      "11",
+      "12"
     ]
   },
   "htp_care_facility": {
@@ -3341,5 +3361,149 @@
   "breakfast_notes": {
     "form": "breakfast_attendance",
     "type": "notes"
+  },
+  "cne_violence_perpetrator": {
+    "form": "clinic_enrollment",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "99"
+    ]
+  },
+  "cne_violence_perpetrator_other": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "cne_violence_help_source": {
+    "form": "clinic_enrollment",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "99"
+    ]
+  },
+  "cne_violence_help_source_other": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "cne_hiv_disclosure_recipient": {
+    "form": "clinic_enrollment",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "99"
+    ]
+  },
+  "cne_hiv_disclosure_recipient_other": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "cne_sti_diagnosed": {
+    "form": "clinic_enrollment",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "99",
+      "0",
+      "98"
+    ]
+  },
+  "cne_sti_diagnosed_other": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "pv_status_only": {
+    "form": "prep_visit",
+    "type": "yesno"
+  },
+  "pv_status_date": {
+    "form": "prep_visit",
+    "type": "text"
+  },
+  "pv_status_date_unknown": {
+    "form": "prep_visit",
+    "type": "yesno"
+  },
+  "pv_status_reason": {
+    "form": "prep_visit",
+    "type": "notes"
+  },
+  "pv_status_source": {
+    "form": "prep_visit",
+    "type": "text"
+  },
+  "hcs_status_only": {
+    "form": "hiv_care_support",
+    "type": "yesno"
+  },
+  "hcs_care_status": {
+    "form": "hiv_care_support",
+    "type": "dropdown",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "99",
+      "10",
+      "11",
+      "12"
+    ]
+  },
+  "hcs_status_date": {
+    "form": "hiv_care_support",
+    "type": "text"
+  },
+  "hcs_status_date_unknown": {
+    "form": "hiv_care_support",
+    "type": "yesno"
+  },
+  "hcs_status_reason": {
+    "form": "hiv_care_support",
+    "type": "notes"
+  },
+  "hcs_status_source": {
+    "form": "hiv_care_support",
+    "type": "text"
   }
 }

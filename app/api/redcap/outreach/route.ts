@@ -11,7 +11,7 @@ type Values = Record<string, string>;
 type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; outreach?: unknown; partners?: unknown; children?: unknown };
 
 const enrollmentFields = ["ce_active", "ce_date","ce_implementing_partner","ce_district","ce_hotspot","ce_outreach_worker","ce_last_name","ce_first_name","ce_middle_name_1", "ce_middle_name_2", "ce_middle_name_3","ce_alias","ce_dob","ce_gender_identity","ce_vision","ce_kp_type","ce_tel_primary","ce_contact_method","ce_risk_drug_alcohol_sex","ce_risk_violence_1m","ce_sw_age_started","ce_sw_sex_acts_1w","ce_sw_condom_use_1w","ce_msm_age_first_anal","ce_msm_receptive_anal_1w","ce_msm_condom_anal_1w","ce_pwid_age_first_inject","ce_pwid_injections_24h","ce_pwid_shared_24h","ce_pwid_injections_1w","ce_pwid_shared_1w"];
-const outreachFields = ["oc_worker_1","oc_worker_2","oc_worker_3","oc_date","oc_type","oc_hotspot","oc_district","oc_is_new_client","oc_sex_acts_1w","oc_condom_use","oc_drug_alcohol","oc_shared_inject_equip","oc_violence_report","oc_violence_address","oc_male_condoms","oc_female_condoms","oc_lubricant","oc_hiv_self_test","oc_syringes","oc_num_needles","oc_hiv_status_prev","oc_hiv_rapid_result","oc_hiv_comms","oc_hepc_status_prev","oc_hepc_result","oc_hepc_comms","oc_hepb_status_prev","oc_hepb_result","oc_hepb_comms","oc_syp_status_prev","oc_syp_result","oc_syp_comms","oc_prep_com","oc_prep_interested","oc_referrals","oc_referral_other","oc_followup_needed","oc_followup_date","oc_notes"];
+const outreachFields = ["oc_worker_1","oc_worker_2","oc_worker_3","oc_date","oc_type","oc_hotspot","oc_district","oc_is_new_client","oc_sex_acts_1w","oc_condom_use","oc_drug_alcohol","oc_shared_inject_equip","oc_violence_report","oc_violence_address","oc_male_condoms","oc_female_condoms","oc_lubricant","oc_hiv_self_test","oc_syringes","oc_num_needles","oc_hiv_status_prev","oc_hiv_rapid_result","oc_hiv_comms","oc_hepc_status_prev","oc_hepc_result","oc_hepc_comms","oc_hepb_status_prev","oc_hepb_result","oc_hepb_comms","oc_syp_status_prev","oc_syp_result","oc_syp_comms","oc_prep_com","oc_prep_interested","oc_prep_no_reason","oc_referrals","oc_referral_other","oc_followup_needed","oc_followup_date","oc_notes"];
 const partnerFields = ["itp_name","itp_nickname","itp_dob","itp_age","itp_gender","itp_description","itp_lives_with","itp_address","itp_work_address","itp_work_hours","itp_phone","itp_phone_alt","itp_relationship","itp_violence","itp_threats","itp_forced_sex","itp_notif_method","itp_notif_date","itp_1st_cont_date","itp_1st_cont_method","itp_2nd_cont_date","itp_2nd_cont_method","itp_3rd_cont_date","itp_3rd_cont_method","itp_contact_success","itp_contact_by_who","itp_contact_result","itp_contact_result_other","itp_hiv_result","itp_contact_art","itp_enrolled","itp_new_uic","itp_notes"];
 const childFields = ["itch_name","itch_dob","itch_age","itch_gender","itch_address","itch_lives_with","itch_violence","itch_threats","itch_force_sex","itch_notif_method","itch_notif_date_limit","itch_contact_method","itch_hiv_result","itch_art","itch_enrolled","itch_new_uic","itch_notes"];
 
@@ -25,7 +25,10 @@ function values(value: unknown): Values | null {
 
 function copyAllowed(source: Values, allowed: string[]) {
   const row: Values = {};
-  for (const key of allowed) if (source[key] !== undefined && source[key] !== "") row[key] = source[key];
+  for (const key of allowed) {
+    if (key === "oc_prep_no_reason" && source.oc_prep_interested !== "0") continue;
+    if (source[key] !== undefined && source[key] !== "") row[key] = source[key];
+  }
   for (const key of ["ce_kp_type", "ce_contact_method", "oc_referrals"]) {
     if (!source[key]) continue;
     for (const code of source[key].split(",").filter((item) => /^\d+$/.test(item))) row[`${key}___${code}`] = "1";

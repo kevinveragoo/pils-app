@@ -364,3 +364,171 @@
 "Name" = "Prénom";
 "Phone" = "Téléphone";
 "Patient details" = "Détails du patient";
+
+"Reason not interested in PrEP" = "Raison du manque d’intérêt pour la PrEP";
+"Reason not interested in PrEP is required." = "Veuillez indiquer la raison du manque d’intérêt pour la PrEP.";
+
+"Who perpetrated the violence?" = "Qui a commis les violences ?";
+"Where did you seek help?" = "Où avez-vous demandé de l’aide ?";
+"To whom did you disclose your HIV status?" = "À qui avez-vous révélé votre statut VIH ?";
+"Local leader(s)" = "Responsable(s) local(aux)";
+"Police" = "Police";
+"Military" = "Militaires";
+"Security guard(s)" = "Agent(s) de sécurité";
+"Madam(s)/pimp(s)/bar manager(s)/owner(s)" = "Proxénète(s)/gérant(s)/propriétaire(s) de bar";
+"Local gang(s)" = "Gang(s) local(aux)";
+"General community" = "Communauté";
+"Family member(s)" = "Membre(s) de la famille";
+"Regular/past partner" = "Partenaire habituel/ancien partenaire";
+"Sex-work client(s)" = "Client(s) du travail du sexe";
+"Health-care facility staff" = "Personnel de l’établissement de santé";
+"Medical/hospital" = "Services médicaux/hôpital";
+"Legal/police" = "Services juridiques/police";
+"Family" = "Famille";
+"Peers" = "Pairs";
+"Friends" = "Amis";
+"Religious leader" = "Responsable religieux";
+"Chief/village elder" = "Chef/ancien du village";
+"HIV program" = "Programme VIH";
+"Intimate/regular partner" = "Partenaire intime/habituel";
+"Regular client" = "Client habituel";
+"Friend/relative" = "Ami/proche";
+"Who perpetrated the violence? — other, specify" = "Qui a commis les violences ? — autre, préciser";
+"Where did you seek help? — other, specify" = "Où avez-vous demandé de l’aide ? — autre, préciser";
+"To whom did you disclose your HIV status? — other, specify" = "À qui avez-vous révélé votre statut VIH ? — autre, préciser";
+
+"Comorbidities" = "Comorbidités";
+
+"Clinic details" = "Informations cliniques";
+
+"STI" = "IST";
+
+"Reproductive health" = "Santé reproductive";
+
+"Safety" = "Sécurité";
+
+"HIV history" = "Antécédents VIH";
+
+"STI diagnosed" = "IST diagnostiquée";
+
+"Other STI diagnosed — specify" = "Autre IST diagnostiquée — préciser";
+
+"Diagnoses in the past six months. Select all that apply. Select None diagnosed or Unknown on its own." = "Diagnostics au cours des six derniers mois. Cochez toutes les réponses applicables. Choisissez Aucun diagnostic ou Inconnu seul.";
+
+"Select None diagnosed or Unknown on its own." = "Choisissez Aucun diagnostic ou Inconnu seul.";
+
+"Chlamydia" = "Chlamydia";
+
+"Gonorrhea" = "Gonorrhée";
+
+"Syphilis" = "Syphilis";
+
+"Trichomoniasis" = "Trichomonase";
+
+"Genital herpes (HSV)" = "Herpès génital (HSV)";
+
+"Human papillomavirus (HPV) / genital warts" = "Papillomavirus humain (HPV) / verrues génitales";
+
+"Mycoplasma genitalium" = "Mycoplasma genitalium";
+
+"Chancroid" = "Chancre mou";
+
+"Lymphogranuloma venereum (LGV)" = "Lymphogranulomatose vénérienne (LGV)";
+
+"Donovanosis (granuloma inguinale)" = "Donovanose (granulome inguinal)";
+
+"HIV" = "VIH";
+
+"Hepatitis B" = "Hépatite B";
+
+"Hepatitis C" = "Hépatite C";
+
+"Pubic lice" = "Poux du pubis";
+
+"Scabies" = "Gale";
+
+"Molluscum contagiosum" = "Molluscum contagiosum";
+
+"Hepatitis A" = "Hépatite A";
+
+"None diagnosed" = "Aucun diagnostic";
+
+"Unknown" = "Inconnu";
+
+"UIC, name, or patient code" = "UIC, nom ou code patient";
+
+"Download" = "Télécharger";
+
+"Downloading…" = "Téléchargement…";
+
+"Unable to download the index. Please try again." = "Impossible de télécharger l’index. Veuillez réessayer.";
+
+"Not interested" = "Pas intéressé";
+
+"In prison" = "En prison";
+
+"Transferred to another facility" = "Transféré vers un autre établissement";
+
+"Returned to PILS" = "Revenu à PILS";
+
+"Treatment interrupted" = "Traitement interrompu";
+
+"Deported" = "Expulsé";
+
+"Current PrEP programme status" = "Statut actuel du programme PrEP";
+
+"Reason for status change" = "Motif du changement de statut";
+
+"HIV programme status" = "Statut du programme VIH";
+
+"PrEP programme status" = "Statut du programme PrEP";
+
+"Status update" = "Mise à jour du statut";
+
+"PROFILE UPDATE" = "MISE À JOUR DU PROFIL";
+
+"Did the doctor change the PrEP regimen?" = "Le médecin a-t-il modifié le schéma PrEP ?";
+
+"Create a new repeat for a regimen or other treatment details change." = "Créer une nouvelle instance pour un changement du schéma ou des détails du traitement.";
+
+"Lookup" = "Recherche";
+
+"Skip to Lookup" = "Aller à la recherche";
+
+"Search for a client to view their complete REDCap record." = "Recherchez un client pour consulter son dossier REDCap complet.";
+
+"Search by UIC, name, or patient code" = "Rechercher par UIC, nom ou code patient";
+
+"Enter UIC, name, or patient code" = "Saisir UIC, nom ou code patient";
+
+"No matching client. Try another UIC, name, or patient code." = "Aucun client trouvé. Essayez un autre UIC, nom ou code patient.";
+
+"Loading record…" = "Chargement du dossier…";
+
+"Read only · Data grouped by instrument" = "Lecture seule · Données regroupées par instrument";
+
+"Repeating instruments" = "Instruments répétés";
+
+"Instance" = "Instance";
+
+"Event" = "Événement";
+
+"No recorded instances." = "Aucune instance enregistrée.";
+
+"Unable to load clients." = "Impossible de charger les clients.";
+
+"Unable to load the record from REDCap." = "Impossible de charger le dossier depuis REDCap.";
+
+"The selected record was not found." = "Le dossier sélectionné est introuvable.";
+
+"None selected" = "Aucun sélectionné";
+
+"Form completion" = "État du formulaire";
+
+"Record details" = "Détails du dossier";
+
+"Sort ascending" = "Trier par ordre croissant";
+
+"Sort descending" = "Trier par ordre décroissant";
+
+"Select a column heading to sort; select it again to reverse the order." = "Sélectionnez un en-tête pour trier ; sélectionnez-le à nouveau pour inverser l’ordre.";

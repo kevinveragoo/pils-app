@@ -14,7 +14,9 @@
     "db:migrate": "prisma migrate deploy",
     "db:seed": "node prisma/seed.mjs",
     "test:export-index": "node scripts/test-export-index.mjs",
-    "test:lookup": "node scripts/test-record-lookup.mjs"
+    "test:lookup": "node scripts/test-record-lookup.mjs",
+    "test:clinic-queue": "node scripts/test-clinic-queue.mjs",
+    "test:queue-patient-code": "node scripts/test-queue-patient-code.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

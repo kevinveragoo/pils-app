@@ -430,21 +430,20 @@
     "type": "yesno",
     "choices": {}
   },
-  "cnv_reason": {
+  "cnv_visit_purpose": {
     "form": "clinic_visit",
     "type": "checkbox",
     "choices": {
-      "1": "Quarterly check-up",
       "2": "Positive HIV self-test",
+      "11": "Blood sample collection",
       "3": "Laboratory results review",
       "4": "ART check-up",
+      "12": "Doctor",
       "5": "Reproductive health",
-      "6": "Follow-up",
-      "7": "PrEP",
       "8": "STI",
       "9": "Medication collection",
       "10": "Prescription renewal",
-      "11": "Blood sample collection",
+      "13": "Status update",
       "99": "Other services"
     }
   },
@@ -1044,8 +1043,8 @@
     "form": "prep_visit",
     "type": "checkbox",
     "choices": {
-      "1": "Blood draw",
-      "2": "Doctor review",
+      "1": "Blood sample collection",
+      "2": "Doctor",
       "3": "Medication collection",
       "4": "Status update"
     }

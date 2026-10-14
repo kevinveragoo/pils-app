@@ -1,3 +1,4 @@
+import { queueVisitDetails, type VisitWorkflow } from "@/lib/visit-workflow";
 import { db } from "@/lib/db";
 
 export const QUEUE_TASKS = ["DOCTOR", "BLOOD_TEST", "MEDICATION", "PREP", "ARV", "OTHER"] as const;
@@ -14,6 +15,7 @@ const appointmentFields: [string, QueueTask, string][] = [
   ["cnv_next_med_collection", "MEDICATION", "Clinic medication collection"],
   ["pv_next_appointment_date", "PREP", "PrEP appointment"],
   ["pv_next_collection_date", "MEDICATION", "PrEP medication collection"],
+
 ];
 
 export function mauritiusToday() {
@@ -25,7 +27,8 @@ export function parseStringArray(value: string | null | undefined) {
 }
 
 function publicEntry<T extends { tasks: string; appointmentSources: string }>(entry: T) {
-  return { ...entry, tasks: parseStringArray(entry.tasks), appointmentSources: parseStringArray(entry.appointmentSources), virtual: false };
+  const tasks = parseStringArray(entry.tasks), appointmentSources = parseStringArray(entry.appointmentSources);
+  return { ...entry, tasks, appointmentSources, ...queueVisitDetails({ ...entry, tasks, appointmentSources }), virtual: false };
 }
 
 async function redcap(params: Record<string, string>) {
@@ -47,20 +50,23 @@ export async function expectedAppointments(date: string) {
     ...fields.map((field, index) => [`fields[${index}]`, field]),
   ]));
   const patients = new Map<string, { recordId: string; displayName: string; alias: string; phone: string; patientCode: string; tasks: Set<string>; sources: Set<string> }>();
+  // Join repeat follow-up rows to their enrollment identity before building the queue.
+  const identities = new Map(rows.filter(row => !row.redcap_repeat_instrument && !row.redcap_repeat_instance).map(row => [String(row.uic_ori ?? "").trim(), row]));
   for (const row of rows) {
     const recordId = String(row.uic_ori ?? "").trim();
     if (!recordId) continue;
     const matching = appointmentFields.filter(([field]) => String(row[field] ?? "").trim() === date);
     if (!matching.length) continue;
+    const identity = identities.get(recordId) ?? row;
     const current = patients.get(recordId) ?? {
       recordId,
-      displayName: [row.ce_first_name, row.ce_middle_name_1, row.ce_middle_name_2, row.ce_middle_name_3, row.ce_last_name].map(value => String(value ?? "").trim()).filter(Boolean).join(" ") || String(row.ce_alias ?? "").trim() || recordId,
-      alias: String(row.ce_alias ?? "").trim(), phone: String(row.ce_tel_primary ?? "").trim(), patientCode: String(row.ce_patient_code ?? "").trim(), tasks: new Set<string>(), sources: new Set<string>(),
+      displayName: [identity.ce_first_name, identity.ce_middle_name_1, identity.ce_middle_name_2, identity.ce_middle_name_3, identity.ce_last_name].map(value => String(value ?? "").trim()).filter(Boolean).join(" ") || String(identity.ce_alias ?? "").trim() || recordId,
+      alias: String(identity.ce_alias ?? "").trim(), phone: String(identity.ce_tel_primary ?? "").trim(), patientCode: String(identity.ce_patient_code ?? "").trim(), tasks: new Set<string>(), sources: new Set<string>(),
     };
     matching.forEach(([, task, source]) => { current.tasks.add(task); current.sources.add(source); });
     patients.set(recordId, current);
   }
-  return [...patients.values()].map(patient => ({ id: `appointment:${date}:${patient.recordId}`, queueDate: date, ...patient, tasks: [...patient.tasks], appointmentSources: [...patient.sources], source: "SCHEDULED", isNewClient: false, status: "EXPECTED", currentStation: "RECEPTION", notes: null, virtual: true }));
+  return [...patients.values()].map(patient => ({ id: `appointment:${date}:${patient.recordId}`, queueDate: date, ...patient, ...queueVisitDetails({tasks: [...patient.tasks], appointmentSources: [...patient.sources]}), tasks: [...patient.tasks], appointmentSources: [...patient.sources], source: "SCHEDULED", isNewClient: false, status: "EXPECTED", currentStation: "RECEPTION", notes: null, virtual: true }));
 }
 
 export async function queueForDate(date: string) {
@@ -69,27 +75,35 @@ export async function queueForDate(date: string) {
   return [...scheduled.filter(entry => !persistedRecords.has(entry.recordId)), ...local.map(publicEntry)];
 }
 
-export async function createQueueEntry(data: { queueDate: string; recordId?: string; displayName: string; alias?: string; patientCode?: string; phone?: string; source?: string; isNewClient?: boolean; status?: string; currentStation?: string; tasks: string[]; appointmentSources?: string[]; notes?: string }, actor: Actor) {
+export async function createQueueEntry(data: { queueDate: string; recordId?: string; displayName: string; firstName?: string; lastName?: string; nationalId?: string; alias?: string; patientCode?: string; phone?: string; visitWorkflow?: VisitWorkflow; clinicPurposes?: string[]; prepPurposes?: string[]; source?: string; isNewClient?: boolean; status?: string; currentStation?: string; tasks: string[]; appointmentSources?: string[]; notes?: string }, actor: Actor) {
   const now = new Date();
   const entry = await db.$transaction(async transaction => {
+    if (data.source === "SCHEDULED" && data.recordId) {
+      const existing = await transaction.clinicQueueEntry.findFirst({ where: { queueDate: data.queueDate, recordId: data.recordId, source: "SCHEDULED" }, orderBy: { createdAt: "asc" } });
+      if (existing) {
+        if (data.status !== "WAITING" || existing.status !== "EXPECTED") return existing;
+        const latestNumber = existing.queueNumber === null ? await transaction.clinicQueueEntry.aggregate({ where: { queueDate: data.queueDate }, _max: { queueNumber: true } }) : null;
+        return transaction.clinicQueueEntry.update({ where: { id: existing.id }, data: { status: "WAITING", currentStation: data.currentStation ?? "FILE_RETRIEVAL", queueNumber: existing.queueNumber ?? (latestNumber?._max.queueNumber ?? 0) + 1, checkedInAt: now, updatedById: actor.id, updatedByName: actor.name, version: { increment: 1 }, events: { create: { actorId: actor.id, actorName: actor.name, action: "ARRIVED" } } } });
+      }
+    }
     const latest = data.status === "WAITING" ? await transaction.clinicQueueEntry.aggregate({ where: { queueDate: data.queueDate }, _max: { queueNumber: true } }) : null;
-    return transaction.clinicQueueEntry.create({ data: { queueDate: data.queueDate, recordId: data.recordId || null, displayName: data.displayName, alias: data.alias || null, patientCode: data.patientCode || null, phone: data.phone || null, source: data.source ?? "WALK_IN", isNewClient: Boolean(data.isNewClient), status: data.status ?? "EXPECTED", currentStation: data.currentStation ?? "RECEPTION", queueNumber: data.status === "WAITING" ? (latest?._max.queueNumber ?? 0) + 1 : null, checkedInAt: data.status === "WAITING" ? now : null, tasks: JSON.stringify(data.tasks), appointmentSources: JSON.stringify(data.appointmentSources ?? []), notes: data.notes || null, createdById: actor.id, createdByName: actor.name, updatedById: actor.id, updatedByName: actor.name, events: { create: { actorId: actor.id, actorName: actor.name, action: data.status === "WAITING" ? "WALK_IN_CHECKED_IN" : "ADDED" } } } });
+    return transaction.clinicQueueEntry.create({ data: { queueDate: data.queueDate, recordId: data.recordId || null, displayName: data.displayName, firstName: data.firstName || null, lastName: data.lastName || null, nationalId: data.nationalId || null, visitWorkflow: data.visitWorkflow || null, clinicPurposes: JSON.stringify(data.clinicPurposes ?? []), prepPurposes: JSON.stringify(data.prepPurposes ?? []), alias: data.alias || null, patientCode: data.patientCode || null, phone: data.phone || null, source: data.source ?? "WALK_IN", isNewClient: Boolean(data.isNewClient), status: data.status ?? "EXPECTED", currentStation: data.currentStation ?? "RECEPTION", queueNumber: data.status === "WAITING" ? (latest?._max.queueNumber ?? 0) + 1 : null, checkedInAt: data.status === "WAITING" ? now : null, tasks: JSON.stringify(data.tasks), appointmentSources: JSON.stringify(data.appointmentSources ?? []), notes: data.notes || null, createdById: actor.id, createdByName: actor.name, updatedById: actor.id, updatedByName: actor.name, events: { create: { actorId: actor.id, actorName: actor.name, action: data.status === "WAITING" ? "WALK_IN_CHECKED_IN" : "ADDED" } } } });
   });
   return publicEntry(entry);
 }
 
-export async function updateQueueEntry(id: string, patch: { status?: string; currentStation?: string; tasks?: string[]; notes?: string; recordId?: string }, actor: Actor) {
+export async function updateQueueEntry(id: string, patch: { status?: string; currentStation?: string; tasks?: string[]; notes?: string; recordId?: string; patientCode?: string }, actor: Actor) {
   const now = new Date();
   const entry = await db.$transaction(async transaction => {
     const current = await transaction.clinicQueueEntry.findUniqueOrThrow({ where: { id } });
     const enteringWaiting = patch.status === "WAITING" && current.status !== "WAITING";
     const latest = enteringWaiting && current.queueNumber === null ? await transaction.clinicQueueEntry.aggregate({ where: { queueDate: current.queueDate }, _max: { queueNumber: true } }) : null;
-    return transaction.clinicQueueEntry.update({ where: { id }, data: { ...(patch.status ? { status: patch.status, ...(enteringWaiting ? { checkedInAt: now, queueNumber: current.queueNumber ?? (latest?._max.queueNumber ?? 0) + 1 } : {}), ...(patch.status === "READY" ? { readyAt: now } : {}), ...(patch.status === "DONE" ? { completedAt: now } : {}) } : {}), ...(patch.currentStation ? { currentStation: patch.currentStation } : {}), ...(patch.tasks ? { tasks: JSON.stringify(patch.tasks) } : {}), ...(patch.notes !== undefined ? { notes: patch.notes || null } : {}), ...(patch.recordId ? { recordId: patch.recordId } : {}), updatedById: actor.id, updatedByName: actor.name, version: { increment: 1 }, events: { create: { actorId: actor.id, actorName: actor.name, action: patch.status ?? patch.currentStation ?? "UPDATED", details: JSON.stringify(patch) } } } });
+    return transaction.clinicQueueEntry.update({ where: { id }, data: { ...(patch.status ? { status: patch.status, ...(enteringWaiting ? { checkedInAt: now, queueNumber: current.queueNumber ?? (latest?._max.queueNumber ?? 0) + 1 } : {}), ...(patch.status === "READY" ? { readyAt: now } : {}), ...(patch.status === "DONE" ? { completedAt: now } : {}) } : {}), ...(patch.currentStation ? { currentStation: patch.currentStation } : {}), ...(patch.tasks ? { tasks: JSON.stringify(patch.tasks) } : {}), ...(patch.notes !== undefined ? { notes: patch.notes || null } : {}), ...(patch.recordId ? { recordId: patch.recordId } : {}), ...(patch.patientCode !== undefined ? { patientCode: patch.patientCode } : {}), updatedById: actor.id, updatedByName: actor.name, version: { increment: 1 }, events: { create: { actorId: actor.id, actorName: actor.name, action: patch.status ?? patch.currentStation ?? "UPDATED", details: JSON.stringify(patch) } } } });
   });
   return publicEntry(entry);
 }
 
 export async function completeQueueEntry(id: string | undefined, recordId: string, actor: Actor) {
   if (!id) return false;
-  try { await updateQueueEntry(id, { status: "DONE", currentStation: "CLINICIAN", recordId }, actor); return true; } catch (error) { console.error("Unable to complete clinic queue entry:", error); return false; }
+  try { const entry = await db.clinicQueueEntry.findUnique({ where: { id } }); if (!entry || (entry.recordId && entry.recordId !== recordId)) return false; await updateQueueEntry(id, { status: "DONE", currentStation: "CLINICIAN", recordId }, actor); return true; } catch (error) { console.error("Unable to complete clinic queue entry:", error); return false; }
 }

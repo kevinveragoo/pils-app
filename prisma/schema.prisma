@@ -76,6 +76,12 @@ model ClinicQueueEntry {
   queueDate          String
   recordId           String?
   displayName        String
+  firstName          String?
+  lastName           String?
+  nationalId         String?
+  visitWorkflow      String?
+  clinicPurposes     String             @default("[]")
+  prepPurposes       String             @default("[]")
   alias              String?
   patientCode        String?
   phone              String?

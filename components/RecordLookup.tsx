@@ -60,7 +60,7 @@ export default function RecordLookup() {
       <p className="text-sm text-muted-foreground">Read only · Data grouped by instrument</p>
       {record.sections.filter(section => !section.repeating).map(section => <details key={`${record.uic}-${section.name}`} open={section.hasData} className="outreach-card">
         <summary className="cursor-pointer text-xl font-bold">{section.label}</summary>
-        {section.rows.map((row, index) => <div key={`${row.event}-${index}`} className="mt-5">{row.event && <p className="mb-3 font-semibold">{row.event}</p>}<dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{section.columns.map((field, fieldIndex) => <div key={field.name} className="min-w-0 rounded-xl bg-muted p-3"><dt className="text-sm font-semibold" title={field.name}>{field.label}</dt><dd className="mt-1 whitespace-pre-wrap break-words text-sm">{row.values[fieldIndex] || "—"}</dd></div>)}</dl></div>)}
+        {section.rows.map((row, index) => <div key={`${row.event}-${index}`} className="mt-5">{row.event && <p className="mb-3 font-semibold">{row.event}</p>}<dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{section.columns.map((field, fieldIndex) => <div key={field.name} className={`min-w-0 rounded-xl p-3 ${row.values[fieldIndex]?.trim() ? "bg-muted" : "border bg-transparent"}`}><dt className="text-sm font-semibold" title={field.name}>{field.label}</dt><dd className="mt-1 whitespace-pre-wrap break-words text-sm">{row.values[fieldIndex] || "—"}</dd></div>)}</dl></div>)}
       </details>)}
       <h2 className="mt-3 text-2xl font-bold">Repeating instruments</h2>
       {record.sections.filter(section => section.repeating).map(section => <RepeatTable key={`${record.uic}-${section.name}`} section={section} />)}
@@ -69,7 +69,7 @@ export default function RecordLookup() {
 }
 
 function RepeatTable({ section }: { section: LookupSection }) {
-  const [sort, setSort] = useState<LookupSort>({ column: "instance", direction: "ascending" });
+  const [sort, setSort] = useState<LookupSort>({ column: "instance", direction: "descending" });
   const rows = useMemo(() => sortLookupRows(section, sort), [section, sort]);
   const hasEvent = section.rows.some(row => row.event);
   function header(name: string, label: string) {

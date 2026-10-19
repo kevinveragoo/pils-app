@@ -1,11 +1,19 @@
 import definitions from "./redcap-field-rules.json";
 
-type Rule = { label: string; type: string; required?: boolean; min?: number; max?: number; choices?: string[] };
-// Snapshot of the configured project's metadata, audited 2026-10-04.
+type Rule = { label: string; type: string; required?: boolean; min?: number; max?: number; choices?: string[]; branch?: string; minExpression?: string; maxExpression?: string };
+// Snapshot of the configured project's metadata, audited 2026-10-18.
 const rules: Record<string, Rule> = definitions;
 
-export function isRequiredField(key: string) {
-  return rules[key]?.required === true;
+export function isRequiredField(key: string, values: Record<string, string> = {}) {
+  const rule = rules[key];
+  if (!rule?.required) return false;
+  if (!rule.branch) return true;
+  // Conditional required fields currently use a single field comparison.
+  // Unknown expressions must not turn hidden fields into unconditional requirements.
+  const match = rule.branch.match(/^\[([a-zA-Z0-9_]+)\]\s*(=|<>)\s*['"]([^'"]*)['"]$/);
+  if (!match) return false;
+  const same = (values[match[1]] ?? "") === match[3];
+  return match[2] === "=" ? same : !same;
 }
 
 export function numericAttributes(key: string) {
@@ -46,6 +54,7 @@ export function completedAge(dob: string, now = new Date()) {
 }
 
 export function validateFields(values: Record<string, string>, fields = Object.keys(values)): string | null {
+  if (Object.keys(values).some(key => key.startsWith("pv_") && !rules[key] && values[key]?.trim())) return "The PrEP form is out of date. Reload it before saving.";
   if (fields.includes("oc_prep_interested") && values.oc_prep_interested === "0" && !values.oc_prep_no_reason?.trim()) {
     return "Reason not interested in PrEP is required.";
   }
@@ -58,7 +67,7 @@ export function validateFields(values: Record<string, string>, fields = Object.k
     if (!rule) continue;
     const value = values[key]?.trim() ?? "";
     if (!value) {
-      if (rule.required) return `${rule.label} is required.`;
+      if (isRequiredField(key, values)) return `${rule.label} is required.`;
       continue;
     }
     if (rule.choices) {
@@ -66,12 +75,20 @@ export function validateFields(values: Record<string, string>, fields = Object.k
       if (selected.some((code) => !rule.choices!.includes(code))) return `${rule.label}: choose a valid option.`;
     }
     if (rule.type.startsWith("date_") && !validDate(value)) return `${rule.label}: enter a valid date.`;
+    if (rule.type.startsWith("datetime_")) {
+      const parts = value.match(/^(\d{4}-\d{2}-\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?$/);
+      if (!parts || !validDate(parts[1]) || Number(parts[2]) > 23 || Number(parts[3]) > 59 || Number(parts[4] ?? 0) > 59) return `${rule.label}: enter a valid date and time.`;
+    }
     if (rule.type === "integer" || rule.type === "number") {
       const numeric = rule.type === "integer" ? /^-?\d+$/.test(value) : /^-?(?:\d+(?:\.\d*)?|\.\d+)$/.test(value);
       const number = Number(value);
       if (!numeric || !Number.isFinite(number) || (rule.type === "integer" && !Number.isSafeInteger(number))) return `${rule.label}: enter a valid ${rule.type === "integer" ? "whole number" : "number"}.`;
-      if (rule.min !== undefined && number < rule.min) return `${rule.label}: minimum ${rule.min}.`;
-      if (rule.max !== undefined && number > rule.max) return `${rule.label}: maximum ${rule.max}.`;
+      for (const bound of ["min", "max"] as const) {
+        let limit = rule[bound];
+        const expression = rule[`${bound}Expression`]?.match(/^\[([a-zA-Z0-9_]+)\]$/);
+        if (limit === undefined && expression && values[expression[1]]?.trim() && Number.isFinite(Number(values[expression[1]]))) limit = Number(values[expression[1]]);
+        if (limit !== undefined && (bound === "min" ? number < limit : number > limit)) return `${rule.label}: ${bound === "min" ? "minimum" : "maximum"} ${limit}.`;
+      }
     }
     if (rule.type === "phone" && !/^\(?\d{3}\)?[-. ]?\d{3}[-. ]?\d{4}$/.test(value)) return `${rule.label}: enter a 10-digit phone number (REDCap phone format).`;
   }

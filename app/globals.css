@@ -267,6 +267,12 @@
   .role-options { display: grid; gap: 0.45rem; }
   .role-option { display: flex !important; min-height: 40px; grid-template-columns: none !important; flex-direction: row; align-items: center; gap: 0.6rem !important; border: 1px solid var(--border); border-radius: 0.75rem; padding: 0.55rem 0.7rem; font-weight: 500 !important; }
   .role-option input { min-height: auto !important; width: 1rem !important; }
+  .role-option { align-items: flex-start; }
+  .role-option input { margin-top: 0.25rem; flex-shrink: 0; }
+  .role-option-content { display: grid; min-width: 0; gap: 0.4rem; }
+  .role-page-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .role-page-tag { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; background: var(--muted); padding: 0.12rem 0.5rem; color: var(--muted-foreground); font-size: 0.7rem; font-weight: 500; line-height: 1.5; }
+
 
   .logs-page { margin: 0 auto; display: grid; width: 100%; max-width: 90rem; gap: 1.25rem; padding: 2rem 1rem; }
   .logs-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; align-items: end; gap: 0.75rem; }

@@ -34,7 +34,8 @@
       "6": "Savanne",
       "7": "Plaines Wilhems",
       "8": "Moka",
-      "9": "Black River"
+      "9": "Black River",
+      "10": "Rodrigues"
     }
   },
   "ce_hotspot": {
@@ -1034,11 +1035,6 @@
     "type": "text",
     "choices": {}
   },
-  "pv_recorded_by": {
-    "form": "prep_visit",
-    "type": "text",
-    "choices": {}
-  },
   "pv_visit_purpose": {
     "form": "prep_visit",
     "type": "checkbox",
@@ -1084,6 +1080,12 @@
       "3": "Syphilis",
       "4": "HBsAg",
       "5": "HCV",
+      "6": "HBV (Hepatitis B)",
+      "7": "Hb (Hemoglobin)",
+      "8": "Cholesterol",
+      "9": "Triglycerides",
+      "10": "TPHA (Treponema pallidum haemagglutination assay)",
+      "11": "VDRL (Venereal Disease Research Laboratory)",
       "99": "Other"
     }
   },
@@ -1178,7 +1180,7 @@
     "type": "text",
     "choices": {}
   },
-  "pv_next_collection_date": {
+  "pv_next_med_date": {
     "form": "prep_visit",
     "type": "text",
     "choices": {}
@@ -1188,12 +1190,12 @@
     "type": "text",
     "choices": {}
   },
-  "pv_physician": {
+  "pv_doctor": {
     "form": "prep_visit",
     "type": "text",
     "choices": {}
   },
-  "pv_physician_comments": {
+  "pv_doctor_comments": {
     "form": "prep_visit",
     "type": "notes",
     "choices": {}
@@ -1252,12 +1254,12 @@
     "type": "yesno",
     "choices": {}
   },
-  "pv_blood_test_date": {
+  "pv_next_blood_date": {
     "form": "prep_visit",
     "type": "text",
     "choices": {}
   },
-  "pv_doctor_review_date": {
+  "pv_next_doctor_date": {
     "form": "prep_visit",
     "type": "text",
     "choices": {}
@@ -1501,6 +1503,152 @@
   "hcs_status_source": {
     "form": "hiv_care_support",
     "type": "text",
+    "choices": {}
+  },
+  "cnv_next_med_date": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_next_blood_date": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_next_doctor_date": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_next_appointment_date": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_legacy_next_date": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_worker_1": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_worker_2": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_worker_3": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_worker_4": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_doctor": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_doctor_comments": {
+    "form": "clinic_visit",
+    "type": "notes",
+    "choices": {}
+  },
+  "pv_weight": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_bp_systolic": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_bp_diastolic": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_weight": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_bp_systolic": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_bp_diastolic": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_hbv_result": {
+    "form": "prep_visit",
+    "type": "radio",
+    "choices": {
+      "1": "Negative / normal",
+      "2": "Positive / abnormal",
+      "3": "Indeterminate",
+      "4": "Result unavailable",
+      "5": "Not requested"
+    }
+  },
+  "pv_hb_result": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_cholesterol_result": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_triglycerides_result": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_tpha_result": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_vdrl_result": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_other_test_result": {
+    "form": "prep_visit",
+    "type": "notes",
+    "choices": {}
+  },
+  "pv_worker_1": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_worker_2": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cne_inject_3m": {
+    "form": "clinic_enrollment",
+    "type": "yesno",
+    "choices": {}
+  },
+  "cne_sti_treated": {
+    "form": "clinic_enrollment",
+    "type": "yesno",
     "choices": {}
   }
 }

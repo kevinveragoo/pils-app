@@ -11,9 +11,9 @@ const instruments=[{instrument_name:'client',instrument_label:'Client enrollment
 const repeating=[{form_name:'visit'},{form_name:'profile'}];
 const rows=[{uic_ori:'TEST',name:'Sample',flags___1:'1',flags___2:'0',flags___99:'1',answer:'0',client_complete:'2',redcap_data_access_group:'group',client_timestamp:'2026-10-11 09:30'}, {uic_ori:'TEST',redcap_repeat_instrument:'visit',redcap_repeat_instance:10,status:'2',date:'2026-10-11',count:0}, {uic_ori:'TEST',redcap_repeat_instrument:'visit',redcap_repeat_instance:2,status:'1',date:'2026-10-01'}, {uic_ori:'TEST',redcap_repeat_instrument:'profile',redcap_repeat_instance:1,hidden_status:'1'}];
 const cache=new Map();
-function load(relative){const filename=path.join(root,relative);if(cache.has(filename))return cache.get(filename);const module={exports:{}};
+function load(relative){const filename=path.join(root,relative);if(cache.has(filename))return cache.get(filename);const loadedModule={exports:{}};
  const code=ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
- vm.runInNewContext(code,{module,exports:module.exports,Request,Response,URL,URLSearchParams,AbortSignal,process:{env:{REDCAP_API_URL:'https://test.invalid',REDCAP_API_TOKEN:'test'}},require(name){if(name==='next/server')return {NextResponse:Response};if(name==='@/lib/auth')return {getCurrentUser:async()=>user};if(name.startsWith('@/'))return load(name.slice(2)+'.ts');throw Error(name);},fetch:async(url,options)=>{requests.push(options);assert.equal(options.cache,'no-store');const body=options.body;assert.notEqual(body.get('action'),'import');assert.equal(url,'https://test.invalid');if(failed)return Response.json({error:'failure'},{status:500});const data={record:[...rows,{uic_ori:'OTHER',name:'Must never appear'}],metadata,instrument:instruments,repeatingFormsEvents:repeating};return Response.json(data[body.get('content')]);}},{filename});cache.set(filename,module.exports);return module.exports;}
+ vm.runInNewContext(code,{module:loadedModule,exports:loadedModule.exports,Request,Response,URL,URLSearchParams,AbortSignal,process:{env:{REDCAP_API_URL:'https://test.invalid',REDCAP_API_TOKEN:'test'}},require(name){if(name==='next/server')return {NextResponse:Response};if(name==='@/lib/auth')return {getCurrentUser:async()=>user,hasAnyRole:(user,allowed)=>[user.role,...JSON.parse(user.roles??"[]")].some(role=>allowed.includes(role))};if(name.startsWith('@/'))return load(name.slice(2)+'.ts');throw Error(name);},fetch:async(url,options)=>{requests.push(options);assert.equal(options.cache,'no-store');const body=options.body;assert.notEqual(body.get('action'),'import');assert.equal(url,'https://test.invalid');if(failed)return Response.json({error:'failure'},{status:500});const data={record:[...rows,{uic_ori:'OTHER',name:'Must never appear'}],metadata,instrument:instruments,repeatingFormsEvents:repeating};return Response.json(data[body.get('content')]);}},{filename});cache.set(filename,loadedModule.exports);return loadedModule.exports;}
 const {buildLookupSections,displayValue,plainLabel}=load('lib/record-lookup.ts');
 const sections=buildLookupSections(rows,metadata,instruments,repeating);
 assert.equal(sections[0].repeating,false);assert.equal(sections.at(-1).repeating,true);
@@ -49,3 +49,36 @@ const response=await GET(new Request('https://app.invalid/api/redcap/lookup?uic=
 assert.equal((await GET(new Request('https://app.invalid/api/redcap/lookup?uic=MISSING'))).status,404);
 failed=true;assert.equal((await GET(new Request('https://app.invalid/api/redcap/lookup?uic=TEST'))).status,502);
 console.log('Lookup checks passed: authentication, selected-record filtering, read-only exports, instrument grouping, numeric repeats, choice labels, hidden values and extra fields.');
+failed = false;
+const protectedForms = [['clinic_enrollment', 'cne_private'], ['clinic_visit', 'cnv_private'], ['hiv_treatment_profile', 'htp_private'], ['hiv_clinical_monitoring', 'htm_private'], ['hiv_care_support', 'hcs_private'], ['prep_treatment_profile', 'ptp_private'], ['prep_visit', 'pv_private']];
+for (const [form, name] of protectedForms) {
+  metadata.push(field(name, form, 'text', '', `Protected ${form}`));
+  instruments.push({ instrument_name: form, instrument_label: `Protected ${form}` });
+  if (form === 'clinic_enrollment') Object.assign(rows[0], { [name]: 'CLINICAL_SECRET', [`${form}_complete`]: '2', [`${form}_timestamp`]: 'SECRET_TIMESTAMP' });
+  else { repeating.push({ form_name: form }); rows.push({ uic_ori: 'TEST', redcap_repeat_instrument: form, redcap_repeat_instance: 1, [name]: 'CLINICAL_SECRET' }); }
+}
+metadata.push(field('cl_gbv_refer', 'clinic_visit', 'text'));
+rows[0].cl_gbv_refer = 'NON_PREFIX_SECRET';
+rows[0].cnv_unknown_legacy = 'LEGACY_SECRET';
+rows[0].pv_unknown_legacy = 'PREP_VISIT_LEGACY_SECRET';
+rows[0].ptp_unknown_legacy = 'PREP_PROFILE_LEGACY_SECRET';
+rows[0].prep_visit_complete = 'PREP_COMPLETION_SECRET';
+rows[0].prep_treatment_profile_timestamp = 'PREP_TIMESTAMP_SECRET';
+for (const role of ['FACILITY_STAFF', 'OUTREACH_WORKER', 'UNKNOWN']) {
+  user = { role };
+  const response = await GET(new Request('https://app.invalid/api/redcap/lookup?uic=TEST'));
+  assert.equal(response.status, 200); assert.equal(response.headers.get('Cache-Control'), 'no-store');
+  const data = await response.json(), text = JSON.stringify(data);
+  assert.equal(data.restrictedClinicalAccess, true);
+  for (const forbidden of ['CLINICAL_SECRET', 'NON_PREFIX_SECRET', 'LEGACY_SECRET', 'SECRET_TIMESTAMP', 'PREP_VISIT_LEGACY_SECRET', 'PREP_PROFILE_LEGACY_SECRET', 'PREP_COMPLETION_SECRET', 'PREP_TIMESTAMP_SECRET']) assert.equal(text.includes(forbidden), false, `${role} must not receive ${forbidden}`);
+  for (const [form] of protectedForms) assert.equal(data.sections.some(section => section.name === form), false);
+  assert.equal(data.sections.some(section => section.name === 'client'), true);
+}
+for (const userWithAccess of [{ role: 'HEALTHCARE_ASSISTANT' }, { role: 'HEALTHCARE_NAVIGATOR' }, { role: 'ADMIN' }, { role: 'FACILITY_STAFF', roles: '["HEALTHCARE_NAVIGATOR"]' }]) {
+  user = userWithAccess;
+  const data = await (await GET(new Request('https://app.invalid/api/redcap/lookup?uic=TEST'))).json();
+  assert.equal(data.restrictedClinicalAccess, false);
+  for (const [form] of protectedForms) assert.equal(data.sections.some(section => section.name === form), true);
+  assert.equal(JSON.stringify(data).includes('CLINICAL_SECRET'), true);
+}
+console.log('Lookup privacy checks passed: role and multi-role access, protected rows, fields, completion/timestamps, legacy fallback fields and protected PrEP profiles/visits.');

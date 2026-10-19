@@ -31,7 +31,7 @@ const workflows = [
   { name: "Client Enrollment", prefixes: ["ce_"] },
 ];
 
-const staffFields = ["oc_worker_1", "hcs_navigator_1", "pv_recorded_by", "cne_worker", "cnv_worker", "breakfast_recorded_by", "ce_outreach_worker"];
+const staffFields = ["oc_worker_1", "hcs_navigator_1", "pv_worker_1", "pv_worker_2", "cne_worker", "cnv_worker_1", "breakfast_recorded_by", "ce_outreach_worker"];
 const dateFields = ["oc_date", "hcs_date", "pv_visit_date", "cne_date", "cnv_date", "breakfast_date", "ce_date"];
 
 function workflowFor(names: string[], fallback = "REDCap record") {
@@ -71,7 +71,7 @@ function parseLogDetails(details: string, metadata: Map<string, MetadataRow>) {
 }
 
 function fieldValue(fields: ActivityField[], names: string[]) {
-  return fields.find(field => names.includes(field.name))?.value.trim() ?? "";
+  return fields.find(field => names.includes(field.name) && field.value.trim())?.value.trim() ?? "";
 }
 
 function redcapTimestamp(value: string | undefined) {
@@ -118,7 +118,7 @@ export async function loadActivities({ from, to }: { from: string; to: string })
     const fields = localFields(item.submittedData, metadata);
     let instances = "";
     try { instances = (JSON.parse(item.instrumentInstances) as { instrument: string; instance?: number }[]).map(value => `${value.instrument}${value.instance ? ` #${value.instance}` : ""}`).join(", "); } catch { /* Keep it blank. */ }
-    return { id: `app:${item.id}`, source: "app" as const, timestamp: item.createdAt.toISOString(), workflow: workflows.find(value => value.prefixes.some(prefix => item.workflow.startsWith(prefix)))?.name ?? ({ outreach: "Outreach", "healthcare-nav": "Healthcare Navigator", prep: "PrEP", clinic: "Clinic", arv: "Clinic", breakfast: "Breakfast" }[item.workflow] ?? item.workflow), recordId: item.recordId, enteredBy: `${item.actorName} (@${item.actorUsername})`, staffName: item.staffName ?? "", serviceDate: item.serviceDate ?? "", action: "Submitted through app", fields, instances };
+    return { id: `app:${item.id}`, source: "app" as const, timestamp: item.createdAt.toISOString(), workflow: workflows.find(value => value.prefixes.some(prefix => item.workflow.startsWith(prefix)))?.name ?? ({ "client-enrollment": "Client Enrollment", outreach: "Outreach", "healthcare-nav": "Healthcare Navigator", prep: "PrEP", clinic: "Clinic", arv: "Clinic", breakfast: "Breakfast" }[item.workflow] ?? item.workflow), recordId: item.recordId, enteredBy: `${item.actorName} (@${item.actorUsername})`, staffName: item.staffName ?? "", serviceDate: item.serviceDate ?? "", action: "Submitted through app", fields, instances };
   });
 
   const redcapEntries: ActivityEntry[] = logRows.map((row, index) => {

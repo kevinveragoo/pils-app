@@ -1,13 +1,13 @@
 import { db } from "@/lib/db";
 import { saveQueuePatientCode, PatientCodeError } from "@/lib/queue-patient-code";
 import { NextResponse } from "next/server";
-import { getCurrentUser, hasRole } from "@/lib/auth";
+import { getCurrentUser, hasAnyRole } from "@/lib/auth";
 import { QUEUE_STATUSES, QUEUE_STATIONS, QUEUE_TASKS, updateQueueEntry } from "@/lib/clinic-queue";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
-  if (!hasRole(user, "HEALTHCARE_ASSISTANT")) return NextResponse.json({ error: "Healthcare Assistant access is required." }, { status: 403 });
+  if (!hasAnyRole(user, ["FACILITY_STAFF", "HEALTHCARE_ASSISTANT", "ADMIN"])) return NextResponse.json({ error: "Facility Staff or Healthcare Assistant access is required." }, { status: 403 });
   try {
     const { id } = await params;
     const body = await request.json() as Record<string, unknown>;

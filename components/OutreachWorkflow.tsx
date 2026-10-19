@@ -1,4 +1,6 @@
 "use client";
+import { districts } from "@/lib/redcap-options";
+import { initialClientEnrollment } from "@/lib/client-enrollment";
 
 import { WorkflowClientChoice } from "@/components/WorkflowClientChoice";
 import { generateUic } from "@/lib/uic";
@@ -19,7 +21,6 @@ type Patient = { record_id: string; uic: string; display_name: string; first_nam
 type Values = Record<string, string>;
 
 const today = () => new Date().toISOString().slice(0, 10);
-const districts = ["Port Louis", "Pamplemousses", "Rivière du Rempart", "Flacq", "Grand Port", "Savanne", "Plaines Wilhems", "Moka", "Black River"];
 
 function normaliseDate(value: string) {
   const match = value.trim().match(/^(?:(\d{4})-(\d{2})-(\d{2})|(\d{2})[/-](\d{2})[/-](\d{4})|(\d{2})(\d{2})(\d{4}))$/);
@@ -73,7 +74,7 @@ export default function OutreachWorkflow() {
   const [loadingPatients, setLoadingPatients] = useState(true);
   const [uicResult, setUicResult] = useState<{ uic: string; attempt: number; status: "available" | "exists" | "error" } | null>(null);
   const [uicAttempt, setUicAttempt] = useState(0);
-  const [enrollment, setEnrollment] = useState<Values>({ ce_date: today(), ce_implementing_partner: "PILS", ce_district: "", ce_hotspot: "1", ce_active: "1", ce_outreach_worker: "", ce_last_name: "", ce_first_name: "", ce_middle_name_1: "", ce_middle_name_2: "", ce_middle_name_3: "", ce_alias: "", ce_dob: "", ce_gender_identity: "", ce_vision: "", ce_kp_type: "", ce_tel_primary: "", ce_contact_method: "", ce_risk_drug_alcohol_sex: "", ce_risk_violence_1m: "", ce_sw_age_started: "", ce_sw_sex_acts_1w: "", ce_sw_condom_use_1w: "", ce_msm_age_first_anal: "", ce_msm_receptive_anal_1w: "", ce_msm_condom_anal_1w: "", ce_pwid_age_first_inject: "", ce_pwid_injections_24h: "", ce_pwid_injections_1w: "", ce_pwid_shared_24h: "", ce_pwid_shared_1w: "" });
+  const [enrollment, setEnrollment] = useState<Values>(() => initialClientEnrollment());
   const [outreach, setOutreach] = useState<Values>({ oc_worker_1: "", oc_worker_2: "", oc_worker_3: "", oc_date: today(), oc_type: "", oc_hotspot: "", oc_district: "", oc_sex_acts_1w: "", oc_condom_use: "", oc_drug_alcohol: "", oc_shared_inject_equip: "", oc_violence_report: "", oc_violence_address: "", oc_male_condoms: "", oc_female_condoms: "", oc_lubricant: "", oc_hiv_self_test: "", oc_syringes: "", oc_num_needles: "", oc_hiv_status_prev: "", oc_hiv_rapid_result: "", oc_hiv_comms: "", oc_hepc_status_prev: "", oc_hepc_result: "", oc_hepc_comms: "", oc_hepb_status_prev: "", oc_hepb_result: "", oc_hepb_comms: "", oc_syp_status_prev: "", oc_syp_result: "", oc_syp_comms: "", oc_prep_com: "", oc_prep_interested: "", oc_prep_no_reason: "", oc_referrals: "", oc_referral_other: "", oc_followup_needed: "", oc_followup_date: "", oc_notes: "" });
   const [partners, setPartners] = useState<Values[]>([]);
   const [children, setChildren] = useState<Values[]>([]);
@@ -183,7 +184,7 @@ export default function OutreachWorkflow() {
   </div>;
 }
 
-function Enrollment({ values: v, set, uic, kp }: { values: Values; set: (k: string, v: string) => void; uic: string; kp: Set<string> }) {
+export function Enrollment({ values: v, set, uic, kp }: { values: Values; set: (k: string, v: string) => void; uic: string; kp: Set<string> }) {
   const updateKp = (value: string) => {
     const selected = new Set(value.split(",").filter(Boolean));
     set("ce_kp_type", value);

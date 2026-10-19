@@ -10,11 +10,14 @@ type Actor = { id: string; name: string };
 type PatientRow = Record<string, string>;
 
 const appointmentFields: [string, QueueTask, string][] = [
-  ["cnv_next_doctor_review", "DOCTOR", "Clinic doctor review"],
-  ["cnv_next_blood_test", "BLOOD_TEST", "Clinic blood test"],
-  ["cnv_next_med_collection", "MEDICATION", "Clinic medication collection"],
+  ["cnv_next_doctor_date", "DOCTOR", "Clinic doctor review"],
+  ["cnv_next_blood_date", "BLOOD_TEST", "Clinic blood test"],
+  ["cnv_next_med_date", "MEDICATION", "Clinic medication collection"],
+  ["cnv_next_appointment_date", "OTHER", "Clinic appointment"],
   ["pv_next_appointment_date", "PREP", "PrEP appointment"],
-  ["pv_next_collection_date", "MEDICATION", "PrEP medication collection"],
+  ["pv_next_med_date", "MEDICATION", "PrEP medication collection"],
+  ["pv_next_blood_date", "BLOOD_TEST", "PrEP blood sample collection"],
+  ["pv_next_doctor_date", "DOCTOR", "PrEP doctor review"],
 
 ];
 
@@ -55,7 +58,7 @@ export async function expectedAppointments(date: string) {
   for (const row of rows) {
     const recordId = String(row.uic_ori ?? "").trim();
     if (!recordId) continue;
-    const matching = appointmentFields.filter(([field]) => String(row[field] ?? "").trim() === date);
+    const matching = appointmentFields.filter(([field]) => String(row[field] ?? "").trim() === date && (field !== "cnv_next_appointment_date" || ![row.cnv_next_med_date, row.cnv_next_blood_date, row.cnv_next_doctor_date].some(value => value === date)));
     if (!matching.length) continue;
     const identity = identities.get(recordId) ?? row;
     const current = patients.get(recordId) ?? {

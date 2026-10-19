@@ -1,5 +1,6 @@
 "use client";
 
+import { LockKeyhole } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { PatientSummary } from "@/components/PatientSummary";
 import { sortLookupRows, type LookupSort, type LookupSection } from "@/lib/record-lookup";
 
 type Patient = { uic: string; display_name: string; first_name: string; middle_name: string; last_name: string; alias: string; patient_code: string; phone: string };
-type RecordView = { uic: string; sections: LookupSection[] };
+type RecordView = { uic: string; restrictedClinicalAccess: boolean; sections: LookupSection[] };
 
 export default function RecordLookup() {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -43,7 +44,7 @@ export default function RecordLookup() {
     return patients.filter(patient => [patient.uic, patient.display_name, patient.alias, patient.patient_code, `${patient.first_name} ${patient.middle_name} ${patient.last_name}`].some(value => value?.toLowerCase().includes(q))).slice(0, 20);
   }, [patients, query]);
   return <div className="outreach-page mx-auto grid w-full max-w-6xl gap-5 px-4 sm:px-6">
-    <div><h1 className="text-3xl font-bold">Lookup</h1><p className="mt-2 text-muted-foreground">Search for a client to view their complete REDCap record.</p></div>
+    <div><h1 className="text-3xl font-bold">Lookup</h1><p className="mt-2 text-muted-foreground">Search for a client to view the REDCap information available to your role.</p></div>
     <section className="outreach-card">
       <h2 className="text-xl font-bold">Choose a client</h2>
       <label className="mt-5 grid max-w-xl gap-2 font-semibold">Search by UIC, name, or patient code
@@ -64,6 +65,7 @@ export default function RecordLookup() {
       </details>)}
       <h2 className="mt-3 text-2xl font-bold">Repeating instruments</h2>
       {record.sections.filter(section => section.repeating).map(section => <RepeatTable key={`${record.uic}-${section.name}`} section={section} />)}
+      {record.restrictedClinicalAccess && <section aria-labelledby="lookup-privacy-title" className="flex items-start gap-4 rounded-2xl border-2 border-amber-500/60 bg-amber-50 p-5 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100"><LockKeyhole aria-hidden="true" className="mt-1 size-6 shrink-0" /><div><h2 id="lookup-privacy-title" className="text-lg font-bold">Some information is restricted for privacy</h2><p className="mt-2 text-sm">Some data is not viewable for privacy reasons. Your role does not have access to the clinic, HIV and PrEP sections of this record.</p></div></section>}
     </>}
   </div>;
 }

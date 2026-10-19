@@ -26,11 +26,12 @@ await assert.rejects(saveQueuePatientCode('TEST', 'bc123'), /another client/);
 await assert.rejects(saveQueuePatientCode('TEST'), /before leaving/);
 await assert.rejects(saveQueuePatientCode('MISSING', 'BC 444'), /no longer exists/);
 let entry = { id: 'entry', currentStation: 'FILE_RETRIEVAL', recordId: 'TEST', patientCode: null }, moved = [];
+let queueUser = { id: "staff", role: "FACILITY_STAFF" };
 const route = { exports: {} };
 vm.runInNewContext(transpile('../app/api/clinic-queue/[id]/route.ts'), { module: route, exports: route.exports, Request, Response,
   require: name => {
     if (name === 'next/server') return { NextResponse: Response };
-    if (name === '@/lib/auth') return { getCurrentUser: async () => ({ id: 'staff' }), hasRole: () => true };
+    if (name === '@/lib/auth') return { getCurrentUser: async () => queueUser, hasAnyRole: (user, roles) => roles.includes(user.role) };
     if (name === '@/lib/db') return { db: { clinicQueueEntry: { findUnique: async () => entry } } };
     if (name === '@/lib/queue-patient-code') return loaded.exports;
     if (name === '@/lib/clinic-queue') return { QUEUE_STATUSES: ['WAITING', 'EXPECTED'], QUEUE_STATIONS: ['FILE_RETRIEVAL', 'RECEPTION', 'DOCTOR', 'BLOOD_TEST', 'MEDICATION'], QUEUE_TASKS: ['DOCTOR'], updateQueueEntry: async (_id, patch) => { if (patch.patientCode !== undefined) assert.equal(rows[0].ce_patient_code, patch.patientCode); moved.push(patch); return patch; } };
@@ -54,3 +55,9 @@ assert.equal(moved.at(-1).patientCode, undefined);
 assert.equal(imports.length, importsBeforeReturn);
 entry = null; assert.equal((await patch({ currentStation: 'DOCTOR' })).status, 404);
 console.log('Patient-code checks passed: single-field writes, duplicate/conflict protection, verified save before moving, failures and safe retries. No network requests made.');
+
+queueUser = null; assert.equal((await patch({})).status, 401);
+queueUser = { id: 'staff', role: 'OUTREACH_WORKER' }; assert.equal((await patch({})).status, 403);
+for (const role of ['FACILITY_STAFF', 'HEALTHCARE_ASSISTANT', 'ADMIN']) {
+  queueUser = { id: 'staff', role }; assert.equal((await patch({})).status, 404, 'Authorized roles pass permissions and reach the missing-entry check');
+}

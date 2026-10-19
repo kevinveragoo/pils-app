@@ -16,7 +16,9 @@
     "test:export-index": "node scripts/test-export-index.mjs",
     "test:lookup": "node scripts/test-record-lookup.mjs",
     "test:clinic-queue": "node scripts/test-clinic-queue.mjs",
-    "test:queue-patient-code": "node scripts/test-queue-patient-code.mjs"
+    "test:queue-patient-code": "node scripts/test-queue-patient-code.mjs",
+    "test:client-enrollment": "node scripts/test-client-enrollment.mjs",
+    "check:redcap-schema": "node --env-file=.env.local scripts/check-redcap-schema.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

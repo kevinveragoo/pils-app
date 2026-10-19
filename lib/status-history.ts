@@ -29,5 +29,5 @@ export function statusChangeError(rows:StatusValues[], programme:Programme, stat
   return null;
 }
 export function statusOnlyRow(programme:Programme, status:string, date:string, worker:string, reason=""):StatusValues {
-  return programme==="prep"?{redcap_repeat_instrument:"prep_visit",pv_visit_date:date,pv_recorded_by:worker,pv_visit_purpose___4:"1",pv_status_at_visit:status,pv_status_date:date,pv_status_reason:reason,pv_status_only:"1",pv_status_date_unknown:"0"}:{redcap_repeat_instrument:"hiv_care_support",hcs_date:date,hcs_navigator_1:worker,hcs_care_status:status,hcs_status_date:date,hcs_status_reason:reason,hcs_status_only:"1",hcs_status_date_unknown:"0"};
+  return programme==="prep"?{redcap_repeat_instrument:"prep_visit",pv_visit_date:date,pv_worker_1:worker,pv_visit_purpose___4:"1",pv_status_at_visit:status,pv_status_date:date,pv_status_reason:reason,pv_status_only:"1",pv_status_date_unknown:"0"}:{redcap_repeat_instrument:"hiv_care_support",hcs_date:date,hcs_navigator_1:worker,hcs_care_status:status,hcs_status_date:date,hcs_status_reason:reason,hcs_status_only:"1",hcs_status_date_unknown:"0"};
 }

@@ -7,11 +7,11 @@ const workflowModule = { exports: {} };
 vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../lib/visit-workflow.ts', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, { module: workflowModule, exports: workflowModule.exports });
 const loadedModule = { exports: {} };
 const rows = [
-  { uic_ori: 'TEST', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 1, cnv_next_doctor_review: '2026-10-22' },
+  { uic_ori: 'TEST', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 1, cnv_next_doctor_date: '2026-10-22', cnv_next_appointment_date: '2026-10-22' },
   { uic_ori: 'TEST', ce_first_name: 'Sample', ce_middle_name_1: 'Middle', ce_last_name: 'Surname', ce_alias: 'Alias', ce_patient_code: 'BC 999', ce_tel_primary: '123' },
-  { uic_ori: 'TEST', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 2, cnv_next_blood_test: '2026-10-22' },
-  { uic_ori: 'TEST', redcap_repeat_instrument: 'prep_visit', redcap_repeat_instance: 1, pv_next_collection_date: '2026-10-22' },
-  { uic_ori: 'OTHER', cnv_next_doctor_review: '2026-10-23' },
+  { uic_ori: 'TEST', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 2, cnv_next_blood_date: '2026-10-22' },
+  { uic_ori: 'TEST', redcap_repeat_instrument: 'prep_visit', redcap_repeat_instance: 1, pv_next_med_date: '2026-10-22' },
+  { uic_ori: 'OTHER', cnv_next_doctor_date: '2026-10-23' },
 ];
 const code = ts.transpileModule(fs.readFileSync(new URL('../lib/clinic-queue.ts', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
 vm.runInNewContext(code, { module: loadedModule, exports: loadedModule.exports, URLSearchParams, Intl, Date, console,
@@ -28,6 +28,10 @@ assert.equal(result[0].phone, '123');
 assert.deepEqual(result[0].tasks, ['DOCTOR', 'BLOOD_TEST', 'MEDICATION']);
 assert.equal(result[0].recordId, 'TEST');
 console.log('Clinic queue checks passed: repeat follow-ups use enrollment identities and merge services for the selected date.');
+rows.push({ uic_ori: 'LEGACY', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 1, cnv_next_appointment_date: '2026-10-22' });
+const historical = await loadedModule.exports.expectedAppointments('2026-10-22');
+assert.deepEqual(Array.from(historical.find(row => row.recordId === 'LEGACY').tasks), ['OTHER']);
+rows.pop();
 
 await loadedModule.exports.createQueueEntry({ queueDate: "2026-10-22", displayName: "Sample Surname", firstName: "Sample", lastName: "Surname", nationalId: "TEST-ID", phone: "123", isNewClient: true, tasks: ["DOCTOR"] }, { id: "actor", name: "Staff" });
 assert.equal(saved.firstName, "Sample"); assert.equal(saved.lastName, "Surname"); assert.equal(saved.nationalId, "TEST-ID"); assert.equal(saved.phone, "123"); assert.equal(saved.isNewClient, true);
@@ -38,18 +42,23 @@ assert.deepEqual(result[0].prepPurposes, ['3']);
 const { queueVisitDetails } = workflowModule.exports;
 assert.equal(queueVisitDetails({ tasks: ['PREP', 'DOCTOR'], appointmentSources: [] }).visitWorkflow, 'PREP');
 assert.equal(queueVisitDetails({ tasks: ['ARV'], appointmentSources: [] }).visitWorkflow, 'CLINIC');
+let queueUser = { id: "staff", role: "FACILITY_STAFF" };
 const routeModule = { exports: {} };
 let created;
 vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../app/api/clinic-queue/route.ts', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, { module: routeModule, exports: routeModule.exports, Request, Response, URL,
   require: name => {
     if (name === 'next/server') return { NextResponse: Response };
-    if (name === '@/lib/auth') return { getCurrentUser: async () => ({ id: 'test', name: 'Staff' }), hasRole: () => true };
+    if (name === '@/lib/auth') return { getCurrentUser: async () => queueUser, hasAnyRole: (user, roles) => roles.includes(user.role) };
+    if (name === '@/lib/db') return { db: { clinicQueueEntry: { deleteMany: async () => ({ count: 0 }) } } };
     if (name === '@/lib/visit-workflow') return workflowModule.exports;
-    if (name === '@/lib/clinic-queue') return { QUEUE_TASKS: ['DOCTOR', 'BLOOD_TEST', 'MEDICATION', 'PREP', 'ARV', 'OTHER'], QUEUE_STATIONS: ['DOCTOR', 'BLOOD_TEST', 'MEDICATION'], mauritiusToday: () => '2026-10-14', createQueueEntry: async data => { created = data; return data; } };
+    if (name === '@/lib/clinic-queue') return { queueForDate: async () => [], QUEUE_TASKS: ['DOCTOR', 'BLOOD_TEST', 'MEDICATION', 'PREP', 'ARV', 'OTHER'], QUEUE_STATIONS: ['DOCTOR', 'BLOOD_TEST', 'MEDICATION'], mauritiusToday: () => '2026-10-14', createQueueEntry: async data => { created = data; return data; } };
     throw Error(name);
   },
 });
-const post = data => routeModule.exports.POST(new Request('https://test.invalid', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: 'Sample', queueDate: '2026-10-14', ...data }) }));
+const post = data => routeModule.exports.POST(new Request('https://test.invalid', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ recordId: 'TEST', displayName: 'Sample', queueDate: '2026-10-14', ...data }) }));
+for (const invalid of [{ recordId: '' }, { recordId: '   ' }, { recordId: null }, { isNewClient: true, firstName: 'New', lastName: 'Client' }]) {
+  assert.equal((await post({ visitWorkflow: 'CLINIC', clinicPurposes: ['12'], ...invalid })).status, 400);
+}
 assert.equal((await post({ visitWorkflow: 'BOTH', clinicPurposes: ['8'], prepPurposes: ['1'], currentStation: 'MEDICATION' })).status, 201);
 assert.deepEqual(Array.from(created.tasks), ['DOCTOR', 'BLOOD_TEST']);
 assert.equal(created.currentStation, 'MEDICATION', 'First waiting queue is independent of visit purposes');
@@ -83,3 +92,21 @@ assert.equal(stored.status, 'WAITING');
 assert.equal(await loadedModule.exports.completeQueueEntry('scheduled-entry', 'ARRIVAL', { id: 'actor', name: 'Staff' }), true);
 assert.equal(stored.status, 'DONE');
 console.log('Arrival retry and correct-client completion checks passed.');
+
+for (const role of ['FACILITY_STAFF', 'HEALTHCARE_ASSISTANT', 'ADMIN']) {
+  queueUser = { id: 'staff', role };
+  assert.equal((await routeModule.exports.GET(new Request('https://test.invalid?date=2026-10-22'))).status, 200);
+  assert.equal((await post({ visitWorkflow: 'CLINIC', clinicPurposes: ['12'], currentStation: 'DOCTOR' })).status, 201);
+  assert.equal((await routeModule.exports.DELETE(new Request('https://test.invalid?date=2026-10-22', { method: 'DELETE' }))).status, 200);
+}
+for (const [user, status] of [[null, 401], [{ id: 'other', role: 'OUTREACH_WORKER' }, 403]]) {
+  queueUser = user;
+  assert.equal((await routeModule.exports.GET(new Request('https://test.invalid'))).status, status);
+  assert.equal((await post({})).status, status);
+  assert.equal((await routeModule.exports.DELETE(new Request('https://test.invalid', { method: 'DELETE' }))).status, status);
+}
+console.log('Queue permissions passed for Facility Staff, Healthcare Assistant and Admin; unauthenticated and unrelated roles denied.');
+
+rows.push({ uic_ori: 'PREP-FOLLOWUP', redcap_repeat_instrument: 'prep_visit', redcap_repeat_instance: 1, pv_next_blood_date: '2026-10-22', pv_next_doctor_date: '2026-10-22', pv_next_med_date: '2026-10-23' });
+const prepDay = JSON.parse(JSON.stringify(await loadedModule.exports.expectedAppointments('2026-10-22'))).find(row => row.recordId === 'PREP-FOLLOWUP');
+assert.equal(prepDay.visitWorkflow, 'PREP'); assert.deepEqual(prepDay.prepPurposes, ['1', '2']); assert.deepEqual(prepDay.tasks, ['BLOOD_TEST', 'DOCTOR']);

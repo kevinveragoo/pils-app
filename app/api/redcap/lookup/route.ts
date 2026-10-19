@@ -1,9 +1,11 @@
+import { filterRestrictedLookupData } from "@/lib/lookup-privacy";
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, hasAnyRole } from "@/lib/auth";
 import { buildLookupSections, type LookupField, type LookupInstrument, type LookupRow } from "@/lib/record-lookup";
 
 export async function GET(request: Request) {
-  if (!await getCurrentUser()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   const uic = new URL(request.url).searchParams.get("uic")?.trim() ?? "";
   if (!uic) return NextResponse.json({ error: "Select a client to view their record." }, { status: 400 });
   const url = process.env.REDCAP_API_URL, token = process.env.REDCAP_API_TOKEN;
@@ -24,7 +26,9 @@ export async function GET(request: Request) {
     // Restrict the response to exactly the requested record, even if an upstream filter fails.
     const rows = (records as LookupRow[]).filter(row => String(row.uic_ori) === uic);
     if (!rows.length) return NextResponse.json({ error: "The selected record was not found." }, { status: 404 });
-    return NextResponse.json({ uic, sections: buildLookupSections(rows, metadata as LookupField[], instruments as LookupInstrument[], repeating as { form_name: string }[]) }, { headers: { "Cache-Control": "no-store" } });
+    const canViewClinical = hasAnyRole(user, ["HEALTHCARE_ASSISTANT", "HEALTHCARE_NAVIGATOR", "ADMIN"]);
+    const visible = canViewClinical ? { rows, metadata: metadata as LookupField[], instruments: instruments as LookupInstrument[], repeating: repeating as { form_name: string }[] } : filterRestrictedLookupData(rows, metadata as LookupField[], instruments as LookupInstrument[], repeating as { form_name: string }[]);
+    return NextResponse.json({ uic, restrictedClinicalAccess: !canViewClinical, sections: buildLookupSections(visible.rows, visible.metadata, visible.instruments, visible.repeating) }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ error: "Unable to load the record from REDCap." }, { status: 502 });
   }

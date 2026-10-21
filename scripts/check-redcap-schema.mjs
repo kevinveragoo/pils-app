@@ -10,10 +10,21 @@ async function read(content) {
 }
 const [metadata, instruments] = await Promise.all([read('metadata'), read('instrument')]);
 const live = new Map(metadata.map(field => [field.field_name, field]));
+const instrumentDefinitions = JSON.parse(fs.readFileSync(path.join(root,"lib/instrument-forms.json")));
 const rules = JSON.parse(fs.readFileSync(path.join(root, 'lib/redcap-field-rules.json')));
 const choices = field => ['yesno', 'truefalse'].includes(field.field_type) ? ['0', '1'] : ['checkbox', 'dropdown', 'radio'].includes(field.field_type) ? field.select_choices_or_calculations.split('|').filter(value => value.includes(',')).map(value => value.split(',', 1)[0].trim()) : [];
 const sameCodes = (a, b) => JSON.stringify([...a].sort()) === JSON.stringify([...b].sort());
 const issues = [];
+for (const [form, fields] of Object.entries(instrumentDefinitions)) {
+  const current = metadata.filter(field => field.form_name === form);
+  if (JSON.stringify(fields.map(f=>f.name)) !== JSON.stringify(current.map(f=>f.field_name))) issues.push(`${form}: form field ordering changed`);
+  for (const entry of fields) {
+    const field=live.get(entry.name);if(!field)continue;
+    const expectedOptions = ['radio','dropdown','checkbox'].includes(field.field_type) ? field.select_choices_or_calculations.split('|').filter(v=>v.includes(',')).map(v=>{const i=v.indexOf(',');return [v.slice(0,i).trim(),v.slice(i+1).trim()];}) : field.field_type==='yesno' ? [['0','No'],['1','Yes']] : [];
+    if(JSON.stringify(entry.options)!==JSON.stringify(expectedOptions))issues.push(`${entry.name}: rendered options differ`);
+    if(entry.label!==field.field_label||entry.section!==field.section_header||entry.branch!==field.branching_logic||entry.annotation!==field.field_annotation||entry.note!==field.field_note||entry.required!==(field.required_field==='y')) issues.push(`${entry.name}: rendered field configuration differs`);
+  }
+}
 for (const field of metadata) {
   const rule = rules[field.field_name];
   if (!rule) { issues.push(`${field.field_name}: missing validation definition`); continue; }
@@ -26,12 +37,12 @@ for (const field of metadata) {
     const expression = raw && !Number.isFinite(Number(raw)) ? raw : undefined;
     if (rule[bound] !== expected || rule[`${bound}Expression`] !== expression) issues.push(`${field.field_name}: ${bound} changed`);
   }
-  if (rule.required && rule.branch && !/^\[([a-zA-Z0-9_]+)\]\s*(=|<>)\s*['"]([^'"]*)['"]$/.test(rule.branch)) issues.push(`${field.field_name}: conditional required expression needs review`);
+  if (rule.required && rule.branch && rule.branch.replace(/\[[\w]+(?:\(\d+\))?\]|<>|>=|<=|=|>|<|'[^']*'|"[^"]*"|\band\b|\bor\b|\(|\)|-?\d+(?:\.\d+)?/gi, "").trim()) issues.push(`${field.field_name}: conditional required expression needs review`);
 }
 for (const name of Object.keys(rules)) if (!live.has(name)) issues.push(`${name}: field no longer exists`);
 function load(relative) {
   const loaded = { exports: {} };
-  vm.runInNewContext(ts.transpileModule(fs.readFileSync(path.join(root, relative), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, { module: loaded, exports: loaded.exports, require(name) { if (name === "./redcap-field-rules.json") return rules; throw Error(`Unexpected audit dependency: ${name}`); } }); return loaded.exports;
+  vm.runInNewContext(ts.transpileModule(fs.readFileSync(path.join(root, relative), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true } }).outputText, { module: loaded, exports: loaded.exports, require(name) { if (name.endsWith(".json")) return JSON.parse(fs.readFileSync(path.join(root,path.dirname(relative),name),"utf8")); if (name.startsWith("./")) return load(path.join(path.dirname(relative),name+".ts")); throw Error(`Unexpected audit dependency: ${name}`); } }); return loaded.exports;
 }
 const purpose = load('lib/visit-workflow.ts'), status = load('lib/treatment-status.ts'), clinic = load('lib/clinic-enrollment.ts'), options = load('lib/redcap-options.ts');
 for (const [name, value] of Object.entries(clinic.clinicEnrollmentDefaults)) {
@@ -39,7 +50,7 @@ for (const [name, value] of Object.entries(clinic.clinicEnrollmentDefaults)) {
   const match = annotation.match(/@DEFAULT\s*=\s*['"]([^'"]*)['"]/);
   if (match?.[1] !== value) issues.push(`${name}: app default differs from REDCap`);
 }
-const maps = { pv_tests_collected: options.prepTestsCollected, cnv_visit_purpose: purpose.clinicVisitPurposes, pv_visit_purpose: purpose.prepVisitPurposes, ptp_status: status.prepStatusChoices, pv_status_at_visit: status.prepStatusChoices, htp_care_status: status.hivStatusChoices, hcs_care_status: status.hivStatusChoices, ...clinic.clinicEnrollmentChoices, ce_district: options.districts.map((label, index) => [String(index + 1), label]), cne_district: options.districts.map((label, index) => [String(index + 1), label]), oc_district: options.districts.map((label, index) => [String(index + 1), label]), hcs_care_type: options.hivCareChoices };
+const maps = { cnv_visit_purpose: purpose.clinicVisitPurposes, pv_visit_purpose: purpose.prepVisitPurposes, ptp_status: status.prepStatusChoices, pv_status_at_visit: status.prepStatusChoices, htp_care_status: status.hivStatusChoices, hcs_care_status: status.hivStatusChoices, ...clinic.clinicEnrollmentChoices, ce_district: options.districts.map((label, index) => [String(index + 1), label]), cne_district: options.districts.map((label, index) => [String(index + 1), label]), oc_district: options.districts.map((label, index) => [String(index + 1), label]), hcs_care_type: options.hivCareChoices };
 for (const [name, pairs] of Object.entries(maps)) {
   const field = live.get(name); if (!field) continue;
   const expected = Object.fromEntries(field.select_choices_or_calculations.split('|').map(value => { const i = value.indexOf(','); return [value.slice(0, i).trim(), value.slice(i + 1).trim()]; }));

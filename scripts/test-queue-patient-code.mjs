@@ -10,18 +10,18 @@ vm.runInNewContext(transpile('../lib/queue-patient-code.ts'), { module: loaded, 
   if (body.get('action') === 'import') {
     if (failSave) return Response.json({ error: 'Save failed' }, { status: 500 });
     const payload = JSON.parse(body.get('data')); imports.push(payload);
-    for (const p of payload) rows.find(r => r.uic_ori === p.uic_ori).ce_patient_code = p.ce_patient_code;
+    for (const p of payload) rows.find(r => r.uic_ori === p.uic_ori).cne_patient_code = p.cne_patient_code;
     return Response.json({ count: 1 });
   }
   return Response.json(rows);
 } });
 const { saveQueuePatientCode } = loaded.exports;
-rows = [{ uic_ori: 'TEST', ce_patient_code: '' }];
+rows = [{ uic_ori: 'TEST', cne_patient_code: '' }];
 assert.equal(await saveQueuePatientCode('TEST', ' bc 123 '), 'BC 123');
-assert.deepEqual(imports[0], [{ uic_ori: 'TEST', ce_patient_code: 'BC 123' }], 'Only the code and record ID may be imported');
+assert.deepEqual(imports[0], [{ uic_ori: 'TEST', cne_patient_code: 'BC 123' }], 'Only the code and record ID may be imported');
 assert.equal(await saveQueuePatientCode('TEST'), 'BC 123'); assert.equal(imports.length, 1);
 await assert.rejects(saveQueuePatientCode('TEST', 'BC 999'), /already has a patient code/);
-rows = [{ uic_ori: 'TEST', ce_patient_code: '' }, { uic_ori: 'OTHER', ce_patient_code: 'BC 123' }];
+rows = [{ uic_ori: 'TEST', cne_patient_code: '' }, { uic_ori: 'OTHER', cne_patient_code: 'BC 123' }];
 await assert.rejects(saveQueuePatientCode('TEST', 'bc123'), /another client/);
 await assert.rejects(saveQueuePatientCode('TEST'), /before leaving/);
 await assert.rejects(saveQueuePatientCode('MISSING', 'BC 444'), /no longer exists/);
@@ -34,19 +34,20 @@ vm.runInNewContext(transpile('../app/api/clinic-queue/[id]/route.ts'), { module:
     if (name === '@/lib/auth') return { getCurrentUser: async () => queueUser, hasAnyRole: (user, roles) => roles.includes(user.role) };
     if (name === '@/lib/db') return { db: { clinicQueueEntry: { findUnique: async () => entry } } };
     if (name === '@/lib/queue-patient-code') return loaded.exports;
-    if (name === '@/lib/clinic-queue') return { QUEUE_STATUSES: ['WAITING', 'EXPECTED'], QUEUE_STATIONS: ['FILE_RETRIEVAL', 'RECEPTION', 'DOCTOR', 'BLOOD_TEST', 'MEDICATION'], QUEUE_TASKS: ['DOCTOR'], updateQueueEntry: async (_id, patch) => { if (patch.patientCode !== undefined) assert.equal(rows[0].ce_patient_code, patch.patientCode); moved.push(patch); return patch; } };
+    if (name === '@/lib/queue-no-show') return { setQueueNoShow: async () => { throw Error('Unexpected no-show action'); }, QueueNoShowError: class extends Error {} };
+    if (name === '@/lib/clinic-queue') return { QUEUE_STATUSES: ['WAITING', 'EXPECTED'], QUEUE_STATIONS: ['FILE_RETRIEVAL', 'RECEPTION', 'DOCTOR', 'BLOOD_TEST', 'MEDICATION'], QUEUE_TASKS: ['DOCTOR'], updateQueueEntry: async (_id, patch) => { if (patch.patientCode !== undefined) assert.equal(rows[0].cne_patient_code, patch.patientCode); moved.push(patch); return patch; } };
     throw Error(name);
   },
 });
 const patch = data => route.exports.PATCH(new Request('https://test.invalid', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }), { params: Promise.resolve({ id: 'entry' }) });
-rows = [{ uic_ori: 'TEST', ce_patient_code: '' }]; failSave = true;
+rows = [{ uic_ori: 'TEST', cne_patient_code: '' }]; failSave = true;
 assert.equal((await patch({ currentStation: 'DOCTOR', patientCode: 'BC 555' })).status, 502); assert.equal(moved.length, 0);
 failSave = false;
 assert.equal((await patch({ currentStation: 'DOCTOR' })).status, 400); assert.equal(moved.length, 0);
 assert.equal((await patch({ currentStation: 'BLOOD_TEST', patientCode: 'BC 555' })).status, 200);
 assert.equal(moved[0].currentStation, 'BLOOD_TEST'); assert.equal(moved[0].patientCode, 'BC 555');
 assert.equal((await patch({ currentStation: 'MEDICATION' })).status, 200); assert.equal(imports.length, 2, 'A previously successful save is reused on retry');
-rows = [{ uic_ori: 'TEST', ce_patient_code: '' }];
+rows = [{ uic_ori: 'TEST', cne_patient_code: '' }];
 const importsBeforeReturn = imports.length;
 assert.equal((await patch({ status: 'EXPECTED', currentStation: 'RECEPTION' })).status, 200);
 assert.equal(moved.at(-1).status, 'EXPECTED');

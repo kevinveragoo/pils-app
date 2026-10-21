@@ -429,6 +429,29 @@
   .clinic-queue-waiting { border-left: 4px solid #d97706; }
   .clinic-queue-ready { border-left: 4px solid var(--primary); }
   .clinic-queue-done { border-left: 4px solid #15803d; }
+  .appointment-count-badge {
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    min-width: 1.75rem;
+    aspect-ratio: 1;
+    margin-left: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 50%;
+    background-color: #000;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .clinic-queue-page .queue-no-show-button,
+  .clinic-queue-page .queue-no-show-button:hover,
+  .clinic-queue-page .queue-no-show-button:focus-visible {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+  }
   .clinic-queue-page select { min-height: 36px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); padding: 0.35rem 0.65rem; }
   .clinic-queue-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; border: 1px solid var(--border); border-radius: 18px; background: var(--card); padding: 0.45rem; box-shadow: var(--pils-shadow); }
   .clinic-queue-toolbar label { display: flex; align-items: center; gap: 0.45rem; padding-left: 0.45rem; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }

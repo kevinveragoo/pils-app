@@ -1,5 +1,6 @@
 "use client";
 
+import NewAppointmentForm from "@/components/NewAppointmentForm";
 import { LockKeyhole } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -8,9 +9,9 @@ import { PatientSummary } from "@/components/PatientSummary";
 import { sortLookupRows, type LookupSort, type LookupSection } from "@/lib/record-lookup";
 
 type Patient = { uic: string; display_name: string; first_name: string; middle_name: string; last_name: string; alias: string; patient_code: string; phone: string };
-type RecordView = { uic: string; restrictedClinicalAccess: boolean; sections: LookupSection[] };
+type RecordView = { uic: string; restrictedClinicalAccess: boolean; restrictedRiskViolenceAccess: boolean; sections: LookupSection[] };
 
-export default function RecordLookup() {
+export default function RecordLookup({ appointment = false }: { appointment?: boolean } = {}) {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Patient | null>(null);
@@ -31,20 +32,21 @@ export default function RecordLookup() {
   useEffect(() => {
     if (!selected) return;
     const controller = new AbortController();
-    fetch(`/api/redcap/lookup?uic=${encodeURIComponent(selected.uic)}`, { signal: controller.signal, cache: "no-store" }).then(async response => {
+    fetch(`/api/redcap/lookup?uic=${encodeURIComponent(selected.uic)}${appointment ? "&scope=appointment" : ""}`, { signal: controller.signal, cache: "no-store" }).then(async response => {
       const data = await response.json(); if (!response.ok) throw Error(data.error || "Unable to load the record from REDCap.");
       if (!controller.signal.aborted) setRecord(data);
     }).catch(reason => { if (reason.name !== "AbortError") setError(reason.message); })
       .finally(() => { if (!controller.signal.aborted) setLoadingRecord(false); });
     return () => controller.abort();
-  }, [selected, retry]);
+  }, [selected, retry, appointment]);
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
     return patients.filter(patient => [patient.uic, patient.display_name, patient.alias, patient.patient_code, `${patient.first_name} ${patient.middle_name} ${patient.last_name}`].some(value => value?.toLowerCase().includes(q))).slice(0, 20);
   }, [patients, query]);
+  const sections = (record?.sections ?? []).filter(section => !appointment || ["client_enrollment", "clinic_enrollment", "clinic_visit", "prep_visit"].includes(section.name));
   return <div className="outreach-page mx-auto grid w-full max-w-6xl gap-5 px-4 sm:px-6">
-    <div><h1 className="text-3xl font-bold">Lookup</h1><p className="mt-2 text-muted-foreground">Search for a client to view the REDCap information available to your role.</p></div>
+    <div><h1 className="text-3xl font-bold">{appointment ? "New Clinic Appointment" : "Lookup"}</h1><p className="mt-2 text-muted-foreground">{appointment ? "Find a client to book an appointment and review their enrollment and clinic visits." : "Search for a client to view the REDCap information available to your role."}</p></div>
     <section className="outreach-card">
       <h2 className="text-xl font-bold">Choose a client</h2>
       <label className="mt-5 grid max-w-xl gap-2 font-semibold">Search by UIC, name, or patient code
@@ -58,14 +60,15 @@ export default function RecordLookup() {
     {error && <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}<Button variant="outline" className="ml-3" onClick={() => { setError(""); setRecord(null); if (selected) setLoadingRecord(true); else setLoadingClients(true); setRetry(value => value + 1); }}>Retry</Button></div>}
     {loadingRecord && <p role="status" className="p-4">Loading record…</p>}
     {record && record.uic === selected?.uic && <>
+      {appointment && <NewAppointmentForm key={record.uic} recordId={record.uic} onSaved={() => setRetry(value => value + 1)} />}
       <p className="text-sm text-muted-foreground">Read only · Data grouped by instrument</p>
-      {record.sections.filter(section => !section.repeating).map(section => <details key={`${record.uic}-${section.name}`} open={section.hasData} className="outreach-card">
+      {sections.filter(section => !section.repeating).map(section => <details key={`${record.uic}-${section.name}`} open={section.hasData} className="outreach-card">
         <summary className="cursor-pointer text-xl font-bold">{section.label}</summary>
         {section.rows.map((row, index) => <div key={`${row.event}-${index}`} className="mt-5">{row.event && <p className="mb-3 font-semibold">{row.event}</p>}<dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{section.columns.map((field, fieldIndex) => <div key={field.name} className={`min-w-0 rounded-xl p-3 ${row.values[fieldIndex]?.trim() ? "bg-muted" : "border bg-transparent"}`}><dt className="text-sm font-semibold" title={field.name}>{field.label}</dt><dd className="mt-1 whitespace-pre-wrap break-words text-sm">{row.values[fieldIndex] || "—"}</dd></div>)}</dl></div>)}
       </details>)}
       <h2 className="mt-3 text-2xl font-bold">Repeating instruments</h2>
-      {record.sections.filter(section => section.repeating).map(section => <RepeatTable key={`${record.uic}-${section.name}`} section={section} />)}
-      {record.restrictedClinicalAccess && <section aria-labelledby="lookup-privacy-title" className="flex items-start gap-4 rounded-2xl border-2 border-amber-500/60 bg-amber-50 p-5 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100"><LockKeyhole aria-hidden="true" className="mt-1 size-6 shrink-0" /><div><h2 id="lookup-privacy-title" className="text-lg font-bold">Some information is restricted for privacy</h2><p className="mt-2 text-sm">Some data is not viewable for privacy reasons. Your role does not have access to the clinic, HIV and PrEP sections of this record.</p></div></section>}
+      {sections.filter(section => section.repeating).map(section => <RepeatTable key={`${record.uic}-${section.name}`} section={section} />)}
+      {(record.restrictedClinicalAccess || (!appointment && record.restrictedRiskViolenceAccess)) && <section aria-labelledby="lookup-privacy-title" className="flex items-start gap-4 rounded-2xl border-2 border-amber-500/60 bg-amber-50 p-5 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100"><LockKeyhole aria-hidden="true" className="mt-1 size-6 shrink-0" /><div><h2 id="lookup-privacy-title" className="text-lg font-bold">Some information is restricted for privacy</h2><p className="mt-2 text-sm">Some data is not viewable for privacy reasons. Your role does not have access to all sections of this record.</p></div></section>}
     </>}
   </div>;
 }

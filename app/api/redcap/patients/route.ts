@@ -13,7 +13,7 @@ type RedcapRow = {
   ce_last_name?: string;
   ce_alias?: string;
   ce_tel_primary?: string;
-  ce_patient_code?: string;
+  cne_patient_code?: string;
   ce_kp_type___1?: string;
   ce_kp_type___2?: string;
   ce_kp_type___3?: string;
@@ -57,7 +57,7 @@ export async function GET() {
       "fields[6]": "ce_middle_name_2",
       "fields[7]": "ce_tel_primary",
       "fields[8]": "ce_middle_name_3",
-      "fields[9]": "ce_patient_code",
+      "fields[9]": "cne_patient_code",
     });
 
     const response = await fetch(REDCAP_API_URL, {
@@ -99,7 +99,7 @@ export async function GET() {
           last_name: String(row.ce_last_name ?? "").trim(),
           alias: String(row.ce_alias ?? "").trim(),
           phone: String(row.ce_tel_primary ?? "").trim(),
-          patient_code: String(row.ce_patient_code ?? "").trim(),
+          patient_code: String(row.cne_patient_code ?? "").trim(),
           kp_types: [1, 2, 3, 4, 5, 6, 7, 8]
             .filter((code) => row[`ce_kp_type___${code}` as keyof RedcapRow] === "1")
             .map(String),

@@ -1,3 +1,4 @@
+import { setQueueNoShow, QueueNoShowError } from "@/lib/queue-no-show";
 import { db } from "@/lib/db";
 import { saveQueuePatientCode, PatientCodeError } from "@/lib/queue-patient-code";
 import { NextResponse } from "next/server";
@@ -16,6 +17,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const tasks = Array.isArray(body.tasks) ? body.tasks.filter((task): task is string => typeof task === "string" && (QUEUE_TASKS as readonly string[]).includes(task)) : undefined;
     const entry = await db.clinicQueueEntry.findUnique({ where: { id } });
     if (!entry) return NextResponse.json({ error: "Queue entry no longer exists." }, { status: 404 });
+    if (body.noShow !== undefined && body.noShow !== true) return NextResponse.json({ error: "Return the entry to Expected to remove a no-show." }, { status: 400 });
+    if (body.noShow === true) return NextResponse.json(await setQueueNoShow(id, true, user));
+    if (status === "EXPECTED" && (entry.noShow || entry.noShowInstance) && ["DONE", "EXPECTED"].includes(entry.status)) return NextResponse.json(await setQueueNoShow(id, false, user));
+    if (entry.noShow && (status && status !== "DONE" || currentStation && currentStation !== entry.currentStation)) return NextResponse.json({ error: "Return the no-show to Expected before moving it." }, { status: 409 });
     let patientCode: string | undefined;
     if (entry.currentStation === "FILE_RETRIEVAL" && currentStation && ["DOCTOR", "BLOOD_TEST", "MEDICATION", "CLINICIAN"].includes(currentStation) && status !== "EXPECTED") {
       const submitted = typeof body.patientCode === "string" ? body.patientCode.trim() : undefined;
@@ -27,5 +32,5 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       }
     }
     return NextResponse.json(await updateQueueEntry(id, { status, currentStation, tasks, patientCode, notes: typeof body.notes === "string" ? body.notes : undefined }, user));
-  } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to update the queue entry." }, { status: error instanceof PatientCodeError ? error.status : 400 }); }
+  } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to update the queue entry." }, { status: (error instanceof PatientCodeError || error instanceof QueueNoShowError) ? error.status : 400 }); }
 }

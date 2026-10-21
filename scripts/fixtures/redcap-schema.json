@@ -678,23 +678,7 @@
     "form": "clinic_enrollment",
     "type": "text"
   },
-  "cne_district": {
-    "form": "clinic_enrollment",
-    "type": "radio",
-    "codes": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10"
-    ]
-  },
-  "cne_supervisor": {
+  "cne_welc_worker": {
     "form": "clinic_enrollment",
     "type": "text"
   },
@@ -702,7 +686,7 @@
     "form": "clinic_enrollment",
     "type": "text"
   },
-  "cne_prev_visit_6m": {
+  "cne_prev_visit": {
     "form": "clinic_enrollment",
     "type": "yesno"
   },
@@ -717,6 +701,120 @@
   "cne_ref_outreach_worker": {
     "form": "clinic_enrollment",
     "type": "text"
+  },
+  "cne_pregnancies": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "cne_pregnant_now": {
+    "form": "clinic_enrollment",
+    "type": "yesno"
+  },
+  "cne_antenatal": {
+    "form": "clinic_enrollment",
+    "type": "yesno"
+  },
+  "cne_num_children": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "cne_contraception_type": {
+    "form": "clinic_enrollment",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "99",
+      "0"
+    ]
+  },
+  "cne_hiv_prev_test": {
+    "form": "clinic_enrollment",
+    "type": "yesno"
+  },
+  "cne_hiv_prev_test_since": {
+    "form": "clinic_enrollment",
+    "type": "radio",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "cne_hiv_prev_result": {
+    "form": "clinic_enrollment",
+    "type": "radio",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "9"
+    ]
+  },
+  "cne_hiv_prev_result_disclosed": {
+    "form": "clinic_enrollment",
+    "type": "yesno"
+  },
+  "cne_hiv_disclosure_recipient": {
+    "form": "clinic_enrollment",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "99"
+    ]
+  },
+  "cne_hiv_disclosure_recipient_other": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "cne_hiv_prev_treat": {
+    "form": "clinic_enrollment",
+    "type": "yesno"
+  },
+  "cne_hiv_prev_treat_since": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "cne_hiv_prev_treat_facility": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "cne_contact_ok": {
+    "form": "clinic_enrollment",
+    "type": "yesno"
+  },
+  "cne_peer_contact_ok": {
+    "form": "clinic_enrollment",
+    "type": "yesno"
+  },
+  "cne_comorbidities": {
+    "form": "clinic_enrollment",
+    "type": "checkbox",
+    "codes": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "99"
+    ]
+  },
+  "cne_comorbidity_other": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "cne_notes": {
+    "form": "clinic_enrollment",
+    "type": "notes"
   },
   "cne_age_first_sex": {
     "form": "clinic_enrollment",
@@ -871,36 +969,6 @@
       "99"
     ]
   },
-  "cne_pregnancies": {
-    "form": "clinic_enrollment",
-    "type": "text"
-  },
-  "cne_pregnant_now": {
-    "form": "clinic_enrollment",
-    "type": "yesno"
-  },
-  "cne_antenatal": {
-    "form": "clinic_enrollment",
-    "type": "yesno"
-  },
-  "cne_num_children": {
-    "form": "clinic_enrollment",
-    "type": "text"
-  },
-  "cne_contraception_type": {
-    "form": "clinic_enrollment",
-    "type": "checkbox",
-    "codes": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "99",
-      "0"
-    ]
-  },
   "cne_violence_3m": {
     "form": "clinic_enrollment",
     "type": "yesno"
@@ -962,117 +1030,29 @@
     "form": "clinic_enrollment",
     "type": "text"
   },
-  "cne_hiv_prev_test": {
-    "form": "clinic_enrollment",
-    "type": "yesno"
-  },
-  "cne_hiv_prev_test_since": {
-    "form": "clinic_enrollment",
-    "type": "radio",
-    "codes": [
-      "1",
-      "2",
-      "3",
-      "4"
-    ]
-  },
-  "cne_hiv_prev_result": {
-    "form": "clinic_enrollment",
-    "type": "radio",
-    "codes": [
-      "1",
-      "2",
-      "3",
-      "9"
-    ]
-  },
-  "cne_hiv_prev_result_disclosed": {
-    "form": "clinic_enrollment",
-    "type": "yesno"
-  },
-  "cne_hiv_disclosure_recipient": {
-    "form": "clinic_enrollment",
-    "type": "checkbox",
-    "codes": [
-      "1",
-      "2",
-      "3",
-      "99"
-    ]
-  },
-  "cne_hiv_disclosure_recipient_other": {
-    "form": "clinic_enrollment",
-    "type": "text"
-  },
-  "cne_hiv_prev_treat": {
-    "form": "clinic_enrollment",
-    "type": "yesno"
-  },
-  "cne_hiv_prev_treat_since": {
-    "form": "clinic_enrollment",
-    "type": "text"
-  },
-  "cne_hiv_prev_treat_facility": {
-    "form": "clinic_enrollment",
-    "type": "text"
-  },
-  "cne_contact_ok": {
-    "form": "clinic_enrollment",
-    "type": "yesno"
-  },
-  "cne_peer_contact_ok": {
-    "form": "clinic_enrollment",
-    "type": "yesno"
-  },
-  "cne_comorbidities": {
-    "form": "clinic_enrollment",
-    "type": "checkbox",
-    "codes": [
-      "0",
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "99"
-    ]
-  },
-  "cne_comorbidity_other": {
-    "form": "clinic_enrollment",
-    "type": "text"
-  },
-  "cne_notes": {
-    "form": "clinic_enrollment",
-    "type": "notes"
+  "cnv_section_1_hdr": {
+    "form": "clinic_visit",
+    "type": "descriptive"
   },
   "cnv_client_hdr": {
     "form": "clinic_visit",
     "type": "descriptive"
   },
-  "cnv_worker": {
+  "cnv_section_2_hdr": {
     "form": "clinic_visit",
-    "type": "text"
+    "type": "descriptive"
   },
   "cnv_worker_1": {
-    "form": "clinic_visit",
-    "type": "text"
-  },
-  "cnv_worker_2": {
-    "form": "clinic_visit",
-    "type": "text"
-  },
-  "cnv_worker_3": {
-    "form": "clinic_visit",
-    "type": "text"
-  },
-  "cnv_worker_4": {
     "form": "clinic_visit",
     "type": "text"
   },
   "cnv_date": {
     "form": "clinic_visit",
     "type": "text"
+  },
+  "cnv_initial_assessment": {
+    "form": "clinic_visit",
+    "type": "yesno"
   },
   "cnv_is_new_client": {
     "form": "clinic_visit",
@@ -1087,11 +1067,10 @@
       "3",
       "4",
       "12",
-      "5",
       "8",
       "9",
-      "10",
-      "13",
+      "15",
+      "16",
       "99"
     ]
   },
@@ -1103,23 +1082,9 @@
     "form": "clinic_visit",
     "type": "notes"
   },
-  "cnv_referred_by": {
+  "cnv_section_3_hdr": {
     "form": "clinic_visit",
-    "type": "radio",
-    "codes": [
-      "1",
-      "2",
-      "3",
-      "99"
-    ]
-  },
-  "cnv_exam_done": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_exam_findings": {
-    "form": "clinic_visit",
-    "type": "notes"
+    "type": "descriptive"
   },
   "cnv_medication_supplied": {
     "form": "clinic_visit",
@@ -1136,6 +1101,14 @@
       "9",
       "10",
       "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
       "99"
     ]
   },
@@ -1147,17 +1120,21 @@
     "form": "clinic_visit",
     "type": "text"
   },
-  "cnv_no_medication_reason": {
-    "form": "clinic_visit",
-    "type": "text"
-  },
   "cnv_next_med_date": {
     "form": "clinic_visit",
     "type": "text"
   },
-  "cnv_next_med_collection": {
+  "cnv_section_4_hdr": {
     "form": "clinic_visit",
-    "type": "text"
+    "type": "descriptive"
+  },
+  "civ_doctor_appo_type": {
+    "form": "clinic_visit",
+    "type": "dropdown",
+    "codes": [
+      "1",
+      "2"
+    ]
   },
   "cnv_doctor": {
     "form": "clinic_visit",
@@ -1175,17 +1152,41 @@
     "form": "clinic_visit",
     "type": "text"
   },
-  "cnv_doctor_comments": {
-    "form": "clinic_visit",
-    "type": "notes"
-  },
   "cnv_next_doctor_date": {
     "form": "clinic_visit",
     "type": "text"
   },
-  "cnv_next_doctor_review": {
+  "cnv_section_5_hdr": {
+    "form": "clinic_visit",
+    "type": "descriptive"
+  },
+  "cnv_addictologist": {
     "form": "clinic_visit",
     "type": "text"
+  },
+  "cnv_weight_addicto": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_bp_systolic_addicto": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_bp_diastolic_addicto": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_next_addicto_date": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_addictologist_comments": {
+    "form": "clinic_visit",
+    "type": "notes"
+  },
+  "cnv_section_6_hdr": {
+    "form": "clinic_visit",
+    "type": "descriptive"
   },
   "cnv_blood_collected": {
     "form": "clinic_visit",
@@ -1195,18 +1196,9 @@
     "form": "clinic_visit",
     "type": "text"
   },
-  "cnv_next_blood_test": {
+  "cnv_section_7_hdr": {
     "form": "clinic_visit",
-    "type": "text"
-  },
-  "cnv_hiv_reported": {
-    "form": "clinic_visit",
-    "type": "radio",
-    "codes": [
-      "1",
-      "2",
-      "3"
-    ]
+    "type": "descriptive"
   },
   "cnv_hiv_lab_test_done": {
     "form": "clinic_visit",
@@ -1215,10 +1207,6 @@
   "cnv_hiv_lab_test_date": {
     "form": "clinic_visit",
     "type": "text"
-  },
-  "cnv_hiv_lab_result_received": {
-    "form": "clinic_visit",
-    "type": "yesno"
   },
   "cnv_hiv_lab_result": {
     "form": "clinic_visit",
@@ -1230,14 +1218,9 @@
       "4"
     ]
   },
-  "cnv_hbv_reported": {
+  "cnv_section_8_hdr": {
     "form": "clinic_visit",
-    "type": "radio",
-    "codes": [
-      "1",
-      "2",
-      "3"
-    ]
+    "type": "descriptive"
   },
   "cnv_hbv_lab_test_done": {
     "form": "clinic_visit",
@@ -1246,10 +1229,6 @@
   "cnv_hbv_lab_test_date": {
     "form": "clinic_visit",
     "type": "text"
-  },
-  "cnv_hbv_lab_result_received": {
-    "form": "clinic_visit",
-    "type": "yesno"
   },
   "cnv_hbv_lab_result": {
     "form": "clinic_visit",
@@ -1260,10 +1239,6 @@
       "3",
       "4"
     ]
-  },
-  "cnv_hbv_treat": {
-    "form": "clinic_visit",
-    "type": "yesno"
   },
   "cnv_hbv_vaccination_status": {
     "form": "clinic_visit",
@@ -1276,14 +1251,9 @@
       "4"
     ]
   },
-  "cnv_hcv_reported": {
+  "cnv_section_9_hdr": {
     "form": "clinic_visit",
-    "type": "radio",
-    "codes": [
-      "1",
-      "2",
-      "3"
-    ]
+    "type": "descriptive"
   },
   "cnv_hcv_lab_test_done": {
     "form": "clinic_visit",
@@ -1292,10 +1262,6 @@
   "cnv_hcv_lab_test_date": {
     "form": "clinic_visit",
     "type": "text"
-  },
-  "cnv_hcv_lab_result_received": {
-    "form": "clinic_visit",
-    "type": "yesno"
   },
   "cnv_hcv_lab_result": {
     "form": "clinic_visit",
@@ -1319,14 +1285,21 @@
     "form": "clinic_visit",
     "type": "yesno"
   },
-  "cnv_syp_reported": {
+  "cnv_hcv_vaccination_status": {
     "form": "clinic_visit",
     "type": "radio",
     "codes": [
+      "0",
       "1",
       "2",
-      "3"
+      "3",
+      "4",
+      "5"
     ]
+  },
+  "cnv_section_10_hdr": {
+    "form": "clinic_visit",
+    "type": "descriptive"
   },
   "cnv_syp_lab_test_done": {
     "form": "clinic_visit",
@@ -1335,10 +1308,6 @@
   "cnv_syp_lab_test_date": {
     "form": "clinic_visit",
     "type": "text"
-  },
-  "cnv_syp_lab_result_received": {
-    "form": "clinic_visit",
-    "type": "yesno"
   },
   "cnv_syp_lab_result": {
     "form": "clinic_visit",
@@ -1358,7 +1327,25 @@
     "form": "clinic_visit",
     "type": "text"
   },
+  "cnv_syp_treat": {
+    "form": "clinic_visit",
+    "type": "yesno"
+  },
+  "cnv_section_11_hdr": {
+    "form": "clinic_visit",
+    "type": "descriptive"
+  },
   "cnv_sti_syndrome": {
+    "form": "clinic_visit",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "cnv_sti_symptoms": {
     "form": "clinic_visit",
     "type": "checkbox",
     "codes": [
@@ -1369,7 +1356,50 @@
       "5",
       "6",
       "7",
-      "8"
+      "8",
+      "99"
+    ]
+  },
+  "cnv_sti_diagnosed": {
+    "form": "clinic_visit",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "99",
+      "0",
+      "98"
+    ]
+  },
+  "cnv_sti_diagnosed_other": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_sti_treat_location": {
+    "form": "clinic_visit",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "99"
     ]
   },
   "cnv_sti_screened": {
@@ -1380,25 +1410,13 @@
     "form": "clinic_visit",
     "type": "yesno"
   },
-  "cnv_sti_treatment": {
+  "cnv_sti_treat_where": {
     "form": "clinic_visit",
-    "type": "notes"
+    "type": "text"
   },
-  "cnv_fp_counselling": {
+  "cnv_section_12_hdr": {
     "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_post_abortion": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_risk_reduction": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_condom_demo": {
-    "form": "clinic_visit",
-    "type": "yesno"
+    "type": "descriptive"
   },
   "cnv_num_male_condoms": {
     "form": "clinic_visit",
@@ -1420,6 +1438,10 @@
     "form": "clinic_visit",
     "type": "text"
   },
+  "cnv_section_13_hdr": {
+    "form": "clinic_visit",
+    "type": "descriptive"
+  },
   "cnv_gbv_screen": {
     "form": "clinic_visit",
     "type": "yesno"
@@ -1436,73 +1458,17 @@
     "form": "clinic_visit",
     "type": "text"
   },
-  "cnv_alcohol_screen": {
+  "cnv_section_14_hdr": {
     "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_alcohol_treat": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_alcohol_refer": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_alcohol_refer_where": {
-    "form": "clinic_visit",
-    "type": "text"
-  },
-  "cnv_ost_screen": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_ost_treat": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_ost_refer": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_ost_refer_where": {
-    "form": "clinic_visit",
-    "type": "text"
-  },
-  "cnv_cervical_screen": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_cervical_treat": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_cervical_refer": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_cervical_refer_where": {
-    "form": "clinic_visit",
-    "type": "text"
-  },
-  "cnv_abscess_screen": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_abscess_treat": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_abscess_refer": {
-    "form": "clinic_visit",
-    "type": "yesno"
-  },
-  "cnv_abscess_refer_where": {
-    "form": "clinic_visit",
-    "type": "text"
+    "type": "descriptive"
   },
   "cnv_other_screen": {
     "form": "clinic_visit",
     "type": "yesno"
+  },
+  "civ_other_notes": {
+    "form": "clinic_visit",
+    "type": "notes"
   },
   "cnv_other_treat": {
     "form": "clinic_visit",
@@ -1515,6 +1481,10 @@
   "cnv_other_refer_where": {
     "form": "clinic_visit",
     "type": "text"
+  },
+  "cnv_section_15_hdr": {
+    "form": "clinic_visit",
+    "type": "descriptive"
   },
   "cnv_lab_ref": {
     "form": "clinic_visit",
@@ -1543,19 +1513,15 @@
     "form": "clinic_visit",
     "type": "text"
   },
+  "cnv_section_16_hdr": {
+    "form": "clinic_visit",
+    "type": "descriptive"
+  },
   "cnv_comments": {
     "form": "clinic_visit",
     "type": "notes"
   },
-  "cnv_legacy_next_date": {
-    "form": "clinic_visit",
-    "type": "text"
-  },
   "cnv_next_appointment_date": {
-    "form": "clinic_visit",
-    "type": "text"
-  },
-  "cnv_next_appt": {
     "form": "clinic_visit",
     "type": "text"
   },
@@ -1563,17 +1529,33 @@
     "form": "clinic_visit",
     "type": "text"
   },
+  "cnv_worker": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_next_med_collection": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_next_doctor_review": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_next_blood_test": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_legacy_next_date": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_next_appt": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
   "ptp_client_hdr": {
     "form": "prep_treatment_profile",
     "type": "descriptive"
-  },
-  "ptp_start_date": {
-    "form": "prep_treatment_profile",
-    "type": "text"
-  },
-  "ptp_primary_reason": {
-    "form": "prep_treatment_profile",
-    "type": "notes"
   },
   "ptp_previous_use": {
     "form": "prep_treatment_profile",
@@ -1587,12 +1569,15 @@
     "form": "prep_treatment_profile",
     "type": "text"
   },
+  "ptp_start_date": {
+    "form": "prep_treatment_profile",
+    "type": "text"
+  },
   "ptp_medication": {
     "form": "prep_treatment_profile",
     "type": "radio",
     "codes": [
       "1",
-      "2",
       "6",
       "99"
     ]
@@ -1601,34 +1586,7 @@
     "form": "prep_treatment_profile",
     "type": "text"
   },
-  "ptp_regimen_notes": {
-    "form": "prep_treatment_profile",
-    "type": "notes"
-  },
-  "ptp_status": {
-    "form": "prep_treatment_profile",
-    "type": "radio",
-    "codes": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "99"
-    ]
-  },
-  "ptp_ltfu": {
-    "form": "prep_treatment_profile",
-    "type": "yesno"
-  },
-  "ptp_effective_date": {
+  "ptp_update_date": {
     "form": "prep_treatment_profile",
     "type": "text"
   },
@@ -1648,15 +1606,7 @@
     "form": "prep_visit",
     "type": "text"
   },
-  "pv_status_only": {
-    "form": "prep_visit",
-    "type": "yesno"
-  },
   "pv_worker_1": {
-    "form": "prep_visit",
-    "type": "text"
-  },
-  "pv_worker_2": {
     "form": "prep_visit",
     "type": "text"
   },
@@ -1666,8 +1616,7 @@
     "codes": [
       "1",
       "2",
-      "3",
-      "4"
+      "3"
     ]
   },
   "pv_followup_stage": {
@@ -1691,33 +1640,15 @@
       "99"
     ]
   },
-  "pv_blood_draw_date": {
+  "pv_side_effects": {
     "form": "prep_visit",
-    "type": "text"
+    "type": "notes"
   },
-  "pv_tests_collected": {
+  "pv_blood_collected": {
     "form": "prep_visit",
-    "type": "checkbox",
-    "codes": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "99"
-    ]
+    "type": "yesno"
   },
-  "pv_other_test_collected": {
-    "form": "prep_visit",
-    "type": "text"
-  },
-  "pv_sample_reference": {
+  "pv_blood_collected_date": {
     "form": "prep_visit",
     "type": "text"
   },
@@ -1798,14 +1729,6 @@
     "form": "prep_visit",
     "type": "notes"
   },
-  "pv_sti_reported": {
-    "form": "prep_visit",
-    "type": "text"
-  },
-  "pv_side_effects": {
-    "form": "prep_visit",
-    "type": "notes"
-  },
   "pv_doctor": {
     "form": "prep_visit",
     "type": "text"
@@ -1855,10 +1778,6 @@
     "form": "prep_visit",
     "type": "text"
   },
-  "pv_no_medication_reason": {
-    "form": "prep_visit",
-    "type": "text"
-  },
   "pv_next_med_date": {
     "form": "prep_visit",
     "type": "text"
@@ -1876,6 +1795,10 @@
     "form": "prep_visit",
     "type": "yesno"
   },
+  "pv_hbv_referral": {
+    "form": "prep_visit",
+    "type": "yesno"
+  },
   "pv_other_referral": {
     "form": "prep_visit",
     "type": "text"
@@ -1888,47 +1811,42 @@
       "1",
       "2",
       "3",
+      "4",
+      "5"
+    ]
+  },
+  "pv_hcv_vaccination_status": {
+    "form": "prep_visit",
+    "type": "radio",
+    "codes": [
+      "0",
+      "1",
+      "2",
+      "3",
       "4"
     ]
   },
-  "pv_status_at_visit": {
+  "pv_profile_updated": {
+    "form": "prep_visit",
+    "type": "yesno"
+  },
+  "ptp_status": {
     "form": "prep_visit",
     "type": "radio",
     "codes": [
       "1",
       "2",
-      "3",
       "4",
       "5",
       "6",
       "7",
       "8",
-      "9",
-      "10",
-      "11",
-      "12",
       "99"
     ]
-  },
-  "pv_status_date": {
-    "form": "prep_visit",
-    "type": "text"
-  },
-  "pv_status_date_unknown": {
-    "form": "prep_visit",
-    "type": "yesno"
-  },
-  "pv_status_reason": {
-    "form": "prep_visit",
-    "type": "notes"
   },
   "pv_status_source": {
     "form": "prep_visit",
     "type": "text"
-  },
-  "pv_profile_updated": {
-    "form": "prep_visit",
-    "type": "yesno"
   },
   "pv_next_appointment_date": {
     "form": "prep_visit",
@@ -2569,9 +2487,216 @@
     "form": "partner_referral_child",
     "type": "notes"
   },
+  "ra_client_hdr": {
+    "form": "risk_assessment",
+    "type": "descriptive"
+  },
+  "ra_date": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_type": {
+    "form": "risk_assessment",
+    "type": "radio",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "ra_drug_alcohol_recent": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_violence_recent": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_sw_years": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_sw_acts_1w": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_sw_condom_use": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_msm_section_hdr": {
+    "form": "risk_assessment",
+    "type": "descriptive"
+  },
+  "ra_msm_years_since_anal": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_msm_receptive_1w": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_msm_condom_anal": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_age_at_assessment_v2": {
+    "form": "risk_assessment",
+    "type": "calc"
+  },
+  "ra_score": {
+    "form": "risk_assessment",
+    "type": "calc"
+  },
+  "ra_level": {
+    "form": "risk_assessment",
+    "type": "calc"
+  },
+  "ra_sw_score_v2": {
+    "form": "risk_assessment",
+    "type": "calc"
+  },
+  "ra_sw_level_v2": {
+    "form": "risk_assessment",
+    "type": "calc"
+  },
+  "ra_msm_score_v2": {
+    "form": "risk_assessment",
+    "type": "calc"
+  },
+  "ra_msm_level_v2": {
+    "form": "risk_assessment",
+    "type": "calc"
+  },
+  "ra_current_low_msg": {
+    "form": "risk_assessment",
+    "type": "descriptive"
+  },
+  "ra_current_medium_msg": {
+    "form": "risk_assessment",
+    "type": "descriptive"
+  },
+  "ra_current_high_msg": {
+    "form": "risk_assessment",
+    "type": "descriptive"
+  },
+  "ra_notes": {
+    "form": "risk_assessment",
+    "type": "notes"
+  },
+  "ra_age_first_sex": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_sex_3m": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_partners_1w": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_msm_sex_type": {
+    "form": "risk_assessment",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "99"
+    ]
+  },
+  "ra_sex_exchange": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_sw_start_age": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_sw_paid_week": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_sw_unpaid_week": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_condom_24h": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_condom_1m": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_lube_1m": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_alcohol_1m": {
+    "form": "risk_assessment",
+    "type": "radio",
+    "codes": [
+      "0",
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "ra_drug_ever": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_drug_1m": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_drug_1w": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_inject_3m": {
+    "form": "risk_assessment",
+    "type": "yesno"
+  },
+  "ra_inject_1w": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_share_needle_1w": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_inject_24h": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
+  "ra_share_needle_24h": {
+    "form": "risk_assessment",
+    "type": "text"
+  },
   "vd_client_hdr": {
     "form": "violence_disclosure",
     "type": "descriptive"
+  },
+  "vd_entry_type": {
+    "form": "violence_disclosure",
+    "type": "radio",
+    "codes": [
+      "1",
+      "2"
+    ]
+  },
+  "vd_violence_3m": {
+    "form": "violence_disclosure",
+    "type": "radio",
+    "codes": [
+      "0",
+      "1",
+      "9"
+    ]
   },
   "vd_consent": {
     "form": "violence_disclosure",
@@ -2696,6 +2821,29 @@
     ]
   },
   "vd_perpetrator_other": {
+    "form": "violence_disclosure",
+    "type": "text"
+  },
+  "vd_help_sought": {
+    "form": "violence_disclosure",
+    "type": "yesno"
+  },
+  "vd_help_source": {
+    "form": "violence_disclosure",
+    "type": "checkbox",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "99"
+    ]
+  },
+  "vd_help_source_other": {
     "form": "violence_disclosure",
     "type": "text"
   },
@@ -3146,79 +3294,6 @@
     "form": "social_referral",
     "type": "notes"
   },
-  "ra_client_hdr": {
-    "form": "risk_assessment",
-    "type": "descriptive"
-  },
-  "ra_date": {
-    "form": "risk_assessment",
-    "type": "text"
-  },
-  "ra_type": {
-    "form": "risk_assessment",
-    "type": "radio",
-    "codes": [
-      "1",
-      "2",
-      "3"
-    ]
-  },
-  "ra_drug_alcohol_recent": {
-    "form": "risk_assessment",
-    "type": "yesno"
-  },
-  "ra_violence_recent": {
-    "form": "risk_assessment",
-    "type": "yesno"
-  },
-  "ra_sw_years": {
-    "form": "risk_assessment",
-    "type": "text"
-  },
-  "ra_sw_acts_1w": {
-    "form": "risk_assessment",
-    "type": "text"
-  },
-  "ra_sw_condom_use": {
-    "form": "risk_assessment",
-    "type": "yesno"
-  },
-  "ra_msm_years_since_anal": {
-    "form": "risk_assessment",
-    "type": "text"
-  },
-  "ra_msm_receptive_1w": {
-    "form": "risk_assessment",
-    "type": "text"
-  },
-  "ra_msm_condom_anal": {
-    "form": "risk_assessment",
-    "type": "yesno"
-  },
-  "ra_score": {
-    "form": "risk_assessment",
-    "type": "calc"
-  },
-  "ra_level": {
-    "form": "risk_assessment",
-    "type": "calc"
-  },
-  "ra_current_low_msg": {
-    "form": "risk_assessment",
-    "type": "descriptive"
-  },
-  "ra_current_medium_msg": {
-    "form": "risk_assessment",
-    "type": "descriptive"
-  },
-  "ra_current_high_msg": {
-    "form": "risk_assessment",
-    "type": "descriptive"
-  },
-  "ra_notes": {
-    "form": "risk_assessment",
-    "type": "notes"
-  },
   "ia_date": {
     "form": "intake_assessment",
     "type": "text"
@@ -3641,5 +3716,17 @@
   "breakfast_notes": {
     "form": "breakfast_attendance",
     "type": "notes"
+  },
+  "cne_patient_code": {
+    "form": "clinic_enrollment",
+    "type": "text"
+  },
+  "cnv_no_show": {
+    "form": "clinic_visit",
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
   }
 }

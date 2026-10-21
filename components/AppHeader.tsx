@@ -1,14 +1,16 @@
 import Image from "next/image";
+import { appointmentRoles } from "@/lib/clinic-appointments";
 import Link from "next/link";
 import { logoutAction } from "@/app/auth-actions";
 import { getCurrentUser, hasAnyRole, hasRole } from "@/lib/auth";
 import { LanguagePicker } from "@/components/Localization";
 
-export default async function AppHeader({ current }: { current: "client-enrollment" | "lookup" | "breakfast" | "outreach" | "healthcare-nav" | "prep" | "clinic" | "clinic-queue" | "export-index" | "dashboard" | "logs" }) {
+export default async function AppHeader({ current }: { current: "new-appointment" | "hcs-upcoming" | "client-enrollment" | "lookup" | "breakfast" | "outreach" | "healthcare-nav" | "prep" | "clinic" | "clinic-queue" | "export-index" | "dashboard" | "logs" }) {
   const user = await getCurrentUser();
   const showOutreach = Boolean(user && hasAnyRole(user, ["OUTREACH_WORKER", "HEALTHCARE_ASSISTANT", "ADMIN"]));
   const showHealthcareNavigator = Boolean(user && hasAnyRole(user, ["HEALTHCARE_NAVIGATOR", "ADMIN"]));
   const showClinicalWorkflows = Boolean(user && hasAnyRole(user, ["HEALTHCARE_ASSISTANT", "ADMIN"]));
+  const showNewAppointment = Boolean(user && hasAnyRole(user, [...appointmentRoles]));
   const showClinicQueue = Boolean(user && hasAnyRole(user, ["FACILITY_STAFF", "HEALTHCARE_ASSISTANT", "ADMIN"]));
   const showEnrollment = Boolean(user && hasAnyRole(user, ["FACILITY_STAFF", "ADMIN"]));
   const showBreakfast = Boolean(user && hasAnyRole(user, ["FACILITY_STAFF", "ADMIN"]));
@@ -22,7 +24,9 @@ export default async function AppHeader({ current }: { current: "client-enrollme
           {showEnrollment && <Link href="/client-enrollment" aria-current={current === "client-enrollment" ? "page" : undefined}><span>Client Enrollment<br />Workflow</span></Link>}
           {showOutreach && <Link href="/outreach" aria-current={current === "outreach" ? "page" : undefined}><span>Outreach<br />Workflow</span></Link>}
           {showHealthcareNavigator && <Link href="/healthcare-nav" aria-current={current === "healthcare-nav" ? "page" : undefined}><span>Healthcare Navigator<br />Workflow</span></Link>}
+          {showHealthcareNavigator && <Link href="/hiv-care-support-upcoming" aria-current={current === "hcs-upcoming" ? "page" : undefined}>Healthcare Navigator Queue</Link>}
           {showClinicalWorkflows && <Link href="/clinic" aria-current={current === "clinic" ? "page" : undefined}><span>Clinic<br />Workflow</span></Link>}
+          {showNewAppointment && <Link href="/new-appointment" aria-current={current === "new-appointment" ? "page" : undefined}>New Clinic Appointment</Link>}
           {showClinicQueue && <Link href="/clinic-queue" aria-current={current === "clinic-queue" ? "page" : undefined}><span>Clinic<br />Queue</span></Link>}
           {showClinicalWorkflows && <Link href="/export-index" aria-current={current === "export-index" ? "page" : undefined}><span>Export<br />Index</span></Link>}
           {showBreakfast && <Link href="/breakfast" aria-current={current === "breakfast" ? "page" : undefined}>Breakfast</Link>}

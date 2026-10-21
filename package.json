@@ -17,8 +17,11 @@
     "test:lookup": "node scripts/test-record-lookup.mjs",
     "test:clinic-queue": "node scripts/test-clinic-queue.mjs",
     "test:queue-patient-code": "node scripts/test-queue-patient-code.mjs",
+    "test:queue-no-show": "node scripts/test-queue-no-show.mjs",
+    "test:new-appointment": "node scripts/test-new-appointment.mjs",
     "test:client-enrollment": "node scripts/test-client-enrollment.mjs",
-    "check:redcap-schema": "node --env-file=.env.local scripts/check-redcap-schema.mjs"
+    "check:redcap-schema": "node --env-file=.env.local scripts/check-redcap-schema.mjs",
+    "test:hcs-upcoming": "node scripts/test-hcs-upcoming.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

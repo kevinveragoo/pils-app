@@ -86,7 +86,7 @@ export async function POST(request: Request) {
   }
   if (includeProfile && (!profile || !profile.htp_effective_date?.trim()  || !profile.htp_art_start_date?.trim())) return NextResponse.json({ error: "Profile effective date and ART start date are required for a treatment profile." }, { status: 400 });
   if (mode === "new") {
-    const requiredEnrollment = ["ce_date", "ce_district", "ce_hotspot", "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_dob", "ce_gender_identity", "ce_kp_type"];
+    const requiredEnrollment = ["ce_date", "ce_district",  "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_dob", "ce_gender_identity", "ce_kp_type"];
     if (!enrollment || !requiredEnrollment.every((key) => enrollment[key]?.trim())) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
     if (generateUic(enrollment) !== recordId) return NextResponse.json({ error: "The generated UIC does not match the enrollment details." }, { status: 400 });
   }

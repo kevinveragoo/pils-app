@@ -82,7 +82,7 @@ export async function POST(request: Request) {
 
   const recordId = typeof input.recordId === "string" ? input.recordId.trim() : "";
   if (mode === "new") {
-    if (!enrollment || !["ce_date","ce_district","ce_hotspot","ce_outreach_worker","ce_last_name","ce_first_name","ce_dob","ce_gender_identity","ce_kp_type"].every((key) => enrollment[key])) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
+    if (!enrollment || !["ce_date","ce_district","ce_outreach_worker","ce_last_name","ce_first_name","ce_dob","ce_gender_identity","ce_kp_type"].every((key) => enrollment[key])) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
     const generated = generateUic(enrollment);
     if (!generated || recordId !== generated) return NextResponse.json({ error: "The generated UIC does not match the enrollment details." }, { status: 400 });
   }

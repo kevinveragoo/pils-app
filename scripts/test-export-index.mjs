@@ -23,11 +23,11 @@ function load(relative) {
 const {buildIndexRows}=load('lib/export-index/model.ts');
 const {createIndexWorkbook}=load('lib/export-index/workbook.ts');
 const today='2026-10-11';
-const main={uic_ori:'TEST001',ce_patient_code:'000123',ce_first_name:'Sample',ce_middle_name_1:'Middle',ce_last_name:'Person',ce_tel_primary:'001234',ce_gender_identity:'1',ce_kp_type___2:'1',ce_kp_type___6:'1',ce_dob:'2000-11-11',ce_nationality:'Mauritian'};
+const main={uic_ori:'TEST001',cne_patient_code:'000123',ce_patient_code:'LEGACY',ce_first_name:'Sample',ce_middle_name_1:'Middle',ce_last_name:'Person',ce_tel_primary:'001234',ce_gender_identity:'1',ce_kp_type___2:'1',ce_kp_type___6:'1',ce_dob:'2000-11-11',ce_nationality:'Mauritian'};
 const profile=(form,instance,values)=>({uic_ori:'TEST001',redcap_repeat_instrument:form,redcap_repeat_instance:String(instance),...values});
 const data=[main,
- profile('prep_treatment_profile',9,{ptp_effective_date:'2025-01-01',ptp_status:'2'}),
- profile('prep_treatment_profile',1,{ptp_effective_date:'2026-01-01',ptp_status:'1',ptp_start_date:'2024-06-03',ptp_medication:'6',ptp_ltfu:'0'}),
+ profile('prep_treatment_profile',9,{ptp_update_date:'2025-01-01',ptp_status:'2'}),
+ profile('prep_treatment_profile',1,{ptp_update_date:'2026-01-01',ptp_status:'1',ptp_start_date:'2024-06-03',ptp_medication:'6',ptp_ltfu:'0'}),
  profile('prep_visit',1,{pv_visit_date:'2026-02-01',pv_prescription_months:'3',pv_syphilis_referral:'1',pv_hbv_vaccination_status:'4'}),
  profile('hiv_treatment_profile',1,{htp_effective_date:'2026-01-01',htp_care_status:'1',htp_art_regimen___6:'1',htp_art_start_date:'2020-01-01'}),
  profile('hiv_clinical_monitoring',1,{htm_date:'2024-01-01',htm_is_baseline:'1',htm_cd4_level:'0',htm_vl_level:'0',htm_cd4_date:'2024-01-01',htm_vl_date:'2024-01-01'}),
@@ -42,9 +42,21 @@ assert.equal(prep[0][0],'000123');assert.equal(prep[0][3],'001234');assert.equal
 const a=arv.find(row=>row[14]==='TEST001');assert.equal(a[15],25);assert.equal(a[22],0);assert.equal(a[23],0);assert.equal(a[28],400);assert.equal(a[30],20);assert.equal(a[24],'Descovy');
 assert.equal(a[16],'');assert.equal(a[19],'');assert.equal(a[38],'');assert.equal(a[40],'');
 
+// A missed appointment cannot replace an attended visit or supply clinical values.
+const missed = profile('clinic_visit', 99, { cnv_no_show: '1', cnv_date: '2026-10-20', cnv_next_doctor_date: '2026-12-01', cnv_doctor_comments: 'Hidden stale text' });
+assert.deepEqual(buildIndexRows([...data, missed], today), buildIndexRows(data, today));
+// Scheduling-only CNVs update the next date while retaining the actual last visit.
+const booking = profile('clinic_visit', 100, { cnv_date: '2026-10-21', cnv_next_doctor_date: '2026-11-15' });
+const bookedArv = buildIndexRows([...data, booking], today)[1].find(row => row[14] === 'TEST001');
+assert.deepEqual(bookedArv[31], a[31], 'Booking an appointment must not become the last attended visit');
+assert.equal(bookedArv[33].toISOString().slice(0,10), '2026-11-15');
+const { isAppointmentOnly } = load('lib/clinic-appointments.ts');
+assert.equal(isAppointmentOnly(booking), true);
+assert.equal(isAppointmentOnly({...booking,cnv_worker_1:'Attending worker'}), false);
+assert.equal(isAppointmentOnly({...booking,cnv_visit_purpose___4:'1'}), false);
 // New codes remain instrument-specific in exports; legacy meanings stay intact.
-for(const [code,status] of [['8','Prison'],['9','Transferred to another facility'],['11','Treatment interrupted'],['12','Deported'],['99','Other']]){
- const changed=data.map(row=>row.ptp_effective_date==='2026-01-01'?{...row,ptp_status:code}:row);
+for(const [code,status] of [['8','Prison'],['2','No longer active'],['99','Other']]){
+ const changed=data.map(row=>row.ptp_update_date==='2026-01-01'?{...row,ptp_status:code}:row);
  assert.equal(buildIndexRows(changed,today)[0][0][21],status);
 }
 for(const [code,status] of [['10','Not interested'],['11','On demand'],['12','HIV+']]){
@@ -53,19 +65,19 @@ for(const [code,status] of [['10','Not interested'],['11','On demand'],['12','HI
 }
 
 const historyData=[...data,
- profile('prep_visit',10,{pv_status_at_visit:'5',pv_status_date:'2026-10-01',pv_visit_date:'2026-10-01',pv_status_only:'1'}),
- profile('prep_visit',11,{pv_status_at_visit:'2',pv_status_date:'2026-09-01',pv_visit_date:'2026-09-01',pv_status_only:'1'}),
+ profile('prep_visit',10,{ptp_status:'5',pv_status_date:'2026-10-01',pv_visit_date:'2026-10-01',pv_status_only:'1'}),
+ profile('prep_visit',11,{ptp_status:'2',pv_status_date:'2026-09-01',pv_visit_date:'2026-09-01',pv_status_only:'1'}),
  profile('hiv_care_support',2,{hcs_care_status:'9',hcs_status_date:'2026-10-01'}),
  profile('hiv_care_support',3,{hcs_care_status:'1',hcs_status_date_unknown:'1',hcs_date:'2026-10-11'})];
 const historyTables=buildIndexRows(historyData,today);
 assert.equal(historyTables[0][0][21],'Abroad');
-assert.equal(historyTables[0][0][10].toISOString().slice(0,10),'2026-02-01','Status-only entries must not change last clinical visit');
+assert.equal(historyTables[0][0][10].toISOString().slice(0,10),'2026-10-01','PV visits determine the latest visit date');
 assert.equal(historyTables[1].find(row=>row[14]==='TEST001')[42],'Deported');
 const {latestStatus,statusChangeError}=load('lib/status-history.ts');
 assert.equal(latestStatus(historyData,'prep').status,'5','Effective date determines current status');
-assert.match(statusChangeError(historyData,'prep','12','1'),/changed since/);
+assert.match(statusChangeError(historyData,'prep','5','1'),/changed since/);
 assert.match(statusChangeError([main],'prep','1'),/not enrolled/);
-assert.equal(latestStatus([...historyData, {...profile('prep_visit',12,{pv_status_at_visit:'12',pv_status_date:'2026-10-01'}),redcap_repeat_instance:12}],'prep').status,'12','Numeric repeat instances resolve ties');
+assert.equal(latestStatus([...historyData, {...profile('prep_visit',12,{ptp_status:'8',pv_visit_date:'2026-10-01'}),redcap_repeat_instance:12}],'prep').status,'8','Numeric repeat instances resolve ties');
 const bytes=await createIndexWorkbook(data,today);
 const workbook=new ExcelJS.Workbook();await workbook.xlsx.load(Buffer.from(bytes));
 assert.deepEqual(workbook.worksheets.map(sheet=>sheet.name),['Prep Index','Index Arv copy']);

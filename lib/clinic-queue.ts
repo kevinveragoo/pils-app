@@ -11,6 +11,7 @@ type PatientRow = Record<string, string>;
 
 const appointmentFields: [string, QueueTask, string][] = [
   ["cnv_next_doctor_date", "DOCTOR", "Clinic doctor review"],
+  ["cnv_next_addicto_date", "DOCTOR", "Clinic addictologist review"],
   ["cnv_next_blood_date", "BLOOD_TEST", "Clinic blood test"],
   ["cnv_next_med_date", "MEDICATION", "Clinic medication collection"],
   ["cnv_next_appointment_date", "OTHER", "Clinic appointment"],
@@ -47,7 +48,7 @@ async function redcap(params: Record<string, string>) {
 }
 
 export async function expectedAppointments(date: string) {
-  const fields = ["uic_ori", "ce_first_name", "ce_middle_name_1", "ce_middle_name_2", "ce_middle_name_3", "ce_last_name", "ce_alias", "ce_tel_primary", "ce_patient_code", ...appointmentFields.map(([field]) => field)];
+  const fields = ["uic_ori", "ce_first_name", "ce_middle_name_1", "ce_middle_name_2", "ce_middle_name_3", "ce_last_name", "ce_alias", "ce_tel_primary", "cne_patient_code", "cnv_no_show", ...appointmentFields.map(([field]) => field)];
   const rows = await redcap(Object.fromEntries([
     ["content", "record"], ["action", "export"], ["format", "json"], ["type", "flat"], ["rawOrLabel", "raw"], ["rawOrLabelHeaders", "raw"], ["exportDataAccessGroups", "false"], ["returnFormat", "json"],
     ...fields.map((field, index) => [`fields[${index}]`, field]),
@@ -58,13 +59,13 @@ export async function expectedAppointments(date: string) {
   for (const row of rows) {
     const recordId = String(row.uic_ori ?? "").trim();
     if (!recordId) continue;
-    const matching = appointmentFields.filter(([field]) => String(row[field] ?? "").trim() === date && (field !== "cnv_next_appointment_date" || ![row.cnv_next_med_date, row.cnv_next_blood_date, row.cnv_next_doctor_date].some(value => value === date)));
+    const matching = appointmentFields.filter(([field]) => !(row.cnv_no_show === "1" && field.startsWith("cnv_")) && String(row[field] ?? "").trim() === date && (field !== "cnv_next_appointment_date" || ![row.cnv_next_med_date, row.cnv_next_blood_date, row.cnv_next_doctor_date, row.cnv_next_addicto_date].some(value => value === date)));
     if (!matching.length) continue;
     const identity = identities.get(recordId) ?? row;
     const current = patients.get(recordId) ?? {
       recordId,
       displayName: [identity.ce_first_name, identity.ce_middle_name_1, identity.ce_middle_name_2, identity.ce_middle_name_3, identity.ce_last_name].map(value => String(value ?? "").trim()).filter(Boolean).join(" ") || String(identity.ce_alias ?? "").trim() || recordId,
-      alias: String(identity.ce_alias ?? "").trim(), phone: String(identity.ce_tel_primary ?? "").trim(), patientCode: String(identity.ce_patient_code ?? "").trim(), tasks: new Set<string>(), sources: new Set<string>(),
+      alias: String(identity.ce_alias ?? "").trim(), phone: String(identity.ce_tel_primary ?? "").trim(), patientCode: String(identity.cne_patient_code ?? "").trim(), tasks: new Set<string>(), sources: new Set<string>(),
     };
     matching.forEach(([, task, source]) => { current.tasks.add(task); current.sources.add(source); });
     patients.set(recordId, current);
@@ -85,6 +86,7 @@ export async function createQueueEntry(data: { queueDate: string; recordId?: str
       const existing = await transaction.clinicQueueEntry.findFirst({ where: { queueDate: data.queueDate, recordId: data.recordId, source: "SCHEDULED" }, orderBy: { createdAt: "asc" } });
       if (existing) {
         if (data.status !== "WAITING" || existing.status !== "EXPECTED") return existing;
+        if (existing.noShow) throw new Error("Return the no-show to Expected before checking in the client.");
         const latestNumber = existing.queueNumber === null ? await transaction.clinicQueueEntry.aggregate({ where: { queueDate: data.queueDate }, _max: { queueNumber: true } }) : null;
         return transaction.clinicQueueEntry.update({ where: { id: existing.id }, data: { status: "WAITING", currentStation: data.currentStation ?? "FILE_RETRIEVAL", queueNumber: existing.queueNumber ?? (latestNumber?._max.queueNumber ?? 0) + 1, checkedInAt: now, updatedById: actor.id, updatedByName: actor.name, version: { increment: 1 }, events: { create: { actorId: actor.id, actorName: actor.name, action: "ARRIVED" } } } });
       }
@@ -95,13 +97,14 @@ export async function createQueueEntry(data: { queueDate: string; recordId?: str
   return publicEntry(entry);
 }
 
-export async function updateQueueEntry(id: string, patch: { status?: string; currentStation?: string; tasks?: string[]; notes?: string; recordId?: string; patientCode?: string }, actor: Actor) {
+export async function updateQueueEntry(id: string, patch: { status?: string; currentStation?: string; tasks?: string[]; notes?: string; recordId?: string; patientCode?: string; noShow?: boolean }, actor: Actor) {
   const now = new Date();
   const entry = await db.$transaction(async transaction => {
     const current = await transaction.clinicQueueEntry.findUniqueOrThrow({ where: { id } });
+    if (current.noShow && patch.noShow === undefined && (patch.status && patch.status !== "DONE" || patch.currentStation && patch.currentStation !== current.currentStation)) throw new Error("Return the no-show to Expected before moving it.");
     const enteringWaiting = patch.status === "WAITING" && current.status !== "WAITING";
     const latest = enteringWaiting && current.queueNumber === null ? await transaction.clinicQueueEntry.aggregate({ where: { queueDate: current.queueDate }, _max: { queueNumber: true } }) : null;
-    return transaction.clinicQueueEntry.update({ where: { id }, data: { ...(patch.status ? { status: patch.status, ...(enteringWaiting ? { checkedInAt: now, queueNumber: current.queueNumber ?? (latest?._max.queueNumber ?? 0) + 1 } : {}), ...(patch.status === "READY" ? { readyAt: now } : {}), ...(patch.status === "DONE" ? { completedAt: now } : {}) } : {}), ...(patch.currentStation ? { currentStation: patch.currentStation } : {}), ...(patch.tasks ? { tasks: JSON.stringify(patch.tasks) } : {}), ...(patch.notes !== undefined ? { notes: patch.notes || null } : {}), ...(patch.recordId ? { recordId: patch.recordId } : {}), ...(patch.patientCode !== undefined ? { patientCode: patch.patientCode } : {}), updatedById: actor.id, updatedByName: actor.name, version: { increment: 1 }, events: { create: { actorId: actor.id, actorName: actor.name, action: patch.status ?? patch.currentStation ?? "UPDATED", details: JSON.stringify(patch) } } } });
+    return transaction.clinicQueueEntry.update({ where: { id }, data: { ...(patch.status ? { status: patch.status, ...(enteringWaiting ? { checkedInAt: now, queueNumber: current.queueNumber ?? (latest?._max.queueNumber ?? 0) + 1 } : {}), ...(patch.status === "READY" ? { readyAt: now } : {}), ...(patch.status === "DONE" ? { completedAt: now } : {}) } : {}), ...(patch.status === "EXPECTED" ? { completedAt: null, readyAt: null, checkedInAt: null, queueNumber: null } : {}), ...(patch.noShow !== undefined ? { noShow: patch.noShow } : {}), ...(patch.currentStation ? { currentStation: patch.currentStation } : {}), ...(patch.tasks ? { tasks: JSON.stringify(patch.tasks) } : {}), ...(patch.notes !== undefined ? { notes: patch.notes || null } : {}), ...(patch.recordId ? { recordId: patch.recordId } : {}), ...(patch.patientCode !== undefined ? { patientCode: patch.patientCode } : {}), updatedById: actor.id, updatedByName: actor.name, version: { increment: 1 }, events: { create: { actorId: actor.id, actorName: actor.name, action: patch.status ?? patch.currentStation ?? "UPDATED", details: JSON.stringify(patch) } } } });
   });
   return publicEntry(entry);
 }

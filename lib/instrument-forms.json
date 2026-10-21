@@ -1,0 +1,6044 @@
+{
+  "clinic_enrollment": [
+    {
+      "name": "cne_client_hdr",
+      "label": "<b>Name:</b> [ce_first_name] [ce_middle_name_1] [ce_middle_name_2] [ce_middle_name_3] [ce_last_name]<br><b>Alias:</b> [ce_alias]<br><b>UIC:</b> [uic_ori]<br><b>DOB:</b> [ce_dob]   <b>Age:</b> [ce_age]<br><b>Gender:</b> [ce_gender_identity]   <b>Sex assigned at birth:</b> [ce_sex_assigned_birth]<br><b>KP Type:</b> [ce_kp_type]",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "CLIENT DETAILS",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_date",
+      "label": "Clinic enrollment date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "CLINIC ENROLLMENT",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_patient_code",
+      "label": "Patient code",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_facility",
+      "label": "Facility name",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@DEFAULT='Pils Banian' @IF([cne_facility] = '', @SETVALUE='Pils Banian', '')",
+      "options": []
+    },
+    {
+      "name": "cne_welc_worker",
+      "label": "Welcoming officer",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_worker",
+      "label": "Clinic worker",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_prev_visit",
+      "label": "Visited any OTHER clinic/wellness centre for services?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "PREVIOUS SERVICES",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_prev_center",
+      "label": "If yes, which centre?",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_prev_visit] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_outreach_contact",
+      "label": "Previously contacted by an outreach worker from Pils?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_ref_outreach_worker",
+      "label": "Referring outreach worker",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_outreach_contact] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_pregnancies",
+      "label": "Lifetime pregnancies, including abortions",
+      "type": "integer",
+      "kind": "text",
+      "section": "REPRODUCTIVE HEALTH",
+      "required": false,
+      "branch": "[ce_sex_assigned_birth] = '2'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_pregnant_now",
+      "label": "Currently pregnant?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[ce_sex_assigned_birth] = '2'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_antenatal",
+      "label": "If pregnant, attending antenatal care?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[ce_sex_assigned_birth] = '2' and [cne_pregnant_now] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_num_children",
+      "label": "Number of children",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[ce_sex_assigned_birth] = '2'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_contraception_type",
+      "label": "Current method to prevent pregnancy",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[ce_sex_assigned_birth] = '2'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Pill"
+        ],
+        [
+          "2",
+          "Injection"
+        ],
+        [
+          "3",
+          "Implant"
+        ],
+        [
+          "4",
+          "IUD"
+        ],
+        [
+          "5",
+          "Condom"
+        ],
+        [
+          "6",
+          "BTL"
+        ],
+        [
+          "99",
+          "Other"
+        ],
+        [
+          "0",
+          "None"
+        ]
+      ]
+    },
+    {
+      "name": "cne_hiv_prev_test",
+      "label": "Ever tested for HIV?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "HIV TESTING AND COUNSELLING",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_hiv_prev_test_since",
+      "label": "How long ago was last HIV test?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Within 3 months"
+        ],
+        [
+          "2",
+          "Within 6 months"
+        ],
+        [
+          "3",
+          "Within 1 year"
+        ],
+        [
+          "4",
+          "More than 1 year ago"
+        ]
+      ]
+    },
+    {
+      "name": "cne_hiv_prev_result",
+      "label": "Previous HIV test result",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Positive"
+        ],
+        [
+          "2",
+          "Negative"
+        ],
+        [
+          "3",
+          "Results unknown"
+        ],
+        [
+          "9",
+          "Do not want to share"
+        ]
+      ]
+    },
+    {
+      "name": "cne_hiv_prev_result_disclosed",
+      "label": "If positive, disclosed HIV status to anyone?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cne_hiv_prev_result] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_hiv_disclosure_recipient",
+      "label": "To whom did you disclose your HIV status?",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[cne_hiv_prev_test] = '1' and [cne_hiv_prev_result] = '1' and [cne_hiv_prev_result_disclosed] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Intimate/regular partner"
+        ],
+        [
+          "2",
+          "Regular client"
+        ],
+        [
+          "3",
+          "Friend/relative"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cne_hiv_disclosure_recipient_other",
+      "label": "To whom did you disclose your HIV status? — other, specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_hiv_prev_test] = '1' and [cne_hiv_prev_result] = '1' and [cne_hiv_prev_result_disclosed] = '1' and [cne_hiv_disclosure_recipient(99)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_hiv_prev_treat",
+      "label": "If positive, receiving HIV treatment?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cne_hiv_prev_result] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_hiv_prev_treat_since",
+      "label": "Duration receiving treatment",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_hiv_prev_treat] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_hiv_prev_treat_facility",
+      "label": "Facility providing HIV treatment",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_hiv_prev_treat] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_contact_ok",
+      "label": "Permission to contact by phone/SMS for related services?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "CONTACT PERMISSIONS",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_peer_contact_ok",
+      "label": "Permission to contact through peer outreach worker/navigator?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_comorbidities",
+      "label": "Known comorbidities (select all that apply)",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "COMORBIDITIES",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "None known"
+        ],
+        [
+          "1",
+          "Cancer"
+        ],
+        [
+          "2",
+          "Toxoplasmosis"
+        ],
+        [
+          "3",
+          "Diabetes"
+        ],
+        [
+          "4",
+          "Hypertension"
+        ],
+        [
+          "5",
+          "Cardiac condition"
+        ],
+        [
+          "6",
+          "Renal complications (kidney complications)"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cne_comorbidity_other",
+      "label": "Other comorbidity — specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_comorbidities(99)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_notes",
+      "label": "Clinical enrollment notes",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cne_age_first_sex",
+      "label": "Age at first sexual intercourse",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_sex_3m",
+      "label": "Had sex in the past three months?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_partners_1w",
+      "label": "Number of sexual partners in the past week",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_msm_sex_type",
+      "label": "For MSM: type of sex in most encounters",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[ce_kp_type(2)] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "1",
+          "Anal penetrative"
+        ],
+        [
+          "2",
+          "Anal receptive"
+        ],
+        [
+          "3",
+          "Oral"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cne_sex_exchange",
+      "label": "Ever had sex in exchange for cash or goods?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_sw_start_age",
+      "label": "Age started sex work",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_sex_exchange] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_sw_paid_week",
+      "label": "Partners in past week in exchange for cash/goods",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_sex_exchange] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_sw_unpaid_week",
+      "label": "Partners in past week not in exchange for cash/goods",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_sex_exchange] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_condom_24h",
+      "label": "Used condom every time in last 24 hours?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_condom_1m",
+      "label": "Used condom every time in last month?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_lube_1m",
+      "label": "Used lubricant every time in last month?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_alcohol_1m",
+      "label": "Alcohol use in past month",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "Never"
+        ],
+        [
+          "1",
+          "Sometimes"
+        ],
+        [
+          "2",
+          "Most days"
+        ],
+        [
+          "3",
+          "Every day"
+        ]
+      ]
+    },
+    {
+      "name": "cne_drug_ever",
+      "label": "Ever used/consumed a drug for nonmedical purpose?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_drug_1m",
+      "label": "Used nonmedical drugs in last month?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cne_drug_ever] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_drug_1w",
+      "label": "Used nonmedical drugs in last week?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cne_drug_ever] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_inject_3m",
+      "label": "Injected drugs for nonmedical purposes in past three months?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_inject_1w",
+      "label": "Injected drugs for nonmedical purposes in last week",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_inject_3m] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_share_needle_1w",
+      "label": "Shared nonsterile equipment in last week",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_inject_1w] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_inject_24h",
+      "label": "Injected drugs for nonmedical purposes in last 24 hours",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_inject_1w] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_share_needle_24h",
+      "label": "Shared nonsterile equipment in last 24 hours",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_inject_24h] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_sti_symp_6m",
+      "label": "STI symptoms in past six months",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "1",
+          "Genital/anal ulcer disease"
+        ],
+        [
+          "2",
+          "Foul-smelling vaginal/anal/penile discharge"
+        ],
+        [
+          "3",
+          "Painless growth"
+        ],
+        [
+          "4",
+          "Genital/anal itch"
+        ],
+        [
+          "5",
+          "Genital/anal rash"
+        ],
+        [
+          "6",
+          "Bubo"
+        ],
+        [
+          "7",
+          "Dysuria"
+        ],
+        [
+          "8",
+          "LAP"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cne_sti_diagnosed",
+      "label": "STI diagnosed",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "Diagnoses in the past six months. Select all that apply. Select None diagnosed or Unknown on its own.",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "1",
+          "Chlamydia"
+        ],
+        [
+          "2",
+          "Gonorrhea"
+        ],
+        [
+          "3",
+          "Syphilis"
+        ],
+        [
+          "4",
+          "Trichomoniasis"
+        ],
+        [
+          "5",
+          "Genital herpes (HSV)"
+        ],
+        [
+          "6",
+          "Human papillomavirus (HPV) / genital warts"
+        ],
+        [
+          "7",
+          "Mycoplasma genitalium"
+        ],
+        [
+          "8",
+          "Chancroid"
+        ],
+        [
+          "9",
+          "Lymphogranuloma venereum (LGV)"
+        ],
+        [
+          "10",
+          "Donovanosis (granuloma inguinale)"
+        ],
+        [
+          "11",
+          "HIV"
+        ],
+        [
+          "12",
+          "Hepatitis B"
+        ],
+        [
+          "13",
+          "Hepatitis C"
+        ],
+        [
+          "14",
+          "Pubic lice"
+        ],
+        [
+          "15",
+          "Scabies"
+        ],
+        [
+          "16",
+          "Molluscum contagiosum"
+        ],
+        [
+          "17",
+          "Hepatitis A"
+        ],
+        [
+          "99",
+          "Other"
+        ],
+        [
+          "0",
+          "None diagnosed"
+        ],
+        [
+          "98",
+          "Unknown"
+        ]
+      ]
+    },
+    {
+      "name": "cne_sti_diagnosed_other",
+      "label": "Other STI diagnosed — specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_sti_diagnosed(99)] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_sti_treated",
+      "label": "STI treated",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_sti_treat_location",
+      "label": "Where treatment was received",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "1",
+          "Banian Pils"
+        ],
+        [
+          "2",
+          "Private doctor"
+        ],
+        [
+          "3",
+          "Public hospital"
+        ],
+        [
+          "4",
+          "Herbalist"
+        ],
+        [
+          "5",
+          "Other NGO/ clinic"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cne_violence_3m",
+      "label": "Experienced violence in last three months?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_violence_type",
+      "label": "Type of violence",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[cne_violence_3m] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "1",
+          "Physical"
+        ],
+        [
+          "2",
+          "Sexual"
+        ],
+        [
+          "3",
+          "Emotional"
+        ],
+        [
+          "4",
+          "Economic"
+        ],
+        [
+          "5",
+          "Other human-rights violation"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cne_violence_perpetrator",
+      "label": "Who perpetrated the violence?",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[cne_violence_3m] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "1",
+          "Local leader(s)"
+        ],
+        [
+          "2",
+          "Police"
+        ],
+        [
+          "3",
+          "Military"
+        ],
+        [
+          "4",
+          "Security guard(s)"
+        ],
+        [
+          "5",
+          "Madam(s)/pimp(s)/bar manager(s)/owner(s)"
+        ],
+        [
+          "6",
+          "Local gang(s)"
+        ],
+        [
+          "7",
+          "General community"
+        ],
+        [
+          "8",
+          "Family member(s)"
+        ],
+        [
+          "9",
+          "Regular/past partner"
+        ],
+        [
+          "10",
+          "Sex-work client(s)"
+        ],
+        [
+          "11",
+          "Health-care facility staff"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cne_violence_perpetrator_other",
+      "label": "Who perpetrated the violence? — other, specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_violence_3m] = '1' and [cne_violence_perpetrator(99)] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cne_violence_help",
+      "label": "Sought help?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cne_violence_3m] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cne_violence_help_source",
+      "label": "Where did you seek help?",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[cne_violence_3m] = '1' and [cne_violence_help] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "1",
+          "Medical/hospital"
+        ],
+        [
+          "2",
+          "Legal/police"
+        ],
+        [
+          "3",
+          "Family"
+        ],
+        [
+          "4",
+          "Peers"
+        ],
+        [
+          "5",
+          "Friends"
+        ],
+        [
+          "6",
+          "Religious leader"
+        ],
+        [
+          "7",
+          "Chief/village elder"
+        ],
+        [
+          "8",
+          "HIV program"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cne_violence_help_source_other",
+      "label": "Where did you seek help? — other, specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cne_violence_3m] = '1' and [cne_violence_help] = '1' and [cne_violence_help_source(99)] = '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    }
+  ],
+  "clinic_visit": [
+    {
+      "name": "cnv_section_1_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">CLIENT DETAILS</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_client_hdr",
+      "label": "<b>Name:</b> [client_first_name] [client_middle_name] [client_last_name]\r\n\r\n<b>Alias:</b> [client_alias]\r\n\r\n<b>UIC:</b> [uic_ori]\r\n<b>DOB:</b> [client_dob]   <b>Age:</b> [client_age]\r\n<b>Gender:</b> [client_gender_identity]   <b>KP Type:</b> [client_kp_type]",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_2_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">VISIT</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_worker_1",
+      "label": "Clinic worker 1",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_date",
+      "label": "Date of visit",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_no_show",
+      "label": "No show",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "Select Yes if the client was expected on this date but did not attend.",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_initial_assessment",
+      "label": "Initial clinical assessment completed at this visit?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_is_new_client",
+      "label": "New client?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_visit_purpose",
+      "label": "Visit purpose",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": true,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "2",
+          "Positive HIV self-test"
+        ],
+        [
+          "11",
+          "Blood sample collection"
+        ],
+        [
+          "3",
+          "Laboratory results review"
+        ],
+        [
+          "4",
+          "Doctor - ART review"
+        ],
+        [
+          "12",
+          "Doctor - Pils"
+        ],
+        [
+          "8",
+          "STI"
+        ],
+        [
+          "9",
+          "Medication collection"
+        ],
+        [
+          "15",
+          "Addictology"
+        ],
+        [
+          "16",
+          "Commodities"
+        ],
+        [
+          "99",
+          "Other services"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_reason_other",
+      "label": "Other service — specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(99)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_complaints",
+      "label": "Presenting complaints",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_3_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">MEDICATION COLLECTION</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(9)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_medication_supplied",
+      "label": "Medicines supplied",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(9)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Truvada"
+        ],
+        [
+          "2",
+          "Dolutegravir"
+        ],
+        [
+          "3",
+          "Abacavir"
+        ],
+        [
+          "4",
+          "Lamivudine"
+        ],
+        [
+          "5",
+          "Kivexa"
+        ],
+        [
+          "6",
+          "Descovy"
+        ],
+        [
+          "7",
+          "TLD"
+        ],
+        [
+          "8",
+          "Combivir"
+        ],
+        [
+          "9",
+          "Sulfadiazine"
+        ],
+        [
+          "10",
+          "Tenofovir"
+        ],
+        [
+          "11",
+          "Pyrenithamine"
+        ],
+        [
+          "12",
+          "Bactrim"
+        ],
+        [
+          "13",
+          "Fefol"
+        ],
+        [
+          "14",
+          "MVT"
+        ],
+        [
+          "15",
+          "BCO"
+        ],
+        [
+          "16",
+          "Nystatin"
+        ],
+        [
+          "17",
+          "Prezista"
+        ],
+        [
+          "18",
+          "Ritonavir"
+        ],
+        [
+          "19",
+          "Leucoverin"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_other_med_supplied",
+      "label": "Other medicine — specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and (([cnv_visit_purpose(9)] = '1') and ([cnv_medication_supplied(99)] = '1'))",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_art_prescription_months",
+      "label": "Prescription duration (months)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(9)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_next_med_date",
+      "label": "Next medication collection date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(9)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_4_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">DOCTOR - ART REVIEW OR PILS</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(4)] = '1' or [cnv_visit_purpose(12)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "civ_doctor_appo_type",
+      "label": "Appointment type",
+      "type": "dropdown",
+      "kind": "dropdown",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(4)] = '1' or [cnv_visit_purpose(12)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "ART"
+        ],
+        [
+          "2",
+          "Pils"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_doctor",
+      "label": "Doctor name",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(4)] = '1' or [cnv_visit_purpose(12)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_weight",
+      "label": "Weight (kg)",
+      "type": "number",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(4)] = '1' or [cnv_visit_purpose(12)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_bp_systolic",
+      "label": "Systolic blood pressure (mmHg)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(4)] = '1' or [cnv_visit_purpose(12)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_bp_diastolic",
+      "label": "Diastolic blood pressure (mmHg)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(4)] = '1' or [cnv_visit_purpose(12)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_next_doctor_date",
+      "label": "Next doctor review date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(4)] = '1' or [cnv_visit_purpose(12)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_5_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">Addictology</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(15)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_addictologist",
+      "label": "Addictologist name",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(15)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_weight_addicto",
+      "label": "Weight (kg)",
+      "type": "number",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(15)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_bp_systolic_addicto",
+      "label": "Systolic blood pressure (mmHg)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(15)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_bp_diastolic_addicto",
+      "label": "Diastolic blood pressure (mmHg)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(15)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_next_addicto_date",
+      "label": "Next addictologist review date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(15)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_addictologist_comments",
+      "label": "Addictologist comments",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(15)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_6_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">BLOOD SAMPLE COLLECTION</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(11)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_blood_collected",
+      "label": "Blood sample collected",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(11)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_next_blood_date",
+      "label": "Next blood test date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(11)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_7_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">LABORATORY RESULTS REVIEW - HIV LAB RESULT</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_hiv_lab_test_done",
+      "label": "HIV tested (Laboratory)?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_hiv_lab_test_date",
+      "label": "HIV test date (Laboratory)",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": true,
+      "branch": "([cnv_no_show] <> '1') and (([cnv_visit_purpose(3)] = '1') and ([cnv_hiv_lab_test_done] = '1'))",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_hiv_lab_result",
+      "label": "HIV testing result (Laboratory)",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and (([cnv_visit_purpose(3)] = '1') and ([cnv_hiv_lab_test_done] = '1'))",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Positive"
+        ],
+        [
+          "2",
+          "Negative"
+        ],
+        [
+          "3",
+          "Indeterminate"
+        ],
+        [
+          "4",
+          "Invalid"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_section_8_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">LABORATORY RESULTS REVIEW - HEP B LAB RESULT</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_hbv_lab_test_done",
+      "label": "HBV tested (Laboratory?)",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_hbv_lab_test_date",
+      "label": "HBV test date (Laboratory)?",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_hbv_lab_result",
+      "label": "HBV testing result (Laboratory)",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Positive"
+        ],
+        [
+          "2",
+          "Negative"
+        ],
+        [
+          "3",
+          "Indeterminate"
+        ],
+        [
+          "4",
+          "Invalid"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_hbv_vaccination_status",
+      "label": "HBV vaccination status",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "Not started"
+        ],
+        [
+          "1",
+          "Dose 1"
+        ],
+        [
+          "2",
+          "Dose 2"
+        ],
+        [
+          "3",
+          "Dose 3"
+        ],
+        [
+          "4",
+          "Completed"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_section_9_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">LABORATORY RESULTS REVIEW - HEP C LAB RESULT</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_hcv_lab_test_done",
+      "label": "HCV tested (Laboratory)?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_hcv_lab_test_date",
+      "label": "HCV test date (Laboratory)",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_hcv_lab_result",
+      "label": "HCV testing result (Laboratory)",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Positive"
+        ],
+        [
+          "2",
+          "Negative"
+        ],
+        [
+          "3",
+          "Indeterminate"
+        ],
+        [
+          "4",
+          "Invalid"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_hcv_vl_date",
+      "label": "HCV viral load date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_hcv_vl_result",
+      "label": "HCV viral load result",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "Enter copies/mL or a reported result such as Not detected.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_hcv_treat",
+      "label": "HCV — treated?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_hcv_vaccination_status",
+      "label": "HCV vaccination status",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "Not started"
+        ],
+        [
+          "1",
+          "Box 1"
+        ],
+        [
+          "2",
+          "Box 2"
+        ],
+        [
+          "3",
+          "Box 3"
+        ],
+        [
+          "4",
+          "Box 4"
+        ],
+        [
+          "5",
+          "Completed"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_section_10_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">LABORATORY RESULTS REVIEW - SYPHILIS LAB RESULT</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_syp_lab_test_done",
+      "label": "Syphilis tested (Laboratiry)?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_syp_lab_test_date",
+      "label": "Syphilis test date (Laboratory)",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_syp_lab_result",
+      "label": "Syphilis testing result (Laboratory)?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Positive"
+        ],
+        [
+          "2",
+          "Negative"
+        ],
+        [
+          "3",
+          "Indeterminate"
+        ],
+        [
+          "4",
+          "Invalid"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_syphilis_referral",
+      "label": "Referred for syphilis care?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_syphilis_refer_where",
+      "label": "Referred for syphilis care where?",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_syp_treat",
+      "label": "Syphilis treated?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_section_11_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">STI</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(8)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_sti_syndrome",
+      "label": "STI syndrome",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(8)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Vaginal discharge"
+        ],
+        [
+          "2",
+          "Itching"
+        ],
+        [
+          "3",
+          "Anal discharge"
+        ],
+        [
+          "4",
+          "Penis discharge"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_sti_symptoms",
+      "label": "Current STI symptoms",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(8)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Genital/anal ulcer disease"
+        ],
+        [
+          "2",
+          "Foul-smelling vaginal/anal/penile discharge"
+        ],
+        [
+          "3",
+          "Painless growth"
+        ],
+        [
+          "4",
+          "Genital/anal itch"
+        ],
+        [
+          "5",
+          "Genital/anal rash"
+        ],
+        [
+          "6",
+          "Bubo"
+        ],
+        [
+          "7",
+          "Dysuria"
+        ],
+        [
+          "8",
+          "LAP"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_sti_diagnosed",
+      "label": "STI diagnosed",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(8)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Chlamydia"
+        ],
+        [
+          "2",
+          "Gonorrhea"
+        ],
+        [
+          "3",
+          "Syphilis"
+        ],
+        [
+          "4",
+          "Trichomoniasis"
+        ],
+        [
+          "5",
+          "Genital herpes (HSV)"
+        ],
+        [
+          "6",
+          "Human papillomavirus (HPV) / genital warts"
+        ],
+        [
+          "7",
+          "Mycoplasma genitalium"
+        ],
+        [
+          "8",
+          "Chancroid"
+        ],
+        [
+          "9",
+          "Lymphogranuloma venereum (LGV)"
+        ],
+        [
+          "10",
+          "Donovanosis (granuloma inguinale)"
+        ],
+        [
+          "11",
+          "HIV"
+        ],
+        [
+          "12",
+          "Hepatitis B"
+        ],
+        [
+          "13",
+          "Hepatitis C"
+        ],
+        [
+          "14",
+          "Pubic lice"
+        ],
+        [
+          "15",
+          "Scabies"
+        ],
+        [
+          "16",
+          "Molluscum contagiosum"
+        ],
+        [
+          "17",
+          "Hepatitis A"
+        ],
+        [
+          "99",
+          "Other"
+        ],
+        [
+          "0",
+          "None diagnosed"
+        ],
+        [
+          "98",
+          "Unknown"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_sti_diagnosed_other",
+      "label": "STI diagnosed — other, specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and (([cnv_visit_purpose(8)] = '1') and ([cnv_sti_diagnosed(99)] = '1'))",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_sti_treat_location",
+      "label": "STI treatment location(s)",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(8)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Banian Pils"
+        ],
+        [
+          "2",
+          "Private doctor"
+        ],
+        [
+          "3",
+          "Public hospital"
+        ],
+        [
+          "4",
+          "Herbalist"
+        ],
+        [
+          "5",
+          "Other NGO/ clinic"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_sti_screened",
+      "label": "STI screened",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(8)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_sti_treated",
+      "label": "STI treated",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(8)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_sti_treat_where",
+      "label": "STI treated where",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(8)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_12_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">COMMODITIES PROVIDED</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_num_male_condoms",
+      "label": "Male condoms given (quantity)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_num_female_condoms",
+      "label": "Female condoms given (quantity)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_num_lube",
+      "label": "Lubricant given (quantity)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_num_hiv_selftest_kits",
+      "label": "HIV self-test kits distributed (quantity)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_num_needles",
+      "label": "Needles/syringes given (quantity)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_13_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">SEXUAL AND GENDER BASED VIOLENCE TESTING AND COUNSELLING</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_gbv_screen",
+      "label": "Sexual and gender-based violence — screened?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_gbv_treat",
+      "label": "Sexual and gender-based violence — treated?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cl_gbv_refer",
+      "label": "Sexual and gender-based violence — referred?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_gbv_refer_where",
+      "label": "Sexual and gender based violence - referred where?",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_14_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">OTHER SERVICES</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(99)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_other_screen",
+      "label": "Other — screened?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(99)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "civ_other_notes",
+      "label": "Other - Notes",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(99)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_other_treat",
+      "label": "Other — treated?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(99)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_other_refer",
+      "label": "Other — referred?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(99)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_other_refer_where",
+      "label": "Other - referred where?",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(99)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_15_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">LABORATORY REFERRAL</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_lab_ref",
+      "label": "Client referred for laboratory tests?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_lab_tests",
+      "label": "Laboratory tests referred",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_lab_ref] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "STI"
+        ],
+        [
+          "2",
+          "HIV"
+        ],
+        [
+          "3",
+          "CD4"
+        ],
+        [
+          "4",
+          "Viral load"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_lab_location",
+      "label": "Laboratory location",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_lab_ref] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_other_fac_ref",
+      "label": "Client referred to another health facility?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_other_facility",
+      "label": "Which facility?",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_other_fac_ref] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_section_16_hdr",
+      "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">FOLLOW-UP</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_comments",
+      "label": "Clinician comments",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_next_appointment_date",
+      "label": "Next appointment date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "Earliest service follow-up date. Uses the historical appointment date only when all service dates are blank.",
+      "annotation": "@CALCTEXT(if(isblankormissingcode([cnv_next_med_date]) and isblankormissingcode([cnv_next_blood_date]) and isblankormissingcode([cnv_next_doctor_date]) and isblankormissingcode([cnv_next_addicto_date]), [cnv_legacy_next_date], if(isblankormissingcode([cnv_next_med_date]), if(isblankormissingcode([cnv_next_blood_date]), if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date]))), if(isblankormissingcode(if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date])))), [cnv_next_blood_date], if([cnv_next_blood_date] <= if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date]))), [cnv_next_blood_date], if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date])))))), if(isblankormissingcode(if(isblankormissingcode([cnv_next_blood_date]), if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date]))), if(isblankormissingcode(if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date])))), [cnv_next_blood_date], if([cnv_next_blood_date] <= if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date]))), [cnv_next_blood_date], if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date]))))))), [cnv_next_med_date], if([cnv_next_med_date] <= if(isblankormissingcode([cnv_next_blood_date]), if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date]))), if(isblankormissingcode(if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date])))), [cnv_next_blood_date], if([cnv_next_blood_date] <= if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date]))), [cnv_next_blood_date], if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date])))))), [cnv_next_med_date], if(isblankormissingcode([cnv_next_blood_date]), if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date]))), if(isblankormissingcode(if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date])))), [cnv_next_blood_date], if([cnv_next_blood_date] <= if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date]))), [cnv_next_blood_date], if(isblankormissingcode([cnv_next_doctor_date]), [cnv_next_addicto_date], if(isblankormissingcode([cnv_next_addicto_date]), [cnv_next_doctor_date], if([cnv_next_doctor_date] <= [cnv_next_addicto_date], [cnv_next_doctor_date], [cnv_next_addicto_date])))))))))))",
+      "options": []
+    },
+    {
+      "name": "cnv_next_reason",
+      "label": "Reason for next appointment",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "cnv_worker",
+      "label": "Clinic worker:",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cnv_next_med_collection",
+      "label": "Next medication collection date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cnv_next_doctor_review",
+      "label": "Next doctor review date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cnv_next_blood_test",
+      "label": "Next blood test date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cnv_legacy_next_date",
+      "label": "Historical next appointment date (fallback)",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "cnv_next_appt",
+      "label": "Next appointment date",
+      "type": "datetime_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[cnv_no_show] <> '1'",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    }
+  ],
+  "prep_treatment_profile": [
+    {
+      "name": "ptp_client_hdr",
+      "label": "<b>Name:</b> [client_first_name] [client_middle_name] [client_last_name]\r\n\r\n<b>Alias:</b> [client_alias]\r\n\r\n<b>UIC:</b> [uic_ori]\r\n<b>DOB:</b> [client_dob]   <b>Age:</b> [client_age]\r\n<b>Gender:</b> [client_gender_identity]   <b>KP Type:</b> [client_kp_type]",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "CLIENT DETAILS",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ptp_previous_use",
+      "label": "Ever received PrEP before?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "PREP PROFILE",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ptp_previous_provider",
+      "label": "Where was prior PrEP received?",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[ptp_previous_use] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ptp_start_date",
+      "label": "PrEP start date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ptp_medication",
+      "label": "Current PrEP medication",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Truvada"
+        ],
+        [
+          "6",
+          "Descovy"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "ptp_other_medication",
+      "label": "Other current PrEP medication",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[ptp_medication] = '99'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ptp_update_date",
+      "label": "Profile update date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "PREP PROGRAMME FOLLOW-UP",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ptp_recorded_by",
+      "label": "Profile update by",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ptp_change_reason",
+      "label": "Reason for profile update",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    }
+  ],
+  "prep_visit": [
+    {
+      "name": "pv_client_hdr",
+      "label": "<b>Name:</b> [client_first_name] [client_middle_name] [client_last_name]\r\n\r\n<b>Alias:</b> [client_alias]\r\n\r\n<b>UIC:</b> [uic_ori]\r\n<b>DOB:</b> [client_dob]   <b>Age:</b> [client_age]\r\n<b>Gender:</b> [client_gender_identity]   <b>KP Type:</b> [client_kp_type]",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "CLIENT DETAILS",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_visit_date",
+      "label": "Visit date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "PREP VISIT",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_worker_1",
+      "label": "Clinic Worker",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_visit_purpose",
+      "label": "Visit purpose",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Blood sample collection"
+        ],
+        [
+          "2",
+          "Doctor"
+        ],
+        [
+          "3",
+          "Medication collection"
+        ]
+      ]
+    },
+    {
+      "name": "pv_followup_stage",
+      "label": "Follow-up stage",
+      "type": "dropdown",
+      "kind": "dropdown",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "M0"
+        ],
+        [
+          "1",
+          "M1"
+        ],
+        [
+          "3",
+          "M3"
+        ],
+        [
+          "6",
+          "M6"
+        ],
+        [
+          "9",
+          "M9"
+        ],
+        [
+          "12",
+          "M12"
+        ],
+        [
+          "15",
+          "M15"
+        ],
+        [
+          "18",
+          "M18"
+        ],
+        [
+          "21",
+          "M21"
+        ],
+        [
+          "24",
+          "M24"
+        ],
+        [
+          "27",
+          "M27"
+        ],
+        [
+          "30",
+          "M30"
+        ],
+        [
+          "33",
+          "M33"
+        ],
+        [
+          "36",
+          "M36"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "pv_side_effects",
+      "label": "Side effects reported",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_blood_collected",
+      "label": "Blood collected?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "BLOOD DRAW",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "pv_blood_collected_date",
+      "label": "Blood collected date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_blood_draw_notes",
+      "label": "Blood draw notes",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_next_blood_date",
+      "label": "Blood-test next date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_hiv_result",
+      "label": "HIV result",
+      "type": "radio",
+      "kind": "radio",
+      "section": "TEST RESULTS",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Negative / normal"
+        ],
+        [
+          "2",
+          "Positive / abnormal"
+        ],
+        [
+          "3",
+          "Indeterminate"
+        ],
+        [
+          "4",
+          "Result unavailable"
+        ],
+        [
+          "5",
+          "Not requested"
+        ]
+      ]
+    },
+    {
+      "name": "pv_creatinine_result",
+      "label": "Creatinine result",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_syphilis_result",
+      "label": "Syphilis result",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_hbsag_result",
+      "label": "HBsAg result",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_hcv_result",
+      "label": "HCV test result",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Negative / normal"
+        ],
+        [
+          "2",
+          "Positive / abnormal"
+        ],
+        [
+          "3",
+          "Indeterminate"
+        ],
+        [
+          "4",
+          "Result unavailable"
+        ],
+        [
+          "5",
+          "Not requested"
+        ]
+      ]
+    },
+    {
+      "name": "pv_hbv_result",
+      "label": "HBV (Hepatitis B) result",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Negative / normal"
+        ],
+        [
+          "2",
+          "Positive / abnormal"
+        ],
+        [
+          "3",
+          "Indeterminate"
+        ],
+        [
+          "4",
+          "Result unavailable"
+        ],
+        [
+          "5",
+          "Not requested"
+        ]
+      ]
+    },
+    {
+      "name": "pv_hb_result",
+      "label": "Hb (Hemoglobin) result",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "Enter the result and units as reported by the laboratory.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_cholesterol_result",
+      "label": "Cholesterol result",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "Enter the result and units as reported by the laboratory.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_triglycerides_result",
+      "label": "Triglycerides result",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "Enter the result and units as reported by the laboratory.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_tpha_result",
+      "label": "TPHA result",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_vdrl_result",
+      "label": "VDRL result (Venereal Disease Research Laboratory)",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "Enter the laboratory result, including titre where reported.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_other_test_result",
+      "label": "Other test result",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_doctor",
+      "label": "Doctor name",
+      "type": "text",
+      "kind": "text",
+      "section": "DOCTOR",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_weight",
+      "label": "Weight (kg)",
+      "type": "number",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_bp_systolic",
+      "label": "Systolic blood pressure (mmHg)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_bp_diastolic",
+      "label": "Diastolic blood pressure (mmHg)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_doctor_comments",
+      "label": "Doctor comments",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_next_doctor_date",
+      "label": "Doctor next date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_medication",
+      "label": "PrEP medication prescribed",
+      "type": "radio",
+      "kind": "radio",
+      "section": "MEDICATION",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Truvada"
+        ],
+        [
+          "2",
+          "Dolutegravir"
+        ],
+        [
+          "6",
+          "Descovy"
+        ]
+      ]
+    },
+    {
+      "name": "pv_other_medication",
+      "label": "Other medication received",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_lot_number",
+      "label": "PrEP medication lot number",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_medication_dispensed",
+      "label": "No. PrEP medication (tablet/bottle) dispensed this visit",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_prescription_months",
+      "label": "Prescription duration (months)",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_next_med_date",
+      "label": "Next medication collection date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_syphilis_referral",
+      "label": "Syphilis referral",
+      "type": "radio",
+      "kind": "radio",
+      "section": "Referrals",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ],
+        [
+          "2",
+          "Referred abroad"
+        ]
+      ]
+    },
+    {
+      "name": "pv_hcv_referral",
+      "label": "Hepatitis C referral",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "pv_hbv_referral",
+      "label": "Hepatitis B referral",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "pv_other_referral",
+      "label": "Other referral",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_hbv_vaccination_status",
+      "label": "Hepatitis B vaccination status",
+      "type": "radio",
+      "kind": "radio",
+      "section": "VACCINATION STATUS",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "Not started"
+        ],
+        [
+          "1",
+          "Box 1"
+        ],
+        [
+          "2",
+          "Box 2"
+        ],
+        [
+          "3",
+          "Box 3"
+        ],
+        [
+          "4",
+          "Box4"
+        ],
+        [
+          "5",
+          "Completed"
+        ]
+      ]
+    },
+    {
+      "name": "pv_hcv_vaccination_status",
+      "label": "Hepatitis C vaccination status",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "Not started"
+        ],
+        [
+          "1",
+          "Dose 1"
+        ],
+        [
+          "2",
+          "Dose 2"
+        ],
+        [
+          "3",
+          "Dose 3"
+        ],
+        [
+          "4",
+          "Completed"
+        ]
+      ]
+    },
+    {
+      "name": "pv_profile_updated",
+      "label": "PrEP Treatment Profile updated this visit?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "PREP PROGRAMME FOLLOW-UP",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ptp_status",
+      "label": "Current PrEP programme status",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": [
+        [
+          "1",
+          "Active"
+        ],
+        [
+          "2",
+          "No longer active"
+        ],
+        [
+          "4",
+          "On demand"
+        ],
+        [
+          "5",
+          "Abroad"
+        ],
+        [
+          "6",
+          "Transferred to NDCCI"
+        ],
+        [
+          "7",
+          "HIV positive"
+        ],
+        [
+          "8",
+          "In prison"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "pv_status_source",
+      "label": "Status migration source",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@HIDDEN",
+      "options": []
+    },
+    {
+      "name": "pv_next_appointment_date",
+      "label": "Next appointment date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "@CALCTEXT(\r\nif(\r\n  isblankormissingcode([pv_next_med_date]),\r\n  if(\r\n    isblankormissingcode([pv_next_blood_date]),\r\n    [pv_next_doctor_date],\r\n    if(\r\n      isblankormissingcode([pv_next_doctor_date]),\r\n      [pv_next_blood_date],\r\n      if(\r\n        [pv_next_blood_date] <= [pv_next_doctor_date],\r\n        [pv_next_blood_date],\r\n        [pv_next_doctor_date]\r\n      )\r\n    )\r\n  ),\r\n  if(\r\n    isblankormissingcode([pv_next_blood_date]),\r\n    if(\r\n      isblankormissingcode([pv_next_doctor_date]),\r\n      [pv_next_med_date],\r\n      if(\r\n        [pv_next_med_date] <= [pv_next_doctor_date],\r\n        [pv_next_med_date],\r\n        [pv_next_doctor_date]\r\n      )\r\n    ),\r\n    if(\r\n      isblankormissingcode([pv_next_doctor_date]),\r\n      if(\r\n        [pv_next_med_date] <= [pv_next_blood_date],\r\n        [pv_next_med_date],\r\n        [pv_next_blood_date]\r\n      ),\r\n      if(\r\n        [pv_next_med_date] <= [pv_next_blood_date],\r\n        if(\r\n          [pv_next_med_date] <= [pv_next_doctor_date],\r\n          [pv_next_med_date],\r\n          [pv_next_doctor_date]\r\n        ),\r\n        if(\r\n          [pv_next_blood_date] <= [pv_next_doctor_date],\r\n          [pv_next_blood_date],\r\n          [pv_next_doctor_date]\r\n        )\r\n      )\r\n    )\r\n  )\r\n))",
+      "options": []
+    }
+  ],
+  "risk_assessment": [
+    {
+      "name": "ra_client_hdr",
+      "label": "<b>Name:</b> [client_first_name] [client_middle_name] [client_last_name]\r\n\r\n<b>Alias:</b> [client_alias]\r\n\r\n<b>UIC:</b> [uic_ori]\r\n<b>DOB:</b> [client_dob]   <b>Age:</b> [client_age]\r\n<b>Gender:</b> [client_gender_identity]   <b>KP Type:</b> [client_kp_type]",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "CLIENT DETAILS",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_date",
+      "label": "Assessment date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "ASSESSMENT",
+      "required": true,
+      "branch": "",
+      "note": "Reassess at six-month or annual intervals according to the programme's criteria. Based on LINKAGES Monitoring Guide and Toolkit, Tool A, pp. 86-87. https://www.fhi360.org/wp-content/uploads/drupal/documents/resource-linkages-monitoring-tools.pdf",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_type",
+      "label": "Assessment type",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Six-month reassessment"
+        ],
+        [
+          "2",
+          "Annual reassessment"
+        ],
+        [
+          "3",
+          "Other"
+        ],
+        [
+          "4",
+          "Initial assessment"
+        ]
+      ]
+    },
+    {
+      "name": "ra_drug_alcohol_recent",
+      "label": "Used drugs or alcohol during sex in the last week?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "SHARED QUESTIONS",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_violence_recent",
+      "label": "Experienced physical or sexual violence in the last month?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_sw_years",
+      "label": "Years engaged in sex work",
+      "type": "number",
+      "kind": "text",
+      "section": "SEX WORKER",
+      "required": true,
+      "branch": "[ce_kp_type(1)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_sw_acts_1w",
+      "label": "Number of receptive vaginal or anal sex acts during the previous week",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": true,
+      "branch": "[ce_kp_type(1)] = '1'",
+      "note": "Count receptive vaginal or anal sex acts. Historical answers collected under the earlier, broader label have not been reinterpreted.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_sw_condom_use",
+      "label": "Used condom every time with intimate partner in last week?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": true,
+      "branch": "[ce_kp_type(1)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_msm_section_hdr",
+      "label": "<div class=\"header\" style=\"display:block;box-sizing:border-box;width:100%;margin:0;background-color:#FFFFE0;text-align:left;font-family:Open Sans,Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold;border:1px solid #CCCCCC;padding:5px;\">MSM / TRANSGENDER</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_msm_years_since_anal",
+      "label": "Years since first anal sex",
+      "type": "number",
+      "kind": "text",
+      "section": "",
+      "required": true,
+      "branch": "[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_msm_receptive_1w",
+      "label": "Receptive anal sex acts in last week",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": true,
+      "branch": "[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_msm_condom_anal",
+      "label": "Was a condom used for every anal sex act during the previous week (both receptive and penetrative)?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": true,
+      "branch": "[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_age_at_assessment_v2",
+      "label": "Age at assessment (v2)",
+      "type": "calc",
+      "kind": "calc",
+      "section": "SCORE",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_score",
+      "label": "Legacy risk score",
+      "type": "calc",
+      "kind": "calc",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "Retained for historical continuity. Use the applicable v2 SW and MSM/TG results for the updated assessment; missing inputs and overlapping populations are handled differently.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_level",
+      "label": "Legacy risk level (1=Low, 2=Medium, 3=High)",
+      "type": "calc",
+      "kind": "calc",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "Derived from the legacy score, not from the v2 results.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_sw_score_v2",
+      "label": "SW risk score (v2; 0–6)",
+      "type": "calc",
+      "kind": "calc",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "Based on LINKAGES Monitoring Guide and Toolkit, Tool A, pp. 86-87. https://www.fhi360.org/wp-content/uploads/drupal/documents/resource-linkages-monitoring-tools.pdf Six items, one point each. 0 = Low; 1-2 = Medium; 3-6 = High. Blank = incomplete or not applicable. v2 adds missing-answer checks and assessment-date age; applicable population scores are reported separately.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_sw_level_v2",
+      "label": "SW risk level (v2; 1=Low, 2=Medium, 3=High)",
+      "type": "calc",
+      "kind": "calc",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "LINKAGES Tool A categories: 0 points = Low (1); 1-2 points = Medium (2); 3-6 points = High (3). Blank = incomplete or not applicable.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_msm_score_v2",
+      "label": "MSM/TG risk score (v2; 0-6)",
+      "type": "calc",
+      "kind": "calc",
+      "section": "",
+      "required": false,
+      "branch": "[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'",
+      "note": "Based on LINKAGES Monitoring Guide and Toolkit, Tool A, pp. 86-87. https://www.fhi360.org/wp-content/uploads/drupal/documents/resource-linkages-monitoring-tools.pdf Six items, one point each. 0 = Low; 1-2 = Medium; 3-6 = High. Blank = incomplete or not applicable. v2 adds missing-answer checks and assessment-date age; applicable population scores are reported separately.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_msm_level_v2",
+      "label": "MSM/TG risk level (v2; 1=Low, 2=Medium, 3=High)",
+      "type": "calc",
+      "kind": "calc",
+      "section": "",
+      "required": false,
+      "branch": "[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'",
+      "note": "LINKAGES Tool A categories: 0 points = Low (1); 1-2 points = Medium (2); 3-6 points = High (3). Blank = incomplete or not applicable.",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_current_low_msg",
+      "label": "<div style=\"font-size: 1.15em; font-weight: 700; color: #15803d; padding: 8px 12px; border-left: 5px solid #15803d; background: #15803d14;\">Legacy risk level: Low</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "[ra_level] = \"1\"",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_current_medium_msg",
+      "label": "<div style=\"font-size: 1.15em; font-weight: 700; color: #c2410c; padding: 8px 12px; border-left: 5px solid #c2410c; background: #c2410c14;\">Legacy risk level: Medium</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "[ra_level] = \"2\"",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_current_high_msg",
+      "label": "<div style=\"font-size: 1.15em; font-weight: 700; color: #b91c1c; padding: 8px 12px; border-left: 5px solid #b91c1c; background: #b91c1c14;\">Legacy risk level: High</div>",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "",
+      "required": false,
+      "branch": "[ra_level] = \"3\"",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_notes",
+      "label": "Assessment notes",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_age_first_sex",
+      "label": "Age at first sexual intercourse",
+      "type": "integer",
+      "kind": "text",
+      "section": "CURRENT SEXUAL HEALTH AND SUBSTANCE USE",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_sex_3m",
+      "label": "Had sex in the past three months?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_partners_1w",
+      "label": "Number of sexual partners in the past week",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_msm_sex_type",
+      "label": "For MSM: type of sex in most encounters",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[ce_kp_type(2)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Anal penetrative"
+        ],
+        [
+          "2",
+          "Anal receptive"
+        ],
+        [
+          "3",
+          "Oral"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "ra_sex_exchange",
+      "label": "Ever had sex in exchange for cash or goods?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_sw_start_age",
+      "label": "Age started sex work",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[ra_sex_exchange] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_sw_paid_week",
+      "label": "Partners in past week in exchange for cash/goods",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[ra_sex_exchange] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_sw_unpaid_week",
+      "label": "Partners in past week not in exchange for cash/goods",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[ra_sex_exchange] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_condom_24h",
+      "label": "Used condom every time in last 24 hours?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_condom_1m",
+      "label": "Used condom every time in last month?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_lube_1m",
+      "label": "Used lubricant every time in last month?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_alcohol_1m",
+      "label": "Alcohol use in past month",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "Never"
+        ],
+        [
+          "1",
+          "Sometimes"
+        ],
+        [
+          "2",
+          "Most days"
+        ],
+        [
+          "3",
+          "Every day"
+        ]
+      ]
+    },
+    {
+      "name": "ra_drug_ever",
+      "label": "Ever used/consumed a drug for nonmedical purpose?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_drug_1m",
+      "label": "Used nonmedical drugs in last month?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[ra_drug_ever] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_drug_1w",
+      "label": "Used nonmedical drugs in last week?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[ra_drug_ever] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_inject_3m",
+      "label": "Injected drugs for nonmedical purposes in past three months?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "ra_inject_1w",
+      "label": "Injected drugs for nonmedical purposes in last week",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[ra_inject_3m] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_share_needle_1w",
+      "label": "Shared nonsterile equipment in last week",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[ra_inject_1w] > '0'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_inject_24h",
+      "label": "Injected drugs for nonmedical purposes in last 24 hours",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[ra_inject_1w] > '0'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "ra_share_needle_24h",
+      "label": "Shared nonsterile equipment in last 24 hours",
+      "type": "integer",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[ra_inject_24h] > '0'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    }
+  ],
+  "violence_disclosure": [
+    {
+      "name": "vd_client_hdr",
+      "label": "<b>Name:</b> [client_first_name] [client_middle_name] [client_last_name]\r\n\r\n<b>Alias:</b> [client_alias]\r\n\r\n<b>UIC:</b> [uic_ori]\r\n<b>DOB:</b> [client_dob]   <b>Age:</b> [client_age]\r\n<b>Gender:</b> [client_gender_identity]   <b>KP Type:</b> [client_kp_type]",
+      "type": "descriptive",
+      "kind": "descriptive",
+      "section": "CLIENT DETAILS",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_entry_type",
+      "label": "Entry type",
+      "type": "radio",
+      "kind": "radio",
+      "section": "SCREENING / DISCLOSURE",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Screening"
+        ],
+        [
+          "2",
+          "Disclosure"
+        ]
+      ]
+    },
+    {
+      "name": "vd_violence_3m",
+      "label": "Experienced violence in the last three months?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ],
+        [
+          "9",
+          "Prefer not to answer"
+        ]
+      ]
+    },
+    {
+      "name": "vd_consent",
+      "label": "Consent to document details of violence?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "VERBAL CONSENT",
+      "required": true,
+      "branch": "[vd_violence_3m] = '1' or [vd_entry_type] = '2'",
+      "note": "If disagree, incident details (Q11–17) must not be recorded; services may still be documented.",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Agree"
+        ],
+        [
+          "0",
+          "Disagree"
+        ]
+      ]
+    },
+    {
+      "name": "vd_date",
+      "label": "Screening / disclosure date",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "PART 1 — ADMINISTRATIVE INFORMATION",
+      "required": true,
+      "branch": "",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_to_name",
+      "label": "Name of person to whom victim disclosed",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_to_location",
+      "label": "Location of disclosure",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Hotline/WhatsApp"
+        ],
+        [
+          "2",
+          "Clinic"
+        ],
+        [
+          "3",
+          "Community"
+        ],
+        [
+          "4",
+          "DIC"
+        ],
+        [
+          "5",
+          "Virtual"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "vd_location_other",
+      "label": "Other disclosure location",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')) and ([vd_to_location] = '99')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_job",
+      "label": "Job title of person to whom victim disclosed",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Outreach worker"
+        ],
+        [
+          "2",
+          "Peer outreach worker"
+        ],
+        [
+          "3",
+          "Outreach supervisor"
+        ],
+        [
+          "4",
+          "Health worker"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "vd_job_others",
+      "label": "Other job title",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')) and ([vd_job] = '99')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_method",
+      "label": "How did the person disclose?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Spontaneous disclosure"
+        ],
+        [
+          "2",
+          "Disclosure after screening"
+        ]
+      ]
+    },
+    {
+      "name": "vd_incident_date",
+      "label": "Date of violence",
+      "type": "date_dmy",
+      "kind": "text",
+      "section": "PART 2 — INCIDENT DETAILS",
+      "required": false,
+      "branch": "([vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')) and ([vd_consent] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_incident_time",
+      "label": "Time of day of violence",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Morning"
+        ],
+        [
+          "2",
+          "Afternoon"
+        ],
+        [
+          "3",
+          "Night"
+        ]
+      ]
+    },
+    {
+      "name": "vd_incident_location",
+      "label": "Location of violence",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')) and ([vd_consent] = \"1\")",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_disclose_delay",
+      "label": "When was the incident disclosed?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Within 24 hours"
+        ],
+        [
+          "2",
+          ">24 and < 72 hours"
+        ],
+        [
+          "3",
+          ">72 and < 120 hours"
+        ],
+        [
+          "4",
+          ">5 days and < 1 month"
+        ],
+        [
+          "5",
+          ">1 month and < 3 months"
+        ],
+        [
+          "6",
+          ">3 months"
+        ]
+      ]
+    },
+    {
+      "name": "vd_incident_type",
+      "label": "Type of violence",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Physical"
+        ],
+        [
+          "2",
+          "Sexual"
+        ],
+        [
+          "3",
+          "Emotional"
+        ],
+        [
+          "4",
+          "Economic"
+        ],
+        [
+          "5",
+          "Other human-rights violation"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "vd_type_other",
+      "label": "Other type / human-rights violation — specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')) and ([vd_consent] = '1' and ([vd_incident_type(5)] = '1' or [vd_incident_type(99)] = '1'))",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_description",
+      "label": "Brief description of incident (≤200 words)",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "([vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')) and ([vd_consent] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_perpetrator",
+      "label": "Who committed the violent incident?",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Local leader(s)"
+        ],
+        [
+          "2",
+          "Police"
+        ],
+        [
+          "3",
+          "Military"
+        ],
+        [
+          "4",
+          "Security guard(s)"
+        ],
+        [
+          "5",
+          "Madam(s)/pimp(s)/bar manager(s)/owner(s)"
+        ],
+        [
+          "6",
+          "Local gang(s)"
+        ],
+        [
+          "7",
+          "General community"
+        ],
+        [
+          "8",
+          "Family member(s)"
+        ],
+        [
+          "9",
+          "Regular/past partner"
+        ],
+        [
+          "10",
+          "Sex-work client(s)"
+        ],
+        [
+          "11",
+          "Health-care facility staff"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "vd_perpetrator_other",
+      "label": "Other perpetrator — specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "([vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')) and ([vd_consent] = '1' and [vd_perpetrator(99)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_help_sought",
+      "label": "Sought help for the violence?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "vd_help_source",
+      "label": "Where did you seek help?",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2') and [vd_help_sought] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Medical/hospital"
+        ],
+        [
+          "2",
+          "Legal/police"
+        ],
+        [
+          "3",
+          "Family"
+        ],
+        [
+          "4",
+          "Peers"
+        ],
+        [
+          "5",
+          "Friends"
+        ],
+        [
+          "6",
+          "Religious leader"
+        ],
+        [
+          "7",
+          "Chief/village elder"
+        ],
+        [
+          "8",
+          "HIV program"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "vd_help_source_other",
+      "label": "Where did you seek help? — other, specify",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2') and [vd_help_sought] = '1' and [vd_help_source(99)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_initial_services",
+      "label": "Services provided at initial disclosure",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Key messages/support"
+        ],
+        [
+          "2",
+          "Information on available services"
+        ],
+        [
+          "3",
+          "Discussed safety plan"
+        ],
+        [
+          "4",
+          "Explored next steps"
+        ],
+        [
+          "5",
+          "Referred"
+        ],
+        [
+          "6",
+          "Accompanied"
+        ]
+      ]
+    },
+    {
+      "name": "vd_follow_worker_role",
+      "label": "Job title completing Part 3",
+      "type": "radio",
+      "kind": "radio",
+      "section": "PART 3 — SERVICES AND FOLLOW-UP",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Outreach supervisor"
+        ],
+        [
+          "2",
+          "Case manager"
+        ],
+        [
+          "3",
+          "HCW"
+        ],
+        [
+          "99",
+          "Other"
+        ]
+      ]
+    },
+    {
+      "name": "vd_follow_worker_name",
+      "label": "Name of person completing Part 3",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_pep_eligible",
+      "label": "For sexual violence: eligible for PEP at disclosure?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Yes"
+        ],
+        [
+          "0",
+          "No"
+        ],
+        [
+          "9",
+          "Did not determine"
+        ]
+      ]
+    },
+    {
+      "name": "vd_contracep_eligible",
+      "label": "For sexual violence: eligible for emergency contraception?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Yes"
+        ],
+        [
+          "0",
+          "No"
+        ],
+        [
+          "9",
+          "Did not determine"
+        ]
+      ]
+    },
+    {
+      "name": "vd_assessment",
+      "label": "Initial assessment",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_injury_treat",
+      "label": "Treatment of injuries",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_forensic",
+      "label": "Forensic examination",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_hiv_rapid_t_prov",
+      "label": "Rapid HIV testing",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_pep_prov",
+      "label": "PEP",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_sti_prov",
+      "label": "STI screening/treatment",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_contracep_prov",
+      "label": "Emergency contraception",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_psych_prov",
+      "label": "Immediate psychosocial counselling",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_mental_eval",
+      "label": "Mental health evaluation",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_tetanus_prov",
+      "label": "Tetanus vaccine",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_art_initiated",
+      "label": "Initiation of ART",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_psych_long_prov",
+      "label": "Longer-term psychosocial support",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_legal_prov",
+      "label": "Legal counsel",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_police_prov",
+      "label": "Police",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_child_prot_prov",
+      "label": "Child protection services",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_economic_prov",
+      "label": "Economic empowerment",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_shelter_prov",
+      "label": "Temporary shelter",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_crisis_response",
+      "label": "Crisis response team",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_other_prov",
+      "label": "Other",
+      "type": "checkbox",
+      "kind": "checkbox",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Provided at supported clinic"
+        ],
+        [
+          "2",
+          "Provided at affiliated non-clinic/DIC"
+        ],
+        [
+          "3",
+          "Referral made to external provider"
+        ],
+        [
+          "4",
+          "External referral completed"
+        ]
+      ]
+    },
+    {
+      "name": "vd_followup",
+      "label": "Follow-up action planned (≤200 words)",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "vd_pep_completed",
+      "label": "Completion of PEP?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "1",
+          "Yes"
+        ],
+        [
+          "0",
+          "No"
+        ],
+        [
+          "8",
+          "Not applicable / did not receive PEP"
+        ],
+        [
+          "9",
+          "Unknown"
+        ]
+      ]
+    },
+    {
+      "name": "vd_hiv_3m_after",
+      "label": "HIV test 3 months post sexual violence?",
+      "type": "radio",
+      "kind": "radio",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "Not tested"
+        ],
+        [
+          "1",
+          "Tested negative"
+        ],
+        [
+          "2",
+          "Tested positive"
+        ],
+        [
+          "8",
+          "Not applicable"
+        ]
+      ]
+    },
+    {
+      "name": "vd_followup_actions",
+      "label": "Follow-up actions taken / referral or legal outcomes",
+      "type": "notes",
+      "kind": "notes",
+      "section": "",
+      "required": false,
+      "branch": "[vd_consent] = '1' and ([vd_violence_3m] = '1' or [vd_entry_type] = '2')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    }
+  ]
+}

@@ -82,3 +82,34 @@ for (const userWithAccess of [{ role: 'HEALTHCARE_ASSISTANT' }, { role: 'HEALTHC
   assert.equal(JSON.stringify(data).includes('CLINICAL_SECRET'), true);
 }
 console.log('Lookup privacy checks passed: role and multi-role access, protected rows, fields, completion/timestamps, legacy fallback fields and protected PrEP profiles/visits.');
+
+for (const [form,prefix] of [['risk_assessment','ra'],['violence_disclosure','vd']]) {
+ metadata.push(field(`${prefix}_sensitive`,form,'text'));
+ metadata.push(field(`${prefix}_flags`,form,'checkbox','1, Example'));
+ instruments.push({instrument_name:form,instrument_label:form});repeating.push({form_name:form});
+ rows.push({uic_ori:'TEST',redcap_repeat_instrument:form,redcap_repeat_instance:1,[`${prefix}_sensitive`]:`${prefix}_SECRET`,[`${prefix}_flags___1`]:'1'});
+ rows[0][`${prefix}_unknown_legacy`]=`${prefix}_LEGACY_SECRET`;
+ rows[0][`${form}_timestamp`]=`${prefix}_TIMESTAMP_SECRET`;
+}
+for (const [currentUser,allowed,clinical] of [
+ [{role:'OUTREACH_WORKER'},true,false], [{role:'HEALTHCARE_ASSISTANT'},true,true], [{role:'ADMIN'},true,true],
+ [{role:'HEALTHCARE_NAVIGATOR'},false,true], [{role:'FACILITY_STAFF'},false,false], [{role:'UNKNOWN'},false,false],
+ [{role:'HEALTHCARE_NAVIGATOR',roles:'["OUTREACH_WORKER"]'},true,true],
+ [{role:'FACILITY_STAFF',roles:'["HEALTHCARE_NAVIGATOR"]'},false,true]
+]) {
+ user=currentUser;const response=await GET(new Request('https://app.invalid/api/redcap/lookup?uic=TEST'));const data=await response.json(),text=JSON.stringify(data);
+ assert.equal(data.restrictedRiskViolenceAccess,!allowed);assert.equal(data.restrictedClinicalAccess,!clinical);
+ for(const prefix of ['ra','vd'])for(const secret of [`${prefix}_SECRET`,`${prefix}_LEGACY_SECRET`,`${prefix}_TIMESTAMP_SECRET`])if(!allowed||!secret.includes("TIMESTAMP"))assert.equal(text.includes(secret),allowed,`${currentUser.role}: ${secret}`);
+ for(const form of ['risk_assessment','violence_disclosure'])assert.equal(data.sections.some(section=>section.name===form),allowed);
+}
+console.log('RA/VD privacy passed: Outreach, Healthcare Assistant and Admin allowed; Navigator/Facility denied; multi-role unions and legacy fields covered.');
+
+for (const role of ['HEALTHCARE_ASSISTANT','FACILITY_STAFF']) {
+ user={role};
+ const data=await (await GET(new Request('https://app.invalid/api/redcap/lookup?uic=TEST&scope=appointment'))).json();
+ assert.ok(data.sections.every(section=>['client_enrollment','clinic_enrollment','clinic_visit','prep_visit'].includes(section.name)));
+ assert.equal(data.sections.some(section=>section.name==='clinic_visit'),role==='HEALTHCARE_ASSISTANT');
+ assert.equal(data.sections.some(section=>section.name==='prep_visit'),role==='HEALTHCARE_ASSISTANT');
+ assert.equal(JSON.stringify(data).includes('ra_SECRET'),false);
+}
+console.log('Appointment lookup scope passed: CE/CNE/CNV/PV only, with existing clinical restrictions preserved.');

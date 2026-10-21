@@ -27,8 +27,9 @@ export async function GET(request: Request) {
     const rows = (records as LookupRow[]).filter(row => String(row.uic_ori) === uic);
     if (!rows.length) return NextResponse.json({ error: "The selected record was not found." }, { status: 404 });
     const canViewClinical = hasAnyRole(user, ["HEALTHCARE_ASSISTANT", "HEALTHCARE_NAVIGATOR", "ADMIN"]);
-    const visible = canViewClinical ? { rows, metadata: metadata as LookupField[], instruments: instruments as LookupInstrument[], repeating: repeating as { form_name: string }[] } : filterRestrictedLookupData(rows, metadata as LookupField[], instruments as LookupInstrument[], repeating as { form_name: string }[]);
-    return NextResponse.json({ uic, restrictedClinicalAccess: !canViewClinical, sections: buildLookupSections(visible.rows, visible.metadata, visible.instruments, visible.repeating) }, { headers: { "Cache-Control": "no-store" } });
+    const canViewRiskViolence = hasAnyRole(user, ["OUTREACH_WORKER", "HEALTHCARE_ASSISTANT", "ADMIN"]);
+    const visible = filterRestrictedLookupData(rows, metadata as LookupField[], instruments as LookupInstrument[], repeating as { form_name: string }[], {clinical:canViewClinical,riskViolence:canViewRiskViolence});
+    return NextResponse.json({ uic, restrictedClinicalAccess: !canViewClinical, restrictedRiskViolenceAccess: !canViewRiskViolence, sections: buildLookupSections(visible.rows, visible.metadata, visible.instruments, visible.repeating).filter(section => new URL(request.url).searchParams.get("scope") !== "appointment" || ["client_enrollment", "clinic_enrollment", "clinic_visit", "prep_visit"].includes(section.name)) }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ error: "Unable to load the record from REDCap." }, { status: 502 });
   }

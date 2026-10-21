@@ -96,6 +96,8 @@ model ClinicQueueEntry {
   checkedInAt        DateTime?
   readyAt            DateTime?
   completedAt        DateTime?
+  noShow             Boolean            @default(false)
+  noShowInstance     Int?
   createdById        String
   createdByName      String
   updatedById        String

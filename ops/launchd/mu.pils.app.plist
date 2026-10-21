@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>mu.pils.app</string>
+  <key>UserName</key><string>kevin</string>
+  <key>WorkingDirectory</key><string>/Users/kevin/Developer/pils-app</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/kevin/.nvm/versions/node/v23.5.0/bin/node</string>
+    <string>/Users/kevin/.nvm/versions/node/v23.5.0/lib/node_modules/npm/bin/npm-cli.js</string>
+    <string>run</string><string>dev</string><string>--</string>
+    <string>--hostname</string><string>0.0.0.0</string>
+    <string>--port</string><string>3000</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key><string>/Users/kevin</string>
+    <key>PATH</key><string>/Users/kevin/.nvm/versions/node/v23.5.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>10</integer>
+  <key>StandardOutPath</key><string>/Users/kevin/Library/Logs/pils-app/server.log</string>
+  <key>StandardErrorPath</key><string>/Users/kevin/Library/Logs/pils-app/error.log</string>
+</dict>
+</plist>

@@ -1,3 +1,4 @@
+import { fieldVisible } from "./instrument-forms";
 import definitions from "./redcap-field-rules.json";
 
 type Rule = { label: string; type: string; required?: boolean; min?: number; max?: number; choices?: string[]; branch?: string; minExpression?: string; maxExpression?: string };
@@ -8,12 +9,7 @@ export function isRequiredField(key: string, values: Record<string, string> = {}
   const rule = rules[key];
   if (!rule?.required) return false;
   if (!rule.branch) return true;
-  // Conditional required fields currently use a single field comparison.
-  // Unknown expressions must not turn hidden fields into unconditional requirements.
-  const match = rule.branch.match(/^\[([a-zA-Z0-9_]+)\]\s*(=|<>)\s*['"]([^'"]*)['"]$/);
-  if (!match) return false;
-  const same = (values[match[1]] ?? "") === match[3];
-  return match[2] === "=" ? same : !same;
+  return fieldVisible(rule.branch,values);
 }
 
 export function numericAttributes(key: string) {
@@ -58,8 +54,8 @@ export function validateFields(values: Record<string, string>, fields = Object.k
   if (fields.includes("oc_prep_interested") && values.oc_prep_interested === "0" && !values.oc_prep_no_reason?.trim()) {
     return "Reason not interested in PrEP is required.";
   }
-  if (fields.includes("cne_sti_diagnosed")) {
-    const diagnoses = values.cne_sti_diagnosed?.split(",").filter(Boolean) ?? [];
+  if (fields.includes("cne_sti_diagnosed") || fields.includes("cnv_sti_diagnosed")) {
+    const diagnoses = (fields.includes("cnv_sti_diagnosed")?values.cnv_sti_diagnosed:values.cne_sti_diagnosed)?.split(",").filter(Boolean) ?? [];
     if (diagnoses.length > 1 && diagnoses.some(code => ["0", "98"].includes(code))) return "Select None diagnosed or Unknown on its own.";
   }
   for (const key of fields) {

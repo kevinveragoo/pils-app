@@ -1,5 +1,6 @@
+import { instrumentFields, instrumentCheckboxes, visibleInstrumentValues } from "@/lib/instrument-forms";
 import { prepNextAppointment } from "@/lib/prep-followup";
-import { latestStatus, prepHistoryFields } from "@/lib/status-history";
+import { latestStatus } from "@/lib/status-history";
 import { NextResponse } from "next/server";
 import { generateUic } from "@/lib/uic";
 import { getCurrentUser } from "@/lib/auth";
@@ -14,8 +15,8 @@ type Values = Record<string, string>;
 type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; profile?: unknown; visit?: unknown; includeProfile?: unknown; queueId?: unknown };
 
 const enrollmentFields = ["ce_active", "ce_date", "ce_implementing_partner", "ce_district", "ce_hotspot", "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_middle_name_1", "ce_middle_name_2", "ce_middle_name_3", "ce_alias", "ce_dob", "ce_gender_identity", "ce_vision", "ce_kp_type", "ce_tel_primary", "ce_contact_method", "ce_risk_drug_alcohol_sex", "ce_risk_violence_1m", "ce_sw_age_started", "ce_sw_sex_acts_1w", "ce_sw_condom_use_1w", "ce_msm_age_first_anal", "ce_msm_receptive_anal_1w", "ce_msm_condom_anal_1w", "ce_pwid_age_first_inject", "ce_pwid_injections_24h", "ce_pwid_injections_1w", "ce_pwid_shared_24h", "ce_pwid_shared_1w"];
-const profileFields = ["ptp_start_date", "ptp_primary_reason", "ptp_previous_use", "ptp_previous_provider", "ptp_medication", "ptp_other_medication", "ptp_regimen_notes",  "ptp_effective_date", "ptp_recorded_by", "ptp_change_reason"];
-const visitFields = ["pv_visit_date", "pv_visit_purpose", "pv_worker_1","pv_worker_2", "pv_next_appointment_date", "pv_followup_stage", "pv_blood_draw_date", "pv_tests_collected", "pv_other_test_collected", "pv_sample_reference", "pv_blood_draw_notes", "pv_hbv_result","pv_hb_result","pv_cholesterol_result","pv_triglycerides_result","pv_tpha_result","pv_vdrl_result","pv_other_test_result","pv_hiv_result", "pv_syphilis_result", "pv_creatinine_result", "pv_hbsag_result", "pv_hcv_result", "pv_sti_reported", "pv_side_effects", "pv_medication", "pv_other_medication", "pv_lot_number", "pv_medication_dispensed", "pv_prescription_months", "pv_next_med_date", "pv_no_medication_reason", "pv_weight","pv_bp_systolic","pv_bp_diastolic","pv_doctor", "pv_doctor_comments", "pv_next_blood_date", "pv_next_doctor_date", "pv_syphilis_referral", "pv_hcv_referral", "pv_hbv_vaccination_status", "pv_other_referral", ...prepHistoryFields, "pv_profile_updated"];
+const profileFields = instrumentFields("prep_treatment_profile");
+const visitFields = instrumentFields("prep_visit");
 
 function values(value: unknown): Values | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
@@ -25,6 +26,8 @@ function values(value: unknown): Values | null {
 
 
 function copyAllowed(source: Values, allowed: string[]) {
+  if(allowed===visitFields)source=visibleInstrumentValues("prep_visit",source);
+  if(allowed===profileFields)source=visibleInstrumentValues("prep_treatment_profile",source);
   const row: Values = {};
   for (const key of allowed) if (source[key] !== undefined && source[key] !== "") row[key] = source[key].trim();
   if (source.ce_kp_type) {
@@ -35,7 +38,7 @@ function copyAllowed(source: Values, allowed: string[]) {
     for (const code of source.ce_contact_method.split(",").filter((item) => /^\d+$/.test(item))) row[`ce_contact_method___${code}`] = "1";
     delete row.ce_contact_method;
   }
-  for (const key of ["pv_visit_purpose", "pv_tests_collected"]) {
+  for (const key of instrumentCheckboxes("prep_visit")) {
     if (!source[key]) continue;
     for (const code of source[key].split(",").filter((item) => /^\d+$/.test(item))) row[`${key}___${code}`] = "1";
     delete row[key];
@@ -94,15 +97,11 @@ export async function POST(request: Request) {
   const visit = values(input.visit);
   const includeProfile = mode === "new" || input.includeProfile === true;
   if ((mode !== "new" && mode !== "existing") || !recordId || !visit || (includeProfile && !submittedProfile)) return NextResponse.json({ error: "Invalid PrEP workflow submission." }, { status: 400 });
-  if (!visit.pv_visit_date?.trim() || !visit.pv_visit_purpose?.trim()) return NextResponse.json({ error: "Visit date and purpose are required." }, { status: 400 });
+  if (!visit.pv_visit_date?.trim()) return NextResponse.json({ error: "Visit date is required." }, { status: 400 });
   visit.pv_next_appointment_date = prepNextAppointment(visit);
-  const purposes = new Set(visit.pv_visit_purpose.split(","));
-  if (purposes.has("1") && (!visit.pv_blood_draw_date?.trim() || !visit.pv_tests_collected?.trim())) return NextResponse.json({ error: "Blood draw date and tests collected are required." }, { status: 400 });
-  if (purposes.has("2") && (!visit.pv_doctor?.trim())) return NextResponse.json({ error: "Physician is required for a doctor visit." }, { status: 400 });
-  if (purposes.has("3") && !visit.pv_medication_dispensed?.trim() && !visit.pv_no_medication_reason?.trim()) return NextResponse.json({ error: "Enter medication dispensed or the reason no medication was supplied." }, { status: 400 });
 
   if (mode === "new") {
-    const requiredEnrollment = ["ce_date", "ce_district", "ce_hotspot", "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_dob", "ce_gender_identity", "ce_kp_type"];
+    const requiredEnrollment = ["ce_date", "ce_district",  "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_dob", "ce_gender_identity", "ce_kp_type"];
     if (!enrollment || !requiredEnrollment.every((key) => enrollment[key]?.trim())) return NextResponse.json({ error: "Complete all required enrollment fields." }, { status: 400 });
     if (generateUic(enrollment) !== recordId) return NextResponse.json({ error: "The generated UIC does not match the enrollment details." }, { status: 400 });
   }
@@ -120,7 +119,7 @@ export async function POST(request: Request) {
     const profile = includeProfile ? { ...currentProfile, ...submittedProfile } as Values : null;
     if (profile) {
 
-      const requiredProfile = ["ptp_effective_date", "ptp_recorded_by", "ptp_start_date"];
+      const requiredProfile = ["ptp_update_date", "ptp_recorded_by"];
       if (!requiredProfile.every((key) => profile[key]?.trim())) return NextResponse.json({ error: "Complete all required PrEP Treatment Profile fields." }, { status: 400 });
       const profileValidation = validateFields(profile, profileFields);
       if (profileValidation) return NextResponse.json({ error: profileValidation }, { status: 400 });
@@ -134,16 +133,14 @@ export async function POST(request: Request) {
     }
     const next = (form: string) => String((maximum.get(form) ?? 0) + 1);
     visit.pv_profile_updated = profile ? "1" : "0";
-    if(mode==="new"&&!visit.pv_status_at_visit)visit.pv_status_at_visit="1";
-    if(visit.pv_status_at_visit){visit.pv_status_date=visit.pv_visit_date;visit.pv_status_date_unknown="0";}
-    visit.pv_status_only=purposes.size===1&&purposes.has("4")?"1":"0";
+    if(mode==="new"&&!visit.ptp_status)visit.ptp_status="1";
     const records: Values[] = [];
     if (mode === "new" && enrollment) records.push({ uic_ori: recordId, ...copyAllowed(enrollment, enrollmentFields) });
     if (profile) records.push({ uic_ori: recordId, redcap_repeat_instrument: "prep_treatment_profile", redcap_repeat_instance: next("prep_treatment_profile"), ...copyAllowed(profile, profileFields) });
     records.push({ uic_ori: recordId, redcap_repeat_instrument: "prep_visit", redcap_repeat_instance: next("prep_visit"), ...copyAllowed(visit, visitFields) });
 
     const result = await redcap({ content: "record", action: "import", format: "json", type: "flat", overwriteBehavior: "normal", forceAutoNumber: "false", dateFormat: "YMD", data: JSON.stringify(records), returnContent: "count", returnFormat: "json" });
-    const activityLogged = await recordRedcapActivity({ user, workflow: "prep", recordId, staffName: visit.pv_worker_1 || visit.pv_worker_2 || user.name, serviceDate: visit.pv_visit_date, instrumentInstances: records.filter(row => row.redcap_repeat_instrument).map(row => ({ instrument: row.redcap_repeat_instrument, instance: Number(row.redcap_repeat_instance) })), submittedData: records });
+    const activityLogged = await recordRedcapActivity({ user, workflow: "prep", recordId, staffName: visit.pv_worker_1 || user.name, serviceDate: visit.pv_visit_date, instrumentInstances: records.filter(row => row.redcap_repeat_instrument).map(row => ({ instrument: row.redcap_repeat_instrument, instance: Number(row.redcap_repeat_instance) })), submittedData: records });
     const queueCompleted = await completeQueueEntry(typeof input.queueId === "string" ? input.queueId : undefined, recordId, user);
     return NextResponse.json({ success: true, recordId, savedRows: records.length, profileUpdated: Boolean(profile), activityLogged, queueCompleted, result });
   } catch (error) {

@@ -8,7 +8,7 @@ vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../lib/visit-work
 const loadedModule = { exports: {} };
 const rows = [
   { uic_ori: 'TEST', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 1, cnv_next_doctor_date: '2026-10-22', cnv_next_appointment_date: '2026-10-22' },
-  { uic_ori: 'TEST', ce_first_name: 'Sample', ce_middle_name_1: 'Middle', ce_last_name: 'Surname', ce_alias: 'Alias', ce_patient_code: 'BC 999', ce_tel_primary: '123' },
+  { uic_ori: 'TEST', ce_first_name: 'Sample', ce_middle_name_1: 'Middle', ce_last_name: 'Surname', ce_alias: 'Alias', cne_patient_code: 'BC 999', ce_tel_primary: '123' },
   { uic_ori: 'TEST', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 2, cnv_next_blood_date: '2026-10-22' },
   { uic_ori: 'TEST', redcap_repeat_instrument: 'prep_visit', redcap_repeat_instance: 1, pv_next_med_date: '2026-10-22' },
   { uic_ori: 'OTHER', cnv_next_doctor_date: '2026-10-23' },
@@ -28,9 +28,22 @@ assert.equal(result[0].phone, '123');
 assert.deepEqual(result[0].tasks, ['DOCTOR', 'BLOOD_TEST', 'MEDICATION']);
 assert.equal(result[0].recordId, 'TEST');
 console.log('Clinic queue checks passed: repeat follow-ups use enrollment identities and merge services for the selected date.');
+rows.push({uic_ori:'MISSED',redcap_repeat_instrument:'clinic_visit',redcap_repeat_instance:1,cnv_no_show:'1',cnv_next_doctor_date:'2026-10-22',cnv_next_appointment_date:'2026-10-22'});
+assert.ok(!(await loadedModule.exports.expectedAppointments('2026-10-22')).some(row=>row.recordId==='MISSED'), 'Hidden dates on a no-show must not create future appointments');
+rows.pop();
+rows.push({uic_ori:'BOOKED',redcap_repeat_instrument:'clinic_visit',redcap_repeat_instance:1,cnv_date:'2026-10-21',cnv_next_blood_date:'2026-10-22'});
+const booked=(await loadedModule.exports.expectedAppointments('2026-10-22')).find(row=>row.recordId==='BOOKED');
+assert.deepEqual(Array.from(booked.tasks),['BLOOD_TEST'],'A newly booked blank CNV appears under Expected on its appointment date');
+rows.pop();
 rows.push({ uic_ori: 'LEGACY', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 1, cnv_next_appointment_date: '2026-10-22' });
 const historical = await loadedModule.exports.expectedAppointments('2026-10-22');
 assert.deepEqual(Array.from(historical.find(row => row.recordId === 'LEGACY').tasks), ['OTHER']);
+rows.pop();
+rows.push({uic_ori:'ADDICTO',cnv_next_addicto_date:'2026-10-22',cnv_next_appointment_date:'2026-10-22'});
+const addicto=(await loadedModule.exports.expectedAppointments('2026-10-22')).find(row=>row.recordId==='ADDICTO');
+assert.deepEqual(Array.from(addicto.tasks),['DOCTOR']);
+assert.deepEqual(Array.from(addicto.clinicPurposes),['15']);
+assert.deepEqual(Array.from(addicto.appointmentSources),['Clinic addictologist review']);
 rows.pop();
 
 await loadedModule.exports.createQueueEntry({ queueDate: "2026-10-22", displayName: "Sample Surname", firstName: "Sample", lastName: "Surname", nationalId: "TEST-ID", phone: "123", isNewClient: true, tasks: ["DOCTOR"] }, { id: "actor", name: "Staff" });
@@ -66,7 +79,7 @@ assert.deepEqual(created.clinicPurposes, ['8']); assert.deepEqual(created.prepPu
 assert.equal((await post({ visitWorkflow: 'BOTH', clinicPurposes: ['8'], prepPurposes: [] })).status, 400);
 assert.equal((await post({ visitWorkflow: 'CLINIC', clinicPurposes: ['7'] })).status, 400);
 assert.equal((await post({ visitWorkflow: 'PREP', clinicPurposes: ['8'], prepPurposes: ['1'] })).status, 400);
-assert.equal((await post({ visitWorkflow: 'PREP', prepPurposes: ['4'], currentStation: 'DOCTOR' })).status, 201);
+assert.equal((await post({ visitWorkflow: 'PREP', prepPurposes: ['2'], currentStation: 'DOCTOR' })).status, 201);
 assert.equal((await post({ source: 'SCHEDULED', visitWorkflow: 'PREP', tasks: ['PREP'], prepPurposes: [] })).status, 201);
 assert.deepEqual(created.tasks, ['PREP']);
 console.log('Queue workflow checks passed: separate purposes, routing defaults, validation and independent first waiting queue.');

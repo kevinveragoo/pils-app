@@ -1,5 +1,5 @@
 import fieldRules from "./redcap-field-rules.json";
-export const clinicEnrollmentDefaults = { cne_facility: "Pils Banian", cne_district: "1" };
+export const clinicEnrollmentDefaults = { cne_facility: "Pils Banian" };
 
 export const clinicEnrollmentChoices: Record<string, [string, string][]> = {
   "cne_sti_diagnosed": [["1", "Chlamydia"], ["2", "Gonorrhea"], ["3", "Syphilis"], ["4", "Trichomoniasis"], ["5", "Genital herpes (HSV)"], ["6", "Human papillomavirus (HPV) / genital warts"], ["7", "Mycoplasma genitalium"], ["8", "Chancroid"], ["9", "Lymphogranuloma venereum (LGV)"], ["10", "Donovanosis (granuloma inguinale)"], ["11", "HIV"], ["12", "Hepatitis B"], ["13", "Hepatitis C"], ["14", "Pubic lice"], ["15", "Scabies"], ["16", "Molluscum contagiosum"], ["17", "Hepatitis A"], ["99", "Other"], ["0", "None diagnosed"], ["98", "Unknown"]],
@@ -113,7 +113,7 @@ export const clinicEnrollmentChoices: Record<string, [string, string][]> = {
 
 export function clinicFieldVisible(key: string, values: Record<string, string>, sexAssignedBirth: string, kpType = "") {
   const rule = (fieldRules as Record<string, { branch?: string }>)[key];
-  const comparison = rule?.branch?.match(/^\[([a-zA-Z0-9_]+)\]\s*(=|<>)\s*['"]([^'"]*)['"]$/);
+  const comparison = (rule?.branch??"").match(/^\[([a-zA-Z0-9_]+)\]\s*(=|<>)\s*['"]([^'"]*)['"]$/);
   if (comparison && comparison[1].startsWith("cne_")) {
     const same = (values[comparison[1]] ?? "") === comparison[3];
     if (!(comparison[2] === "=" ? same : !same)) return false;

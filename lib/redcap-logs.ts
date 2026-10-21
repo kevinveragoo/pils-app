@@ -31,7 +31,7 @@ const workflows = [
   { name: "Client Enrollment", prefixes: ["ce_"] },
 ];
 
-const staffFields = ["oc_worker_1", "hcs_navigator_1", "pv_worker_1", "pv_worker_2", "cne_worker", "cnv_worker_1", "breakfast_recorded_by", "ce_outreach_worker"];
+const staffFields = ["oc_worker_1", "hcs_navigator_1", "pv_worker_1", "cne_worker", "cnv_worker_1", "breakfast_recorded_by", "ce_outreach_worker"];
 const dateFields = ["oc_date", "hcs_date", "pv_visit_date", "cne_date", "cnv_date", "breakfast_date", "ce_date"];
 
 function workflowFor(names: string[], fallback = "REDCap record") {

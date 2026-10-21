@@ -1444,3 +1444,7 @@
 "Loading appointment counts…" = "Chargement du nombre de rendez-vous…";
 
 "Counts show clients booked for this date, including clinic and PrEP appointments." = "Les nombres indiquent les clients ayant un rendez-vous à cette date, y compris les rendez-vous de clinique et de PrEP.";
+
+"New Clinic" = "Nouveau rendez-vous";
+
+"Appointment" = "clinique";

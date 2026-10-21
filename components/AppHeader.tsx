@@ -24,9 +24,9 @@ export default async function AppHeader({ current }: { current: "new-appointment
           {showEnrollment && <Link href="/client-enrollment" aria-current={current === "client-enrollment" ? "page" : undefined}><span>Client Enrollment<br />Workflow</span></Link>}
           {showOutreach && <Link href="/outreach" aria-current={current === "outreach" ? "page" : undefined}><span>Outreach<br />Workflow</span></Link>}
           {showHealthcareNavigator && <Link href="/healthcare-nav" aria-current={current === "healthcare-nav" ? "page" : undefined}><span>Healthcare Navigator<br />Workflow</span></Link>}
-          {showHealthcareNavigator && <Link href="/hiv-care-support-upcoming" aria-current={current === "hcs-upcoming" ? "page" : undefined}>Healthcare Navigator Queue</Link>}
+          {showHealthcareNavigator && <Link href="/hiv-care-support-upcoming" aria-current={current === "hcs-upcoming" ? "page" : undefined}><span>Healthcare Navigator<br />Queue</span></Link>}
           {showClinicalWorkflows && <Link href="/clinic" aria-current={current === "clinic" ? "page" : undefined}><span>Clinic<br />Workflow</span></Link>}
-          {showNewAppointment && <Link href="/new-appointment" aria-current={current === "new-appointment" ? "page" : undefined}>New Clinic Appointment</Link>}
+          {showNewAppointment && <Link href="/new-appointment" aria-current={current === "new-appointment" ? "page" : undefined}><span>New Clinic<br />Appointment</span></Link>}
           {showClinicQueue && <Link href="/clinic-queue" aria-current={current === "clinic-queue" ? "page" : undefined}><span>Clinic<br />Queue</span></Link>}
           {showClinicalWorkflows && <Link href="/export-index" aria-current={current === "export-index" ? "page" : undefined}><span>Export<br />Index</span></Link>}
           {showBreakfast && <Link href="/breakfast" aria-current={current === "breakfast" ? "page" : undefined}>Breakfast</Link>}

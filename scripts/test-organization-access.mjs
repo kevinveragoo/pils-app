@@ -7,6 +7,7 @@ import ts from 'typescript';
 const nativeRequire=createRequire(import.meta.url),cache=new Map();
 let user={id:'user',name:'User',organization:'CUT',role:'ADMIN',roles:'["ADMIN","HEALTHCARE_ASSISTANT","HEALTHCARE_NAVIGATOR","FACILITY_STAFF"]',status:'APPROVED',mustChangePassword:false};
 let network=[];
+let logReads=0;
 const db={session:{findUnique:async()=>({expiresAt:new Date(Date.now()+60000),user})}};
 const redirect=target=>{throw new Error('REDIRECT:'+target);};
 function load(file){
@@ -24,7 +25,7 @@ function load(file){
    if(name==='@/lib/db')return {db};
    if(name==='@/app/auth-actions')return {logoutAction:async()=>{}};
    if(name.startsWith('@/components/')&&name!=='@/components/AppHeader')return new Proxy({__esModule:true,default:()=>null},{get:(o,k)=>k in o?o[k]:()=>null});
-   if(name==='@/lib/redcap-logs')return {loadActivities:async()=>({entries:[],truncated:false})};
+   if(name==='@/lib/redcap-logs')return {loadActivities:async()=>{logReads++;return {entries:[],truncated:false};}};
    if(name.startsWith('@/')&&name.endsWith('.json'))return JSON.parse(fs.readFileSync(name.slice(2)));
    if(name.startsWith('@/')){const target=name.slice(2);return load(fs.existsSync(target+'.ts')?target+'.ts':target+'.tsx');}
    if(name.endsWith('.json'))return JSON.parse(fs.readFileSync(path.resolve(path.dirname(filename),name)));
@@ -41,14 +42,20 @@ for(const organization of ['CUT','AILES','PILS_VOLUNTEER','UNKNOWN',undefined]){
  assert.equal(auth.hasAnyRole(user,['FACILITY_STAFF','ADMIN']),false);
  assert.equal(auth.hasAnyRole(user,['OUTREACH_WORKER']),true);
  assert.equal(auth.defaultRouteForUser(user),'/outreach');
- await auth.requireAnyRole(['OUTREACH_WORKER','ADMIN']);await auth.requireLogsAccess();
+ await auth.requireAnyRole(['OUTREACH_WORKER','ADMIN']);
+ await assert.rejects(auth.requireLogsAccess(),/REDIRECT:\/outreach/);
+ for (const file of ['app/logs/page.tsx','app/logs/details/[id]/page.tsx']) {
+  const before=logReads;
+  await assert.rejects(load(file).default({params:Promise.resolve({id:'test'}),searchParams:Promise.resolve({from:'2026-10-22',to:'2026-10-23'})}),/REDIRECT:\/outreach/);
+  assert.equal(logReads,before,'Denied log requests must not read activity data');
+ }
  await assert.rejects(auth.requireAdmin(),/REDIRECT:\/outreach/);
  await assert.rejects(auth.requirePilsUser(),/REDIRECT:\/outreach/);
 }
 user={...user,organization:'CUT'};
 function hrefs(node){if(!node||typeof node!=='object')return [];if(Array.isArray(node))return node.flatMap(hrefs);return [...(node.props?.href?[node.props.href]:[]),...hrefs(node.props?.children)];}
 const header=load('components/AppHeader.tsx').default;
-assert.deepEqual(hrefs(await header({current:'outreach'})),['/outreach','/logs','/change-password']);
+assert.deepEqual(hrefs(await header({current:'outreach'})),['/outreach','/change-password']);
 for(const file of ['healthcare-nav','prep','clinic-queue','new-appointment','admin/users','admin/users/[id]','lookup','hiv-care-support-upcoming','dashboard','export-index','client-enrollment','clinic','breakfast']){
  const page=load(`app/${file}/page.tsx`).default;
  await assert.rejects(page({params:Promise.resolve({id:'target'}),searchParams:Promise.resolve({})}),/REDIRECT:\/outreach/,file+' must block external users');
@@ -72,7 +79,7 @@ assert.equal((await response.json())[0].patient_code,'');
 assert.ok(!Array.from(network.at(-1).values()).includes('cne_patient_code'),'External outreach client lists must not request clinical codes');
 assert.equal((await load('app/api/redcap/outreach/route.ts').GET(new Request('http://app.invalid/api?uic=TEST'))).status,200);
 await load('app/outreach/page.tsx').default();
-await load('app/logs/page.tsx').default({searchParams:Promise.resolve({})});
+
 await load('app/change-password/page.tsx').default();
 user={...user,organization:'PILS'};
 assert.equal(auth.hasRole(user,'ADMIN'),true);assert.equal(auth.defaultRouteForUser(user),'/outreach');await auth.requireAdmin();
@@ -80,6 +87,12 @@ assert.ok(hrefs(await header({current:'clinic'})).includes('/clinic'));
 user={...user,role:'HEALTHCARE_NAVIGATOR',roles:'[]'};
 assert.equal(auth.defaultRouteForUser(user),'/healthcare-nav');assert.equal(auth.hasAnyRole(user,['FACILITY_STAFF','ADMIN']),false);
 const {pagesForRole}=load('lib/role-page-access.ts');
-assert.deepEqual(Array.from(pagesForRole('ADMIN','CUT')),['Outreach Workflow','Logs','Change Password']);
+assert.deepEqual(Array.from(pagesForRole('ADMIN','CUT')),['Outreach Workflow','Change Password']);
 assert.ok(pagesForRole('ADMIN','PILS').includes('Clinic Queue'));
-console.log('Organisation access checks passed: external organisations (including volunteer/admin/multi-role users), navigation, all restricted pages/APIs, allowed Outreach/Logs/password access, patient-list privacy and unchanged PILS roles. No network requests made.');
+for (const role of ['OUTREACH_WORKER','HEALTHCARE_ASSISTANT','HEALTHCARE_NAVIGATOR','FACILITY_STAFF','ADMIN']) {
+ user={...user,organization:'PILS',role,roles:'[]'};
+ await auth.requireLogsAccess();
+ assert.ok(hrefs(await header({current:'logs'})).includes('/logs'));
+}
+await load('app/logs/page.tsx').default({searchParams:Promise.resolve({})});
+console.log('Organisation access checks passed: external organisations (including volunteer/admin/multi-role users), navigation, all restricted pages/APIs, PILS-only Logs list/details, allowed external Outreach/password access, patient-list privacy and unchanged PILS roles. No network requests made.');

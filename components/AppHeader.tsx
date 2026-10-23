@@ -16,7 +16,7 @@ export default async function AppHeader({ current }: { current: "new-appointment
   const showEnrollment = Boolean(user && hasAnyRole(user, ["FACILITY_STAFF", "ADMIN"]));
   const showBreakfast = Boolean(user && hasAnyRole(user, ["FACILITY_STAFF", "ADMIN"]));
   const showDashboard = Boolean(user && hasRole(user, "ADMIN"));
-  const showLogs = Boolean(user);
+  const showLogs = Boolean(user && isPilsUser(user));
   return (
     <header className="pils-header">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3 sm:px-6">

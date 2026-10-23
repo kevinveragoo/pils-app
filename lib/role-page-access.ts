@@ -8,7 +8,7 @@ export const ROLE_PAGE_ACCESS: Record<UserRole, string[]> = {
   ADMIN: ["Client Enrollment Workflow", "Outreach Workflow", "Healthcare Navigator Workflow", "Healthcare Navigator Queue", "Clinic Workflow", "Clinic Queue", "New Clinic Appointment", "Export Index", "Breakfast", "Dashboard", "Lookup", "Logs", "Admin Users", "Change Password"],
 };
 
-export const EXTERNAL_PAGE_ACCESS = ["Outreach Workflow", "Logs", "Change Password"];
+export const EXTERNAL_PAGE_ACCESS = ["Outreach Workflow", "Change Password"];
 export function pagesForRole(role: UserRole, organization: string) {
   return isPilsUser({ organization }) ? ROLE_PAGE_ACCESS[role] : EXTERNAL_PAGE_ACCESS;
 }

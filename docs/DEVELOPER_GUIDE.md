@@ -8,21 +8,22 @@ For the reasons behind important behavior, see [Safeguards and operational
 rules](SAFEGUARDS.md). It includes concrete date examples, exceptions, source
 locations, regression tests and an arrival troubleshooting checklist.
 
-## Branch differences
+## Branch integration status
 
-Do not assume that changing branches changes the database or running services.
+`main` has been merged into `notification`. The integrated branch includes:
 
-- `notification` includes Web Push, Home Screen icons, mobile navigation,
-  signature credits, the logo Easter egg, and removal of Export Index.
-- `main` commit `0917b51` restricts Logs to PILS users and fixes the admin
-  organisation/status field layout. Those changes are **not merged into this
-  branch** at the time of writing. Here, external users still see Logs and
-  `requireLogsAccess()` accepts any approved signed-in user.
-- The notification date safeguard is on this branch in commit `9ae3859`.
+- Web Push, Home Screen icons, mobile navigation, signature credits, the logo
+  Easter egg, and removal of Export Index.
+- PILS-only Logs list/details and the admin organisation/status field layout
+  fixes from `main` commit `0917b51`.
+- The Mauritius-date notification safeguard from commit `9ae3859`.
 
-When integrating branches, preserve the PILS-only Logs restriction, the admin
-layout fix, and this branch's removal of Export Index. Review navigation,
-role-page labels, and organisation-access test expectations together.
+Non-PILS users see Outreach Workflow, Notifications and Change Password, plus
+account/sign-out controls. Notification settings remain available to every
+role, but the Clinic Queue arrival category still requires PILS queue access.
+When integrating later changes, keep the runtime guards, navigation, page
+labels and regression-test expectations aligned. Switching branches does not
+switch the database or installed services.
 
 ## Architecture
 
@@ -117,8 +118,9 @@ A user's roles are the union of legacy `role` and the JSON `roles` array.
 appropriate rather than assuming it is an automatic override there.
 
 For non-PILS organisations, these helpers grant only Outreach capabilities,
-even if a saved role says administrator. Some pages, such as Logs on this
-branch, use a different guard; audit their actual guards as well as the role map.
+even if a saved role says administrator. Logs list/details additionally require
+PILS membership. Notification settings remain accessible, with each category
+separately authorised. Audit actual guards as well as the role map.
 
 | PILS role | Main capabilities (see source for complete page list) |
 | --- | --- |

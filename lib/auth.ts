@@ -65,7 +65,7 @@ export async function requireAdmin() {
 }
 
 export async function requireLogsAccess() {
-  return requireUser();
+  return requirePilsUser();
 }
 
 export async function requirePilsUser() {

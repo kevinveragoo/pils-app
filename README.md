@@ -14,8 +14,8 @@ PILS is a Next.js application for client enrollment, outreach, healthcare naviga
 - [HTTPS operations](ops/caddy/README.md) and
   [notification operations](ops/notifications/README.md).
 
-These guides describe the `notification` branch. Read the branch-differences
-section before integrating changes from `main`.
+These guides describe the `notification` branch, including its merged `main`
+fixes. Read the integration-status section before changing access or workflows.
 
 ## Requirements
 

@@ -218,10 +218,11 @@ Patient-list responses exclude clinical codes for external users. PILS lookup
 still filters clinical and risk/violence instruments according to current roles;
 a “partial lookup” link is not itself sufficient privacy protection.
 
-**Branch caveat:** `main` commit `0917b51` additionally blocks non-PILS Logs
-list/details. This branch has **not** incorporated it and still grants external
-Logs access. Preserve the restriction when merging; do not mistake documentation
-of intended behavior for enforcement in this branch.
+**Integrated Logs restriction:** the fix from `main` commit `0917b51` is now
+merged here. Non-PILS users cannot see the Logs link or open list/details URLs;
+page guards reject them before activity data is loaded. Notification settings
+remain available to external users, but do not grant access to PILS-only
+notification categories. Preserve these distinctions when updating navigation.
 
 **Source:** [auth.ts](../lib/auth.ts),
 [organisation policy](../lib/organization-access.ts),

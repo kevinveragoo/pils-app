@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  page.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminPasswordResetForm, UserDetailsForm } from "@/components/AdminUserForms";

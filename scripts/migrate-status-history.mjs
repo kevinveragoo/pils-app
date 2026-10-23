@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  migrate-status-history.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 // Explicit staged migration. Metadata and records are backed up outside the repository.
 import fs from 'node:fs';
 const url=process.env.REDCAP_API_URL,token=process.env.REDCAP_API_TOKEN;

@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  uic.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 export type UicIdentity = {
   ce_gender_identity?: string;
   ce_dob?: string;

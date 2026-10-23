@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  record-lookup.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 export type LookupRow = Record<string, string | number>;
 export type LookupField = {
   field_name: string;

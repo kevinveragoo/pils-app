@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  new-appointment.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import type { User } from "@prisma/client";
 import { appointmentTypes, countAppointments } from "@/lib/clinic-appointments";
 import { validDate } from "@/lib/redcap-validation";

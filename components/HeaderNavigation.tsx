@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  HeaderNavigation.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";

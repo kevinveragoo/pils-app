@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  setup-notifications.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import fs from 'node:fs';
 import webpush from 'web-push';
 const path = '.env.local';

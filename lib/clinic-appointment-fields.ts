@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  clinic-appointment-fields.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 // App-side visibility override; REDCap metadata keeps its original branching.
 export const clinicAppointmentDateFields = [
   "cnv_next_med_date",

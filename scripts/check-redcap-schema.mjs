@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  check-redcap-schema.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';

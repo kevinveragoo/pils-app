@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  consolidate-cne.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 // Explicit additive consolidation. Original fields/answers are retained.
 import fs from 'node:fs';import assert from 'node:assert/strict';
 const dir=fs.readFileSync('/tmp/pils-cne-consolidation-path','utf8');

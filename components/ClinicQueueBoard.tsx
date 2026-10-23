@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  ClinicQueueBoard.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 "use client";
 
 import { visitWorkflows, clinicVisitPurposes, prepVisitPurposes, includesClinic, includesPrep, validWorkflow, purposeTasks, type VisitWorkflow } from "@/lib/visit-workflow";

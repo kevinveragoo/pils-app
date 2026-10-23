@@ -1,5 +1,10 @@
 #!/usr/bin/env node
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  populate_synthetic_redcap.js
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 
 const apiUrl = process.env.REDCAP_API_URL;
 const token = process.env.REDCAP_API_TOKEN;

@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  hcs-upcoming.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 export type HcsRow = Record<string, string>;
 export type UpcomingHcs = {
   id: string;

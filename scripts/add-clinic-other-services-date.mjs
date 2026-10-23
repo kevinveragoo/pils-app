@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  add-clinic-other-services-date.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 const dir = '.redcap-backups/clinic-other-services-20261023';

@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  test-organization-access.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -50,12 +55,12 @@ user={...user,organization:'CUT'};
 function hrefs(node){if(!node||typeof node!=='object')return [];if(Array.isArray(node))return node.flatMap(hrefs);return [...(node.props?.href?[node.props.href]:[]),...hrefs(node.props?.children)];}
 const header=load('components/AppHeader.tsx').default;
 assert.deepEqual(hrefs(await header({current:'outreach'})),['/outreach','/logs','/notifications','/change-password']);
-for(const file of ['healthcare-nav','prep','clinic-queue','new-appointment','admin/users','admin/users/[id]','lookup','hiv-care-support-upcoming','dashboard','export-index','client-enrollment','clinic','breakfast']){
+for(const file of ['healthcare-nav','prep','clinic-queue','new-appointment','admin/users','admin/users/[id]','lookup','hiv-care-support-upcoming','dashboard','client-enrollment','clinic','breakfast']){
  const page=load(`app/${file}/page.tsx`).default;
  await assert.rejects(page({params:Promise.resolve({id:'target'}),searchParams:Promise.resolve({})}),/REDIRECT:\/outreach/,file+' must block external users');
 }
 for(const [file,methods] of [
- ['clinic-queue/route',['GET','POST','DELETE']],['clinic-queue/[id]/route',['PATCH']],['export-index/route',['GET']],
+ ['clinic-queue/route',['GET','POST','DELETE']],['clinic-queue/[id]/route',['PATCH']],
  ['redcap/healthcare-nav/route',['GET','POST']],['redcap/prep/route',['GET','POST']],['redcap/appointments/route',['GET','POST']],
  ['redcap/lookup/route',['GET']],['redcap/dashboard/route',['GET']],['redcap/client-enrollment/route',['GET','POST']],
  ['redcap/clinic/route',['GET','POST']],['redcap/breakfast/route',['POST']],['redcap/breakfast/skeletons/route',['POST']],

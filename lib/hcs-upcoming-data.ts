@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  hcs-upcoming-data.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import "server-only";
 import { upcomingHcs, mauritiusDate, type HcsRow } from "@/lib/hcs-upcoming";
 

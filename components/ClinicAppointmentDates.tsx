@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  ClinicAppointmentDates.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 "use client";
 import { clinicAppointmentDateFields } from "@/lib/clinic-appointment-fields";
 import { clinicNextAppointment } from "@/lib/clinic-followup";

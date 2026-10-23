@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  page.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import BreakfastAttendance from "@/components/BreakfastAttendance";
 import AppHeader from "@/components/AppHeader";
 import { requireAnyRole } from "@/lib/auth";

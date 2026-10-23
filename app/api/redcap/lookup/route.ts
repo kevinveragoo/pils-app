@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  route.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import { isPilsUser } from "@/lib/organization-access";
 import { filterRestrictedLookupData } from "@/lib/lookup-privacy";
 import { NextResponse } from "next/server";

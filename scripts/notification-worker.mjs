@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  notification-worker.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import { PrismaClient } from '@prisma/client';
 import webpush from 'web-push';
 import { sendArrivalNotifications } from '../lib/notification-sender.mjs';

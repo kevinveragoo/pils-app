@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  route.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import { getCurrentUser, hasAnyRole } from "@/lib/auth";
 import { appointmentRoles } from "@/lib/clinic-appointments";
 import { AppointmentError, createAppointment, getAppointmentCounts } from "@/lib/new-appointment";

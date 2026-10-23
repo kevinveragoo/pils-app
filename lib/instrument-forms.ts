@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  instrument-forms.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import definitions from './instrument-forms.json';
 import { isClinicAppointmentDate } from './clinic-appointment-fields';
 export type InstrumentName = keyof typeof definitions;

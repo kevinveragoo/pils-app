@@ -457,11 +457,8 @@
 
 "UIC, name, or patient code" = "UIC, nom ou code patient";
 
-"Download" = "Télécharger";
 
-"Downloading…" = "Téléchargement…";
 
-"Unable to download the index. Please try again." = "Impossible de télécharger l’index. Veuillez réessayer.";
 
 "Not interested" = "Pas intéressé";
 
@@ -834,9 +831,6 @@
 "Skip to Clinic workflow" = "Aller au parcours clinique";
 "Skip to clinic queue" = "Aller à la file de la clinique";
 "Skip to dashboard" = "Aller au tableau de bord";
-"Skip to Export Index" = "Aller à l’export de l’index";
-"Clinic services" = "Services de la clinique";
-"Export Index" = "Exporter l’index";
 "Skip to entry details" = "Aller aux détails de l’entrée";
 "← Back to logs" = "← Retour aux journaux";
 "Entry details" = "Détails de l’entrée";
@@ -1369,8 +1363,6 @@
 "Manage arrivals, clinic stations, and completed visits." = "Gérez les arrivées, les postes de la clinique et les visites terminées.";
 "Dashboard | PILS" = "Tableau de bord | PILS";
 "Aggregate outreach testing dashboard by reporting period and key population." = "Tableau de bord agrégé des tests de terrain par période et population clé.";
-"Export Index | PILS" = "Exporter l’index | PILS";
-"Export Index for clinic services." = "Export de l’index pour les services de la clinique.";
 "Healthcare Nav Workflow | PILS" = "Parcours de navigation en santé | PILS";
 "Guided HIV care support and treatment monitoring entry." = "Saisie guidée du soutien aux soins VIH et du suivi du traitement.";
 "PILS Services" = "Services PILS";

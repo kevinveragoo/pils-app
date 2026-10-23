@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  clinic-enrollment.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import fieldRules from "./redcap-field-rules.json";
 export const clinicEnrollmentDefaults = { cne_facility: "Pils Banian" };
 

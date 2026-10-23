@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  route.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import { setQueueNoShow, QueueNoShowError } from "@/lib/queue-no-show";
 import { db } from "@/lib/db";
 import { saveQueuePatientCode, PatientCodeError } from "@/lib/queue-patient-code";

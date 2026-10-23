@@ -1,5 +1,10 @@
 #!/bin/bash
-# Elisa Kevin Veragoo + ChatGPT
+#
+#  install-launchdaemon.sh
+#  pils-app
+#
+#  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+#
 set -euo pipefail
 
 project_dir="$(cd "$(dirname "$0")/.." && pwd)"

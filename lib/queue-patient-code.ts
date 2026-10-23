@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  queue-patient-code.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 type Row = Record<string, string>;
 export class PatientCodeError extends Error {
   constructor(message: string, public status = 400) { super(message); }

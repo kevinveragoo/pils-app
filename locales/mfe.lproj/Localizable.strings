@@ -457,11 +457,8 @@
 
 "UIC, name, or patient code" = "UIC, nom ouswa kod pasian";
 
-"Download" = "Telechargé";
 
-"Downloading…" = "Pe telechargé…";
 
-"Unable to download the index. Please try again." = "Pa kapav telecharg index-la. Eseye ankor.";
 
 "Not interested" = "Pa interese";
 
@@ -834,9 +831,6 @@
 "Skip to Clinic workflow" = "Al lor parkour klinik";
 "Skip to clinic queue" = "Al lor lalis klinik";
 "Skip to dashboard" = "Al lor tablo bor";
-"Skip to Export Index" = "Al lor export index";
-"Clinic services" = "Servis klinik";
-"Export Index" = "Export index";
 "Skip to entry details" = "Al lor detay lantre";
 "← Back to logs" = "← Retourn lor zournal";
 "Entry details" = "Detay lantre";
@@ -1369,8 +1363,6 @@
 "Manage arrivals, clinic stations, and completed visits." = "Zer bann larive, pos klinik ek vizit termine.";
 "Dashboard | PILS" = "Tablo bor | PILS";
 "Aggregate outreach testing dashboard by reporting period and key population." = "Tablo bor total test teren par peryod ek popilasion kle.";
-"Export Index | PILS" = "Export index | PILS";
-"Export Index for clinic services." = "Export index pou bann servis klinik.";
 "Healthcare Nav Workflow | PILS" = "Parkour navigasion lasante | PILS";
 "Guided HIV care support and treatment monitoring entry." = "Sezi gide sipor swin VIH ek swivi tretman.";
 "PILS Services" = "Servis PILS";

@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  test-queue-patient-code.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';

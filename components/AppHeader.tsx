@@ -1,4 +1,9 @@
-// Elisa Kevin Veragoo + ChatGPT
+//
+//  AppHeader.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//
 import { isPilsUser } from "@/lib/organization-access";
 import LogoCelebration from "@/components/LogoCelebration";
 import HeaderNavigation from "@/components/HeaderNavigation";
@@ -8,7 +13,7 @@ import { logoutAction } from "@/app/auth-actions";
 import { getCurrentUser, hasAnyRole, hasRole } from "@/lib/auth";
 import { LanguagePicker } from "@/components/Localization";
 
-export default async function AppHeader({ current }: { current: "notifications" | "new-appointment" | "hcs-upcoming" | "client-enrollment" | "lookup" | "breakfast" | "outreach" | "healthcare-nav" | "prep" | "clinic" | "clinic-queue" | "export-index" | "dashboard" | "logs" }) {
+export default async function AppHeader({ current }: { current: "notifications" | "new-appointment" | "hcs-upcoming" | "client-enrollment" | "lookup" | "breakfast" | "outreach" | "healthcare-nav" | "prep" | "clinic" | "clinic-queue" | "dashboard" | "logs" }) {
   const user = await getCurrentUser();
   const showOutreach = Boolean(user && hasAnyRole(user, ["OUTREACH_WORKER", "HEALTHCARE_ASSISTANT", "ADMIN"]));
   const showHealthcareNavigator = Boolean(user && hasAnyRole(user, ["HEALTHCARE_NAVIGATOR", "ADMIN"]));
@@ -31,7 +36,6 @@ export default async function AppHeader({ current }: { current: "notifications" 
           {showClinicalWorkflows && <Link href="/clinic" aria-current={current === "clinic" ? "page" : undefined}><span>Clinic<br />Workflow</span></Link>}
           {showNewAppointment && <Link href="/new-appointment" aria-current={current === "new-appointment" ? "page" : undefined}><span>New Clinic<br />Appointment</span></Link>}
           {showClinicQueue && <Link href="/clinic-queue" aria-current={current === "clinic-queue" ? "page" : undefined}><span>Clinic<br />Queue</span></Link>}
-          {showClinicalWorkflows && <Link href="/export-index" aria-current={current === "export-index" ? "page" : undefined}><span>Export<br />Index</span></Link>}
           {showBreakfast && <Link href="/breakfast" aria-current={current === "breakfast" ? "page" : undefined}>Breakfast</Link>}
           {showDashboard && <Link href="/dashboard" aria-current={current === "dashboard" ? "page" : undefined}>Dashboard</Link>}
           {user && isPilsUser(user) && <Link href="/lookup" aria-current={current === "lookup" ? "page" : undefined}>Lookup</Link>}

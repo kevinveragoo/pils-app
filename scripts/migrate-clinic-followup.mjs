@@ -2,7 +2,7 @@
 //  migrate-clinic-followup.mjs
 //  pils-app
 //
-//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//  Created by Elisa Kevin Veragoo + ChatGPT on 18/10/2026.
 //
 // Additive migration: original field definitions and values are never removed.
 import fs from 'node:fs';

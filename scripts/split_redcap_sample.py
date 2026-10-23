@@ -3,7 +3,7 @@
 #  split_redcap_sample.py
 #  pils-app
 #
-#  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+#  Created by Elisa Kevin Veragoo + ChatGPT on 15/09/2026.
 #
 """Split a REDCap flat CSV without separating rows belonging to one record."""
 

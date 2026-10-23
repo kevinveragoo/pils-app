@@ -2,7 +2,7 @@
 //  route.ts
 //  pils-app
 //
-//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//  Created by Elisa Kevin Veragoo + ChatGPT on 12/09/2026.
 //
 import { isPilsUser } from "@/lib/organization-access";
 import { NextResponse } from "next/server";

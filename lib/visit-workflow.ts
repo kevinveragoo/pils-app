@@ -2,7 +2,7 @@
 //  visit-workflow.ts
 //  pils-app
 //
-//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//  Created by Elisa Kevin Veragoo + ChatGPT on 14/10/2026.
 //
 export const visitWorkflows = [["CLINIC", "Clinic visit"], ["PREP", "PrEP visit"], ["BOTH", "Clinic and PrEP visits"]] as const;
 export type VisitWorkflow = typeof visitWorkflows[number][0];

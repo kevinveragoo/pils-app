@@ -2,7 +2,7 @@
 //  client-enrollment.ts
 //  pils-app
 //
-//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//  Created by Elisa Kevin Veragoo + ChatGPT on 18/10/2026.
 //
 export const enrollmentFields = ["ce_active", "ce_date","ce_implementing_partner","ce_district","ce_hotspot","ce_outreach_worker","ce_last_name","ce_first_name","ce_middle_name_1", "ce_middle_name_2", "ce_middle_name_3","ce_alias","ce_dob","ce_gender_identity","ce_vision","ce_kp_type","ce_tel_primary","ce_contact_method","ce_risk_drug_alcohol_sex","ce_risk_violence_1m","ce_sw_age_started","ce_sw_sex_acts_1w","ce_sw_condom_use_1w","ce_msm_age_first_anal","ce_msm_receptive_anal_1w","ce_msm_condom_anal_1w","ce_pwid_age_first_inject","ce_pwid_injections_24h","ce_pwid_shared_24h","ce_pwid_injections_1w","ce_pwid_shared_1w"];
 export const requiredEnrollmentFields = ["ce_date", "ce_district",  "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_dob", "ce_gender_identity", "ce_kp_type"];

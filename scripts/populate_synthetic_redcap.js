@@ -3,7 +3,7 @@
 //  populate_synthetic_redcap.js
 //  pils-app
 //
-//  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+//  Created by Elisa Kevin Veragoo + ChatGPT on 15/09/2026.
 //
 
 const apiUrl = process.env.REDCAP_API_URL;

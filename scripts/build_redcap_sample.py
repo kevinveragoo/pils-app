@@ -3,7 +3,7 @@
 #  build_redcap_sample.py
 #  pils-app
 #
-#  Created by Elisa Kevin Veragoo + ChatGPT on 23/10/2026.
+#  Created by Elisa Kevin Veragoo + ChatGPT on 15/09/2026.
 #
 """Build a representative REDCap flat CSV sample from a REDCap ODM XML export."""
 

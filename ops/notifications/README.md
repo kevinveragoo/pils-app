@@ -62,7 +62,10 @@ The existing transactional queue audit events form the durable outbox:
 already Waiting (including newly persisted scheduled arrivals). Merely adding
 an Expected appointment or moving between stations does not trigger alerts.
 
-The sender polls every three seconds. It rechecks current user approval,
+The sender polls every three seconds. Only queue entries dated today in
+Indian/Mauritius can notify, and their arrival event must also have occurred on
+that queue date. Past/future date exercises never notify, including on retries
+across midnight. Exercises dated today still count as live arrivals. It rechecks current user approval,
 organisation, role access, preferences, and the associated active session
 before each attempt. Devices/preferences activated after an event do not get
 historical arrivals. Completed, cancelled, no-show and reset-to-Expected visits

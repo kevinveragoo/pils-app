@@ -14,15 +14,22 @@ import { createHash } from 'node:crypto';
 import ts from 'typescript';
 import { PrismaClient } from '@prisma/client';
 import { canReceiveClinicArrivals, validPushSubscription, arrivalPayload } from '../lib/notification-policy.mjs';
-import { sendArrivalNotifications } from '../lib/notification-sender.mjs';
+import { sendArrivalNotifications, isLiveArrivalDate } from '../lib/notification-sender.mjs';
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pils-notifications-'));
 const filename = path.join(dir, 'test.db');
 execFileSync('python3', ['-c', `import sqlite3,pathlib,sys\nc=sqlite3.connect(sys.argv[1])\nfor p in sorted(pathlib.Path('prisma/migrations').glob('*/migration.sql')): c.executescript(p.read_text())\nc.close()`, filename]);
 const db = new PrismaClient({ datasourceUrl: `file:${filename}` });
 const now = new Date();
 const before = new Date(now.getTime() - 30000);
+const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Indian/Mauritius', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
 const userData = { username: 'staff', name: 'Test staff', passwordHash: 'unused', requestedRole: 'FACILITY_STAFF', role: 'FACILITY_STAFF', organization: 'PILS', status: 'APPROVED' };
 try {
+  const afterMidnight = new Date('2026-10-23T20:00:01Z'); // 24 Oct in Mauritius.
+  assert.equal(isLiveArrivalDate('2026-10-24', afterMidnight, afterMidnight), true);
+  assert.equal(isLiveArrivalDate('2026-10-23', afterMidnight, afterMidnight), false);
+  assert.equal(isLiveArrivalDate('2026-10-25', afterMidnight, afterMidnight), false);
+  assert.equal(isLiveArrivalDate('2026-10-23', new Date('2026-10-23T19:59:59Z'), afterMidnight), false, 'No yesterday retry after midnight');
+  assert.equal(isLiveArrivalDate('2026-10-24', new Date('2026-10-23T19:59:59Z'), afterMidnight), false, 'Future-date exercise must not become live on retry');
   // Keep worker eligibility aligned with the actual page role map.
   const roleModule = { exports: {} };
   vm.runInNewContext(ts.transpileModule(fs.readFileSync('lib/role-page-access.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, { module: roleModule, exports: roleModule.exports, require: () => ({ isPilsUser: u => u.organization === 'PILS' }) });
@@ -70,9 +77,16 @@ try {
   await db.pushSubscription.deleteMany();
   const preference = await db.notificationPreference.create({ data: { userId: user.id, enabled: true, clinicArrivals: true, enabledAt: before } });
   const device = await db.pushSubscription.create({ data: { userId: user.id, sessionId: session.id, endpoint: sub.endpoint, ...sub.keys, createdAt: before } });
-  const entry = await db.clinicQueueEntry.create({ data: { queueDate: '2026-10-23', displayName: 'Test patient', status: 'WAITING', createdById: user.id, createdByName: 'Test', updatedById: user.id, updatedByName: 'Test', events: { create: { actorId: user.id, actorName: 'Test', action: 'ARRIVED', createdAt: new Date(now.getTime() - 1000) } } } });
+  const entry = await db.clinicQueueEntry.create({ data: { queueDate: today, displayName: 'Test patient', status: 'WAITING', createdById: user.id, createdByName: 'Test', updatedById: user.id, updatedByName: 'Test', events: { create: { actorId: user.id, actorName: 'Test', action: 'ARRIVED', createdAt: new Date(now.getTime() - 1000) } } } });
   let sends = 0;
   const send = async (_subscription, payload, options) => { sends++; assert.match(JSON.parse(payload).body, /Code pending/); assert.ok(options.TTL <= 600); };
+  for (const queueDate of ['2000-01-01', '2099-01-01']) {
+    await db.clinicQueueEntry.update({ where: { id: entry.id }, data: { queueDate } });
+    await sendArrivalNotifications(db, send, now);
+    assert.equal(sends, 0, 'Past/future queue exercises must not send');
+    assert.equal(await db.pushDelivery.count(), 0, 'Exercises must not create deliveries');
+  }
+  await db.clinicQueueEntry.update({ where: { id: entry.id }, data: { queueDate: today } });
   await Promise.all([sendArrivalNotifications(db, send, now), sendArrivalNotifications(db, send, now)]);
   assert.equal(sends, 1, 'Concurrent workers claim once');
   await sendArrivalNotifications(db, send, now); assert.equal(sends, 1, 'No repeat on polling');
@@ -101,5 +115,5 @@ try {
   await db.session.delete({ where: { id: session.id } });
   await sendArrivalNotifications(db, send, now); assert.equal(sends, 0, 'Logged-out device receives nothing');
   assert.equal(await db.pushSubscription.count(), 0);
-  console.log('Notification checks passed: page access, multi-role users, endpoint validation, payloads, atomic claims, duplicate arrivals, opt-out, access revocation, retries, expiry and logout. No push messages sent.');
+  console.log('Notification checks passed: page access, multi-role users, endpoint validation, payloads, Mauritius dates/midnight retries, atomic claims, duplicate arrivals, opt-out, access revocation, retries, expiry and logout. No push messages sent.');
 } finally { await db.$disconnect(); fs.rmSync(dir, { recursive: true, force: true }); }

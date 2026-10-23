@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import AuthShell from "@/components/AuthShell";
 import { ChangePasswordForm } from "@/components/AuthForm";
 import { requireUser } from "@/lib/auth";

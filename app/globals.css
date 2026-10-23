@@ -1,3 +1,4 @@
+/* Elisa Kevin Veragoo + ChatGPT */
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -483,4 +484,124 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Header visibility is defined here independently of utility layers. */
+  .pils-header-navigation { width: 100%; min-width: 0; }
+  .pils-menu-panel { display: block; }
+  .pils-menu-toggle { display: none; }
+
+  @media (max-width: 767px) {
+    .pils-header-navigation { display: contents; }
+    .pils-menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 44px;
+      margin-left: auto;
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      background: var(--muted);
+      padding: 0.65rem 0.85rem;
+      color: var(--primary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .pils-menu-toggle:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 3px;
+    }
+    .pils-menu-panel { display: none; width: 100%; }
+    .pils-menu-panel[data-open='true'] { display: block; }
+    .pils-menu-panel .pils-nav {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-height: 65dvh;
+      overflow-y: auto;
+      border-radius: 1rem;
+      padding: 0.5rem;
+      overscroll-behavior: contain;
+    }
+    .pils-menu-panel .pils-nav a,
+    .pils-menu-panel .pils-nav button {
+      min-height: 48px;
+      width: 100%;
+      border-radius: 0.65rem;
+      padding: 0.65rem;
+      overflow-wrap: anywhere;
+    }
+    .pils-menu-panel .pils-nav form { min-width: 0; }
+  }
+
+.pils-signature {
+  flex-shrink: 0;
+  margin-top: auto;
+  background: transparent;
+  color: transparent;
+  padding: 0.5rem 1rem max(0.5rem, env(safe-area-inset-bottom));
+  text-align: center;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.8;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.pils-signature-name {
+  font-family: "Snell Roundhand", "Apple Chancery", "Segoe Script", "Brush Script MT", cursive;
+  font-size: 16px;
+}
+.pils-signature ::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.pils-signature-ai {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.pils-logo-trigger {
+  display: inline-block;
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: default;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pils-logo-trigger:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: 0.5rem;
+}
+.pils-flag-confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  animation: pils-confetti-fade 5s linear both;
+}
+.pils-flag-piece {
+  position: absolute;
+  top: -15vh;
+  line-height: 1;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  animation: pils-flag-fall var(--flag-duration) linear var(--flag-delay) infinite;
+}
+@keyframes pils-flag-fall {
+  from { transform: translate3d(0, 0, 0) rotate(-25deg); }
+  to { transform: translate3d(var(--flag-drift), 130vh, 0) rotate(var(--flag-turn)); }
+}
+@keyframes pils-confetti-fade {
+  0%, 88% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pils-flag-confetti { animation: none; }
+  .pils-flag-piece { animation: none; top: var(--flag-rest); }
 }

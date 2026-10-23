@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Public_Sans } from "next/font/google";
 import "./globals.css";
@@ -27,7 +28,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       lang={locale}
       className={`${publicSans.variable} ${bricolage.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col"><LocalizationProvider key={locale} locale={locale} strings={strings}>{children}</LocalizationProvider></body>
+      <body className="min-h-full flex flex-col"><LocalizationProvider key={locale} locale={locale} strings={strings}>{children}<footer className="pils-signature" translate="no"><span>designed and developed by <span className="pils-signature-name">Elisa Kevin Veragoo</span> + <span className="pils-signature-ai">ChatGPT</span>.</span></footer></LocalizationProvider></body>
     </html>
   );
 }

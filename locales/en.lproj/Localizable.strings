@@ -1460,3 +1460,59 @@
 "Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank." = "Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank.";
 
 "Adding…" = "Adding…";
+
+"Notifications" = "Notifications";
+
+"Choose which updates you receive. Available categories follow your current page access." = "Choose which updates you receive. Available categories follow your current page access.";
+
+"Enable notifications for my account" = "Enable notifications for my account";
+
+"Clinic Queue — patient arrivals" = "Clinic Queue — patient arrivals";
+
+"No notification categories are available for your current access." = "No notification categories are available for your current access.";
+
+"Arrival alerts show the patient name and code on your device, including its lock screen. Missing codes appear as Code pending." = "Arrival alerts show the patient name and code on your device, including its lock screen. Missing codes appear as Code pending.";
+
+"This device" = "This device";
+
+"On iPhone or iPad, add PILS to your Home Screen and open it from there before enabling notifications." = "On iPhone or iPad, add PILS to your Home Screen and open it from there before enabling notifications.";
+
+"Enable this device again after signing in again. Signing out stops future alerts for that sign-in." = "Enable this device again after signing in again. Signing out stops future alerts for that sign-in.";
+
+"Push notifications are unavailable here. Use HTTPS and a supported browser or Home Screen app." = "Push notifications are unavailable here. Use HTTPS and a supported browser or Home Screen app.";
+
+"Notifications are not configured." = "Notifications are not configured.";
+
+"Enable notifications on this device" = "Enable notifications on this device";
+
+"Disable notifications on this device" = "Disable notifications on this device";
+
+"Unable to save notification settings." = "Unable to save notification settings.";
+
+"Unable to load notification settings." = "Unable to load notification settings.";
+
+"Notification settings saved." = "Notification settings saved.";
+
+"Allow notifications in your browser or phone settings, then try again." = "Allow notifications in your browser or phone settings, then try again.";
+
+"This device is ready for notifications during your current sign-in." = "This device is ready for notifications during your current sign-in.";
+
+"Notifications disabled on this device." = "Notifications disabled on this device.";
+
+"Enable notifications on this device first." = "Enable notifications on this device first.";
+"Test notification sent. Check your device notifications." = "Test notification sent. Check your device notifications.";
+"Send test notification" = "Send test notification";
+
+"Menu" = "Menu";
+
+"Open navigation" = "Open navigation";
+
+"Close navigation" = "Close navigation";
+
+"designed and developed by" = "designed and developed by";
+
+"Elisa Kevin Veragoo" = "Elisa Kevin Veragoo";
+
+"ChatGPT" = "ChatGPT";
+
+"PILS" = "PILS";

@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 export type PatientSummaryDetails = { alias?: string; firstName?: string; lastName?: string; phone?: string; uic?: string };
 
 export function PatientSummary({ patient, className = "" }: { patient: PatientSummaryDetails; className?: string }) {

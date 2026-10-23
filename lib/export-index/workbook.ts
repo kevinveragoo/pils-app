@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import ExcelJS from "exceljs";
 import layout from "./layout.json";
 import { buildIndexRows, type IndexRow, type RecordRow } from "./model";

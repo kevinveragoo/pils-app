@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 // Additive migration: original field definitions and values are never removed.
 import fs from 'node:fs';
 import assert from 'node:assert/strict';

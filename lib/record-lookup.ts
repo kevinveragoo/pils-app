@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 export type LookupRow = Record<string, string | number>;
 export type LookupField = {
   field_name: string;

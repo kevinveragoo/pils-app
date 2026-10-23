@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import "server-only";
 
 import type { User } from "@prisma/client";

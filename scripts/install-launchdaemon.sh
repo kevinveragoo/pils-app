@@ -1,4 +1,5 @@
 #!/bin/bash
+# Elisa Kevin Veragoo + ChatGPT
 set -euo pipefail
 
 project_dir="$(cd "$(dirname "$0")/.." && pwd)"

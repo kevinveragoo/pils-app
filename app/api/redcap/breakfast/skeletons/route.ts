@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import { NextResponse } from 'next/server';
 import { getCurrentUser, hasAnyRole } from '@/lib/auth';
 

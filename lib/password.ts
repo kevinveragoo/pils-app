@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
 function derive(password: string, salt: string) {
   return new Promise<Buffer>((resolve, reject) => {

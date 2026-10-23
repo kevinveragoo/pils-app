@@ -1460,3 +1460,59 @@
 "Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank." = "Date de suivi la plus proche, y compris la revue des résultats de laboratoire et les autres services. Utilise la date historique du rendez-vous uniquement lorsque toutes les dates de service sont vides.";
 
 "Adding…" = "Ajout en cours…";
+
+"Notifications" = "Notifications";
+
+"Choose which updates you receive. Available categories follow your current page access." = "Choisissez les mises à jour à recevoir. Les catégories disponibles dépendent de vos accès actuels.";
+
+"Enable notifications for my account" = "Activer les notifications pour mon compte";
+
+"Clinic Queue — patient arrivals" = "File de la clinique — arrivées des patients";
+
+"No notification categories are available for your current access." = "Aucune catégorie de notification disponible pour vos accès actuels.";
+
+"Arrival alerts show the patient name and code on your device, including its lock screen. Missing codes appear as Code pending." = "Les alertes affichent le nom et le code du patient, y compris sur l’écran verrouillé. Les codes manquants apparaissent comme Code en attente.";
+
+"This device" = "Cet appareil";
+
+"On iPhone or iPad, add PILS to your Home Screen and open it from there before enabling notifications." = "Sur iPhone ou iPad, ajoutez PILS à l’écran d’accueil et ouvrez-le depuis celui-ci avant d’activer les notifications.";
+
+"Enable this device again after signing in again. Signing out stops future alerts for that sign-in." = "Réactivez cet appareil après une nouvelle connexion. La déconnexion arrête les prochaines alertes de cette session.";
+
+"Push notifications are unavailable here. Use HTTPS and a supported browser or Home Screen app." = "Les notifications push sont indisponibles ici. Utilisez HTTPS et un navigateur compatible ou l’application depuis l’écran d’accueil.";
+
+"Notifications are not configured." = "Les notifications ne sont pas configurées.";
+
+"Enable notifications on this device" = "Activer les notifications sur cet appareil";
+
+"Disable notifications on this device" = "Désactiver les notifications sur cet appareil";
+
+"Unable to save notification settings." = "Impossible d’enregistrer les paramètres de notification.";
+
+"Unable to load notification settings." = "Impossible de charger les paramètres de notification.";
+
+"Notification settings saved." = "Paramètres de notification enregistrés.";
+
+"Allow notifications in your browser or phone settings, then try again." = "Autorisez les notifications dans les paramètres du navigateur ou du téléphone, puis réessayez.";
+
+"This device is ready for notifications during your current sign-in." = "Cet appareil est prêt à recevoir les notifications pendant votre session actuelle.";
+
+"Notifications disabled on this device." = "Notifications désactivées sur cet appareil.";
+
+"Enable notifications on this device first." = "Activez d’abord les notifications sur cet appareil.";
+"Test notification sent. Check your device notifications." = "Notification de test envoyée. Vérifiez les notifications de votre appareil.";
+"Send test notification" = "Envoyer une notification de test";
+
+"Menu" = "Menu";
+
+"Open navigation" = "Ouvrir la navigation";
+
+"Close navigation" = "Fermer la navigation";
+
+"designed and developed by" = "designed and developed by";
+
+"Elisa Kevin Veragoo" = "Elisa Kevin Veragoo";
+
+"ChatGPT" = "ChatGPT";
+
+"PILS" = "PILS";

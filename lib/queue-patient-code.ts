@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 type Row = Record<string, string>;
 export class PatientCodeError extends Error {
   constructor(message: string, public status = 400) { super(message); }

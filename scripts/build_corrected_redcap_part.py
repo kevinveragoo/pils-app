@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Elisa Kevin Veragoo + ChatGPT
 """Create one corrected REDCap import part from the full sample CSV."""
 
 from __future__ import annotations

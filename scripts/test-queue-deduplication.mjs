@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';

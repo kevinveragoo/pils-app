@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 // Additive migration: never rename/delete the populated source field.
 // node --env-file=.env.local scripts/migrate-patient-code.mjs prepare|copy|retire BACKUP_DIR
 import fs from 'node:fs';

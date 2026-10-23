@@ -1460,3 +1460,59 @@
 "Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank." = "Dat swivi ki pli pros, inklir revizion bann rezilta laboratwar ek lezot servis. Servi ansien dat randevou zis kan tou bann dat servis vid.";
 
 "Adding…" = "Pe azoute…";
+
+"Notifications" = "Notifikasion";
+
+"Choose which updates you receive. Available categories follow your current page access." = "Swazir ki bann nouvel ou resevwar. Bann kategori disponib depann lor ou bann akse aktyel.";
+
+"Enable notifications for my account" = "Aktiv bann notifikasion pou mo kont";
+
+"Clinic Queue — patient arrivals" = "Lalis klinik — larive bann pasyan";
+
+"No notification categories are available for your current access." = "Pena kategori notifikasion disponib pou ou bann akse aktyel.";
+
+"Arrival alerts show the patient name and code on your device, including its lock screen. Missing codes appear as Code pending." = "Bann alert montre non ek kod pasyan lor ou laparey, mem lor lekran bloke. Bann kod ki manke paret kouma Kod an atant.";
+
+"This device" = "Sa laparey-la";
+
+"On iPhone or iPad, add PILS to your Home Screen and open it from there before enabling notifications." = "Lor iPhone ouswa iPad, azout PILS lor ou lekran lakey ek ouver li depi laba avan aktiv bann notifikasion.";
+
+"Enable this device again after signing in again. Signing out stops future alerts for that sign-in." = "Aktiv sa laparey-la ankor apre enn nouvo koneksion. Dekoneksion aret bann prosin alert pou sa sesion-la.";
+
+"Push notifications are unavailable here. Use HTTPS and a supported browser or Home Screen app." = "Bann notifikasion push pa disponib isi. Servi HTTPS ek enn navigater konpatib ouswa aplikasion depi lekran lakey.";
+
+"Notifications are not configured." = "Bann notifikasion pa ankor konfigire.";
+
+"Enable notifications on this device" = "Aktiv bann notifikasion lor sa laparey-la";
+
+"Disable notifications on this device" = "Dezaktiv bann notifikasion lor sa laparey-la";
+
+"Unable to save notification settings." = "Pa kapav anrezistre bann reglaz notifikasion.";
+
+"Unable to load notification settings." = "Pa kapav sarz bann reglaz notifikasion.";
+
+"Notification settings saved." = "Bann reglaz notifikasion finn anrezistre.";
+
+"Allow notifications in your browser or phone settings, then try again." = "Permet bann notifikasion dan reglaz ou navigater ouswa telefonn, apre esey ankor.";
+
+"This device is ready for notifications during your current sign-in." = "Sa laparey-la pare pou resevwar bann notifikasion pandan ou sesion aktyel.";
+
+"Notifications disabled on this device." = "Bann notifikasion dezaktive lor sa laparey-la";
+
+"Enable notifications on this device first." = "Aktiv bann notifikasion lor sa laparey-la avan.";
+"Test notification sent. Check your device notifications." = "Notifikasion test finn avoye. Verifie bann notifikasion ou laparey.";
+"Send test notification" = "Avoy enn notifikasion test";
+
+"Menu" = "Meni";
+
+"Open navigation" = "Ouver navigasion";
+
+"Close navigation" = "Ferm navigasion";
+
+"designed and developed by" = "designed and developed by";
+
+"Elisa Kevin Veragoo" = "Elisa Kevin Veragoo";
+
+"ChatGPT" = "ChatGPT";
+
+"PILS" = "PILS";

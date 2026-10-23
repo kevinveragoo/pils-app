@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 export type AuthActionState = {
   error?: string;
   success?: string;

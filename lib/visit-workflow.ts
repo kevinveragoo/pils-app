@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 export const visitWorkflows = [["CLINIC", "Clinic visit"], ["PREP", "PrEP visit"], ["BOTH", "Clinic and PrEP visits"]] as const;
 export type VisitWorkflow = typeof visitWorkflows[number][0];
 export const clinicVisitPurposes: [string, string][] = [["2", "Positive HIV self-test"], ["11", "Blood sample collection"], ["3", "Laboratory results review"], ["4", "Doctor - ART review"], ["12", "Doctor - Pils"], ["8", "STI"], ["9", "Medication collection"], ["15", "Addictology"], ["16", "Commodities"], ["99", "Other services"]];

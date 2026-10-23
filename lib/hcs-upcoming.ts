@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 export type HcsRow = Record<string, string>;
 export type UpcomingHcs = {
   id: string;

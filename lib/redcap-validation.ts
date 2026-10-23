@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import { fieldVisible } from "./instrument-forms";
 import definitions from "./redcap-field-rules.json";
 

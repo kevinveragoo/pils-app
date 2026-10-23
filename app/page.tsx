@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import { redirect } from "next/navigation";
 import { defaultRouteForUser, requireUser } from "@/lib/auth";
 

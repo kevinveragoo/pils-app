@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Elisa Kevin Veragoo + ChatGPT
 
 const apiUrl = process.env.REDCAP_API_URL;
 const token = process.env.REDCAP_API_TOKEN;

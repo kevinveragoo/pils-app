@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import type { User } from "@prisma/client";
 import { db } from "@/lib/db";
 import { updateQueueEntry } from "@/lib/clinic-queue";

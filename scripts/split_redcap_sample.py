@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Elisa Kevin Veragoo + ChatGPT
 """Split a REDCap flat CSV without separating rows belonging to one record."""
 
 from __future__ import annotations

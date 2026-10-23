@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {

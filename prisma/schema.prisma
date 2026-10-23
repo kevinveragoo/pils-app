@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 generator client {
   provider = "prisma-client-js"
 }
@@ -22,6 +23,8 @@ model User {
   approvedById       String?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
+  notificationPreference NotificationPreference?
+  pushSubscriptions PushSubscription[]
   sessions           Session[]
   redcapActivities   RedcapActivity[]
 
@@ -123,4 +126,40 @@ model ClinicQueueEvent {
   entry        ClinicQueueEntry @relation(fields: [queueEntryId], references: [id], onDelete: Cascade)
 
   @@index([queueEntryId, createdAt])
+}
+
+model NotificationPreference {
+  userId          String   @id
+  enabled         Boolean  @default(false)
+  clinicArrivals  Boolean  @default(false)
+  enabledAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PushSubscription {
+  id           String   @id @default(cuid())
+  userId       String
+  sessionId    String
+  endpoint     String   @unique
+  p256dh       String
+  auth         String
+  locale       String   @default("en")
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deliveries   PushDelivery[]
+
+  @@index([userId])
+}
+
+model PushDelivery {
+  id             String   @id @default(cuid())
+  queueEntryId   String
+  subscriptionId String
+  state          String   @default("PENDING")
+  attempts       Int      @default(0)
+  nextAttemptAt  DateTime @default(now())
+  createdAt      DateTime @default(now())
+  subscription   PushSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([queueEntryId, subscriptionId])
 }

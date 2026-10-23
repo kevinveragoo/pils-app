@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import { redirect } from "next/navigation";
 import AuthShell from "@/components/AuthShell";
 import { RegisterForm } from "@/components/AuthForm";

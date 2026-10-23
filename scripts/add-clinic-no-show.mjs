@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 // Additive schema migration; never imports or deletes patient records.
 import fs from 'node:fs';
 import assert from 'node:assert/strict';

@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import BreakfastAttendance from "@/components/BreakfastAttendance";
 import AppHeader from "@/components/AppHeader";
 import { requireAnyRole } from "@/lib/auth";

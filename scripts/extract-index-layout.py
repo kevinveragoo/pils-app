@@ -1,3 +1,4 @@
+# Elisa Kevin Veragoo + ChatGPT
 """Extract only layout/labels from the reference index; never retain patient cells."""
 import json, re, sys
 from pathlib import Path

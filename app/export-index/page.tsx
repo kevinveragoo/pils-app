@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import type { Metadata } from "next";
 import ExportIndexDownload from "@/components/ExportIndexDownload";
 import AppHeader from "@/components/AppHeader";

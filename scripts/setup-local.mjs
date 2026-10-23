@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import { closeSync, copyFileSync, existsSync, openSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 

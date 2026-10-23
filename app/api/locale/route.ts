@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import { NextResponse } from "next/server";
 import { isAppLocale, localeCookieName } from "@/lib/localization";
 

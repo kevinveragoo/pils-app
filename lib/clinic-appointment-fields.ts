@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 // App-side visibility override; REDCap metadata keeps its original branching.
 export const clinicAppointmentDateFields = [
   "cnv_next_med_date",

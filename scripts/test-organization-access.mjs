@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -48,7 +49,7 @@ for(const organization of ['CUT','AILES','PILS_VOLUNTEER','UNKNOWN',undefined]){
 user={...user,organization:'CUT'};
 function hrefs(node){if(!node||typeof node!=='object')return [];if(Array.isArray(node))return node.flatMap(hrefs);return [...(node.props?.href?[node.props.href]:[]),...hrefs(node.props?.children)];}
 const header=load('components/AppHeader.tsx').default;
-assert.deepEqual(hrefs(await header({current:'outreach'})),['/outreach','/logs','/change-password']);
+assert.deepEqual(hrefs(await header({current:'outreach'})),['/outreach','/logs','/notifications','/change-password']);
 for(const file of ['healthcare-nav','prep','clinic-queue','new-appointment','admin/users','admin/users/[id]','lookup','hiv-care-support-upcoming','dashboard','export-index','client-enrollment','clinic','breakfast']){
  const page=load(`app/${file}/page.tsx`).default;
  await assert.rejects(page({params:Promise.resolve({id:'target'}),searchParams:Promise.resolve({})}),/REDIRECT:\/outreach/,file+' must block external users');
@@ -80,6 +81,6 @@ assert.ok(hrefs(await header({current:'clinic'})).includes('/clinic'));
 user={...user,role:'HEALTHCARE_NAVIGATOR',roles:'[]'};
 assert.equal(auth.defaultRouteForUser(user),'/healthcare-nav');assert.equal(auth.hasAnyRole(user,['FACILITY_STAFF','ADMIN']),false);
 const {pagesForRole}=load('lib/role-page-access.ts');
-assert.deepEqual(Array.from(pagesForRole('ADMIN','CUT')),['Outreach Workflow','Logs','Change Password']);
+assert.deepEqual(Array.from(pagesForRole('ADMIN','CUT')),['Outreach Workflow','Logs','Notifications','Change Password']);
 assert.ok(pagesForRole('ADMIN','PILS').includes('Clinic Queue'));
 console.log('Organisation access checks passed: external organisations (including volunteer/admin/multi-role users), navigation, all restricted pages/APIs, allowed Outreach/Logs/password access, patient-list privacy and unchanged PILS roles. No network requests made.');

@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 // Explicit additive consolidation. Original fields/answers are retained.
 import fs from 'node:fs';import assert from 'node:assert/strict';
 const dir=fs.readFileSync('/tmp/pils-cne-consolidation-path','utf8');

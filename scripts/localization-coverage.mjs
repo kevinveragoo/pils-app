@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import fs from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';

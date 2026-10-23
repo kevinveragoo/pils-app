@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 import fieldRules from "./redcap-field-rules.json";
 export const clinicEnrollmentDefaults = { cne_facility: "Pils Banian" };
 

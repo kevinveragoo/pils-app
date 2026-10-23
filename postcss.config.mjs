@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 const config = {
   plugins: {
     "@tailwindcss/postcss": {},

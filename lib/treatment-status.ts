@@ -1,3 +1,4 @@
+// Elisa Kevin Veragoo + ChatGPT
 // Preserve each instrument's existing codes and labels. Equivalent statuses have
 // different legacy codes; never copy a code directly between PrEP and HIV.
 export const prepStatusChoices: [string,string][] = [["1", "Active"], ["2", "No longer active"], ["4", "On demand"], ["5", "Abroad"], ["6", "Transferred to NDCCI"], ["7", "HIV positive"], ["8", "In prison"], ["99", "Other"]];

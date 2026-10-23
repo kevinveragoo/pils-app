@@ -2,6 +2,21 @@
 
 PILS is a Next.js application for client enrollment, outreach, healthcare navigation, clinic workflows and queues, breakfast attendance, and REDCap reporting. Client and programme records remain in REDCap. Local users, sessions, activity logs, and clinic queue data are stored in SQLite through Prisma.
 
+## Developer documentation
+
+- [Safeguards and operational rules](docs/SAFEGUARDS.md): start here before
+  testing or changing behavior; includes notification date rules and exceptions.
+
+- [Developer guide](docs/DEVELOPER_GUIDE.md): architecture, setup, permissions,
+  data model, workflows, testing, deployment and branch differences.
+- [HTTP API reference](docs/API_REFERENCE.md): endpoint index, queue behavior
+  and notification request contracts.
+- [HTTPS operations](ops/caddy/README.md) and
+  [notification operations](ops/notifications/README.md).
+
+These guides describe the `notification` branch. Read the branch-differences
+section before integrating changes from `main`.
+
 ## Requirements
 
 - Node.js 20.9 or newer

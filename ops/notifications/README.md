@@ -5,6 +5,9 @@ open `/notifications` and toggle their account preference. Only users whose
 PILS roles grant Clinic Queue access can subscribe to the arrival category.
 Multi-role users receive one alert per device per daily queue entry.
 
+See [notification safeguards](../../docs/SAFEGUARDS.md#n1--only-todays-actual-arrivals-may-push)
+for date examples, test-exercise limits and troubleshooting.
+
 ## Staff setup
 
 1. Open https://eli3a.ddns.net. On iPhone/iPad (16.4+), add PILS to the Home
@@ -53,7 +56,8 @@ npm run notifications:worker -- --once
 ```
 
 Do not run an additional continuous worker when the boot service is active.
-One-shot health checks are safe: delivery claims prevent concurrent sends.
+A one-shot run also uses delivery claims to prevent ordinary concurrent sends,
+but it is not a dry run: eligible arrivals can produce real notifications.
 
 ## Delivery behavior
 

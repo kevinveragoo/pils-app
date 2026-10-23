@@ -1,5 +1,6 @@
+import { isPilsUser } from "@/lib/organization-access";
 import { NextResponse } from "next/server";
-import { isAuthenticatedRequest } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
@@ -26,7 +27,8 @@ type RedcapRow = {
 };
 
 export async function GET() {
-  if (!await isAuthenticatedRequest()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   try {
     if (!REDCAP_API_URL || !REDCAP_API_TOKEN) {
       return NextResponse.json(
@@ -57,7 +59,7 @@ export async function GET() {
       "fields[6]": "ce_middle_name_2",
       "fields[7]": "ce_tel_primary",
       "fields[8]": "ce_middle_name_3",
-      "fields[9]": "cne_patient_code",
+      ...(isPilsUser(user) ? { "fields[9]": "cne_patient_code" } : {}),
     });
 
     const response = await fetch(REDCAP_API_URL, {
@@ -99,7 +101,7 @@ export async function GET() {
           last_name: String(row.ce_last_name ?? "").trim(),
           alias: String(row.ce_alias ?? "").trim(),
           phone: String(row.ce_tel_primary ?? "").trim(),
-          patient_code: String(row.cne_patient_code ?? "").trim(),
+          patient_code: isPilsUser(user) ? String(row.cne_patient_code ?? "").trim() : "",
           kp_types: [1, 2, 3, 4, 5, 6, 7, 8]
             .filter((code) => row[`ce_kp_type___${code}` as keyof RedcapRow] === "1")
             .map(String),

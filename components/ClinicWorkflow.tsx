@@ -1,7 +1,8 @@
 "use client";
+import ClinicAppointmentDates from "@/components/ClinicAppointmentDates";
+import { clinicAppointmentDateFields } from "@/lib/clinic-appointment-fields";
 import { InstrumentForm } from "@/components/InstrumentForm";
 import { instrumentInitial, instrumentFields, visibleInstrumentValues } from "@/lib/instrument-forms";
-import { clinicNextAppointment } from "@/lib/clinic-followup";
 import { districts } from "@/lib/redcap-options";
 import { clinicVisitPurposes, visitWorkflows, includesClinic, includesPrep, validWorkflow, type VisitWorkflow } from "@/lib/visit-workflow";
 import { prepStatusChoices, hivStatusChoices } from "@/lib/treatment-status";
@@ -38,7 +39,7 @@ const completeVisitInitial=visitInitial;
 
 const Disclosure=({title,open=false,children}:{title:string;open?:boolean;children:React.ReactNode})=><details open={open} className="rounded-2xl border p-4"><summary className="cursor-pointer font-bold">{title}</summary><div className="mt-4 grid gap-4">{children}</div></details>;
 
-function ClinicVisitForm({v,set,newClient}:{v:Values;set:(k:string,v:string)=>void;newClient:boolean}){return <section className="outreach-card grid gap-4"><h2 className="text-xl font-bold">Clinic Visit</h2><InstrumentForm form="clinic_visit" values={{...v,cnv_is_new_client:newClient?"1":"0"}} set={set} readOnlyFields={["cnv_is_new_client"]}/>{v.cnv_no_show!=="1"&&<Field label="Next appointment date"><Input type="date" readOnly value={clinicNextAppointment({...visibleInstrumentValues("clinic_visit",v),cnv_legacy_next_date:v.cnv_legacy_next_date})}/></Field>}</section>;}
+function ClinicVisitForm({v,set,newClient}:{v:Values;set:(k:string,v:string)=>void;newClient:boolean}){return <section className="outreach-card grid gap-4"><h2 className="text-xl font-bold">Clinic Visit</h2><InstrumentForm form="clinic_visit" values={{...v,cnv_is_new_client:newClient?"1":"0"}} set={set} readOnlyFields={["cnv_is_new_client"]} excludeFields={[...clinicAppointmentDateFields,"cnv_next_reason","cnv_next_appointment_date"]}/><ClinicAppointmentDates values={v} set={set}/></section>;}
 
 export default function ClinicWorkflow({staffName,initialUic,queueId,initialNew=false,initialReason,initialEnrollment,initialWorkflow="CLINIC",initialClinicPurposes=[],initialPrepPurposes=[]}:{staffName:string;initialUic?:string;queueId?:string;initialNew?:boolean;initialReason?:string;initialEnrollment?:Values;initialWorkflow?:VisitWorkflow;initialClinicPurposes?:string[];initialPrepPurposes?:string[]}){
  const [workflow,setWorkflow]=useState<VisitWorkflow>(initialWorkflow);

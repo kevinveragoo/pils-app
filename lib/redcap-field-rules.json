@@ -5290,5 +5290,17 @@
       "0",
       "1"
     ]
+  },
+  "cnv_next_lab_review_date": {
+    "label": "Next laboratory results review date",
+    "form": "clinic_visit",
+    "type": "date_dmy",
+    "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(3)] = '1')"
+  },
+  "cnv_next_other_date": {
+    "label": "Next other services appointment date",
+    "form": "clinic_visit",
+    "type": "date_dmy",
+    "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(99)] = '1')"
   }
 }

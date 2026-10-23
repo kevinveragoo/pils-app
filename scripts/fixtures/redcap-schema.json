@@ -3728,5 +3728,13 @@
       "0",
       "1"
     ]
+  },
+  "cnv_next_lab_review_date": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "cnv_next_other_date": {
+    "form": "clinic_visit",
+    "type": "text"
   }
 }

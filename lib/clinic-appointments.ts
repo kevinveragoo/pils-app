@@ -5,13 +5,15 @@ export const appointmentTypes = [
   { value: "BLOOD_TEST", label: "Blood test", field: "cnv_next_blood_date" },
   { value: "MEDICATION", label: "Medication", field: "cnv_next_med_date" },
   { value: "ADDICTOLOGY", label: "Addictology", field: "cnv_next_addicto_date" },
+  { value: "LAB_RESULTS", label: "Laboratory results review", field: "cnv_next_lab_review_date" },
+  { value: "OTHER_SERVICES", label: "Other services", field: "cnv_next_other_date" },
 ] as const;
 export const appointmentRoles = ["HEALTHCARE_ASSISTANT", "ADMIN"] as const;
 
 export type AppointmentCounts = Record<typeof appointmentTypes[number]["value"], number>;
 export function countAppointments(rows: Record<string, string>[], date: string): AppointmentCounts {
   const clients = Object.fromEntries(appointmentTypes.map(type => [type.value, new Set<string>()])) as Record<keyof AppointmentCounts, Set<string>>;
-  const prepFields = { DOCTOR: "pv_next_doctor_date", BLOOD_TEST: "pv_next_blood_date", MEDICATION: "pv_next_med_date", ADDICTOLOGY: "" };
+  const prepFields = { DOCTOR: "pv_next_doctor_date", BLOOD_TEST: "pv_next_blood_date", MEDICATION: "pv_next_med_date", ADDICTOLOGY: "", LAB_RESULTS: "", OTHER_SERVICES: "" };
   for (const row of rows) {
     if (!row.uic_ori) continue;
     for (const type of appointmentTypes) {

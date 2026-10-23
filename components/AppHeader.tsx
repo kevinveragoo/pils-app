@@ -1,3 +1,4 @@
+import { isPilsUser } from "@/lib/organization-access";
 import Image from "next/image";
 import { appointmentRoles } from "@/lib/clinic-appointments";
 import Link from "next/link";
@@ -31,7 +32,7 @@ export default async function AppHeader({ current }: { current: "new-appointment
           {showClinicalWorkflows && <Link href="/export-index" aria-current={current === "export-index" ? "page" : undefined}><span>Export<br />Index</span></Link>}
           {showBreakfast && <Link href="/breakfast" aria-current={current === "breakfast" ? "page" : undefined}>Breakfast</Link>}
           {showDashboard && <Link href="/dashboard" aria-current={current === "dashboard" ? "page" : undefined}>Dashboard</Link>}
-          {user && <Link href="/lookup" aria-current={current === "lookup" ? "page" : undefined}>Lookup</Link>}
+          {user && isPilsUser(user) && <Link href="/lookup" aria-current={current === "lookup" ? "page" : undefined}>Lookup</Link>}
           {showLogs && <Link href="/logs" aria-current={current === "logs" ? "page" : undefined}>Logs</Link>}
           {user && hasRole(user, "ADMIN") && <Link href="/admin/users"><span>Admin<br />Users</span></Link>}
           <Link href="/change-password"><span>Change<br />Password</span></Link>

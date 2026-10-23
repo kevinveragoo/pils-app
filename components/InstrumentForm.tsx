@@ -4,13 +4,13 @@ import { fieldVisible, type InstrumentName } from '@/lib/instrument-forms';
 import { numericAttributes } from '@/lib/redcap-validation';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-export function InstrumentForm({ form, values, set, readOnlyFields=[] }: { form: InstrumentName; values: Record<string,string>; set: (name:string,value:string)=>void; readOnlyFields?: string[] }) {
+export function InstrumentForm({ form, values, set, readOnlyFields=[], excludeFields=[] }: { form: InstrumentName; values: Record<string,string>; set: (name:string,value:string)=>void; readOnlyFields?: string[]; excludeFields?: readonly string[] }) {
   let heading='Details';
   const sections=new Map<string,typeof definitions[typeof form]>();
   for(const field of definitions[form]) {
     if(field.section) heading=field.section;
     if(form==='clinic_visit' && field.kind==='descriptive' && /^cnv_section_/.test(field.name)) heading=field.label.replace(/<[^>]*>/g,'');
-    if(['descriptive','calc','file'].includes(field.kind)||(/@HIDDEN|@CALC/.test(field.annotation)&&field.name!=='ptp_status')) continue;
+    if(excludeFields.includes(field.name)||['descriptive','calc','file'].includes(field.kind)||(/@HIDDEN|@CALC/.test(field.annotation)&&field.name!=='ptp_status')) continue;
     if(!sections.has(heading)) sections.set(heading,[]);
     sections.get(heading)!.push(field);
   }

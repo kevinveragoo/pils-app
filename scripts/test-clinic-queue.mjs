@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import ts from 'typescript';
 let saved, stored = null, updateCount = 0;
+let exportedQueueFields = [];
 const workflowModule = { exports: {} };
 vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../lib/visit-workflow.ts', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, { module: workflowModule, exports: workflowModule.exports });
 const loadedModule = { exports: {} };
@@ -17,7 +18,7 @@ const code = ts.transpileModule(fs.readFileSync(new URL('../lib/clinic-queue.ts'
 vm.runInNewContext(code, { module: loadedModule, exports: loadedModule.exports, URLSearchParams, Intl, Date, console,
   process: { env: { REDCAP_API_URL: 'https://test.invalid', REDCAP_API_TOKEN: 'test' } },
   require: name => { if (name === '@/lib/visit-workflow') return workflowModule.exports; assert.equal(name, '@/lib/db'); return { db: { clinicQueueEntry: { findUnique: async () => stored }, $transaction: async callback => callback({ clinicQueueEntry: { findFirst: async () => stored, findUniqueOrThrow: async () => stored, aggregate: async () => ({ _max: { queueNumber: 6 } }), update: async ({ data }) => { updateCount++; stored = { ...stored, ...data }; return stored; }, create: async ({ data }) => { saved = data; if (data.source === "SCHEDULED") stored = { id: "scheduled-entry", ...data }; return stored ?? data; } } }) } }; },
-  fetch: async (_url, options) => { assert.equal(options.body.get('action'), 'export'); return Response.json(rows); },
+  fetch: async (_url, options) => { assert.equal(options.body.get('action'), 'export'); exportedQueueFields = [...options.body.entries()].filter(([key]) => key.startsWith('fields[')).map(([, value]) => value); return Response.json(rows); },
 });
 const result = JSON.parse(JSON.stringify(await loadedModule.exports.expectedAppointments('2026-10-22')));
 assert.equal(result.length, 1);
@@ -34,6 +35,18 @@ rows.pop();
 rows.push({uic_ori:'BOOKED',redcap_repeat_instrument:'clinic_visit',redcap_repeat_instance:1,cnv_date:'2026-10-21',cnv_next_blood_date:'2026-10-22'});
 const booked=(await loadedModule.exports.expectedAppointments('2026-10-22')).find(row=>row.recordId==='BOOKED');
 assert.deepEqual(Array.from(booked.tasks),['BLOOD_TEST'],'A newly booked blank CNV appears under Expected on its appointment date');
+rows.pop();
+rows.push({uic_ori:'LAB',redcap_repeat_instrument:'clinic_visit',redcap_repeat_instance:1,cnv_next_lab_review_date:'2026-10-22',cnv_next_appointment_date:'2026-10-22'});
+const lab=(await loadedModule.exports.expectedAppointments('2026-10-22')).find(row=>row.recordId==='LAB');
+assert.deepEqual(Array.from(lab.tasks),['DOCTOR']);
+assert.deepEqual(Array.from(lab.clinicPurposes),['3']);
+assert.deepEqual(Array.from(lab.appointmentSources),['Clinic laboratory results review'],'A laboratory review does not also create an untyped appointment');
+rows.pop();
+rows.push({uic_ori:'OTHER_SERVICE',redcap_repeat_instrument:'clinic_visit',redcap_repeat_instance:1,cnv_next_other_date:'2026-10-22',cnv_next_appointment_date:'2026-10-22'});
+const otherService=(await loadedModule.exports.expectedAppointments('2026-10-22')).find(row=>row.recordId==='OTHER_SERVICE');
+assert.deepEqual(Array.from(otherService.tasks),['OTHER']);
+assert.deepEqual(Array.from(otherService.clinicPurposes),['99']);
+assert.deepEqual(Array.from(otherService.appointmentSources),['Clinic other services']);
 rows.pop();
 rows.push({ uic_ori: 'LEGACY', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 1, cnv_next_appointment_date: '2026-10-22' });
 const historical = await loadedModule.exports.expectedAppointments('2026-10-22');
@@ -123,3 +136,32 @@ console.log('Queue permissions passed for Facility Staff, Healthcare Assistant a
 rows.push({ uic_ori: 'PREP-FOLLOWUP', redcap_repeat_instrument: 'prep_visit', redcap_repeat_instance: 1, pv_next_blood_date: '2026-10-22', pv_next_doctor_date: '2026-10-22', pv_next_med_date: '2026-10-23' });
 const prepDay = JSON.parse(JSON.stringify(await loadedModule.exports.expectedAppointments('2026-10-22'))).find(row => row.recordId === 'PREP-FOLLOWUP');
 assert.equal(prepDay.visitWorkflow, 'PREP'); assert.deepEqual(prepDay.prepPurposes, ['1', '2']); assert.deepEqual(prepDay.tasks, ['BLOOD_TEST', 'DOCTOR']);
+
+// Every CNV next-date field, including legacy aliases and datetime fields, must
+// independently put a client in the selected day's queue.
+const cnvDates = JSON.parse(fs.readFileSync(new URL('../lib/instrument-forms.json', import.meta.url))).clinic_visit
+  .filter(field => field.name.includes('next') && field.type.startsWith('date'));
+for (const field of cnvDates) {
+  rows.push({ uic_ori: 'ALL-NEXT-DATES', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 1,
+    cnv_date: '2026-10-01', [field.name]: field.type.startsWith('datetime') ? '2026-11-19 14:30' : '2026-11-19' });
+  const expected = await loadedModule.exports.expectedAppointments('2026-11-19');
+  assert.ok(exportedQueueFields.includes(field.name), `REDCap export must request ${field.name}`);
+  assert.equal(expected.filter(row => row.recordId === 'ALL-NEXT-DATES').length, 1, `${field.name} must match the selected queue date`);
+  assert.ok(!(await loadedModule.exports.expectedAppointments('2026-11-20')).some(row => row.recordId === 'ALL-NEXT-DATES'), `${field.name} must not match another day`);
+  rows.at(-1).cnv_no_show = '1';
+  assert.ok(!(await loadedModule.exports.expectedAppointments('2026-11-19')).some(row => row.recordId === 'ALL-NEXT-DATES'), `No-show dates must be ignored for ${field.name}`);
+  rows.pop();
+}
+rows.push(
+  { uic_ori: 'COMBINED', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 1, cnv_next_doctor_date: '2026-11-19', cnv_next_doctor_review: '2026-11-19', cnv_next_appointment_date: '2026-11-19', cnv_legacy_next_date: '2026-11-19', cnv_next_appt: '2026-11-19 09:15' },
+  { uic_ori: 'COMBINED', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: 2, cnv_next_blood_test: '2026-11-19', cnv_next_med_collection: '2026-11-20' },
+  { uic_ori: 'VISIT-DATE-ONLY', redcap_repeat_instrument: 'clinic_visit', cnv_date: '2026-11-19' },
+);
+const combined = (await loadedModule.exports.expectedAppointments('2026-11-19')).filter(row => row.recordId === 'COMBINED');
+assert.equal(combined.length, 1);
+assert.deepEqual(Array.from(combined[0].tasks), ['DOCTOR', 'BLOOD_TEST']);
+assert.deepEqual(Array.from(combined[0].appointmentSources), ['Clinic doctor review', 'Clinic blood test']);
+assert.ok(!(await loadedModule.exports.expectedAppointments('2026-11-19')).some(row => row.recordId === 'VISIT-DATE-ONLY'), 'Visit date alone must not schedule an appointment');
+assert.deepEqual(Array.from((await loadedModule.exports.expectedAppointments('2026-11-20')).find(row => row.recordId === 'COMBINED').tasks), ['MEDICATION']);
+rows.splice(-3);
+console.log(`All ${cnvDates.length} CNV next-date fields passed selected-day matching, legacy/date-time support, no-show exclusions, cross-visit merging and duplicate suppression.`);

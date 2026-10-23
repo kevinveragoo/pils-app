@@ -1448,3 +1448,15 @@
 "New Clinic" = "Nouvo randevou";
 
 "Appointment" = "klinik";
+
+"Next appointments" = "Bann prosin randevou";
+
+"Next laboratory results review date" = "Dat prosin revizion bann rezilta laboratwar";
+
+"Earliest service follow-up date, including laboratory results review. Uses the historical appointment date only when all service dates are blank." = "Dat swivi ki pli pros, inklir revizion bann rezilta laboratwar. Servi ansien dat randevou zis kan tou bann dat servis vid.";
+
+"Next other services appointment date" = "Dat prosin randevou pou lezot servis";
+
+"Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank." = "Dat swivi ki pli pros, inklir revizion bann rezilta laboratwar ek lezot servis. Servi ansien dat randevou zis kan tou bann dat servis vid.";
+
+"Adding…" = "Pe azoute…";

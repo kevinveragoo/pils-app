@@ -4207,5 +4207,15 @@
       "0": "No",
       "1": "Yes"
     }
+  },
+  "cnv_next_lab_review_date": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "cnv_next_other_date": {
+    "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
   }
 }

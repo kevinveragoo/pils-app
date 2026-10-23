@@ -11,16 +11,30 @@ type PatientRow = Record<string, string>;
 
 const appointmentFields: [string, QueueTask, string][] = [
   ["cnv_next_doctor_date", "DOCTOR", "Clinic doctor review"],
+  ["cnv_next_lab_review_date", "DOCTOR", "Clinic laboratory results review"],
+  ["cnv_next_other_date", "OTHER", "Clinic other services"],
   ["cnv_next_addicto_date", "DOCTOR", "Clinic addictologist review"],
   ["cnv_next_blood_date", "BLOOD_TEST", "Clinic blood test"],
   ["cnv_next_med_date", "MEDICATION", "Clinic medication collection"],
+  ["cnv_next_med_collection", "MEDICATION", "Clinic medication collection"],
+  ["cnv_next_doctor_review", "DOCTOR", "Clinic doctor review"],
+  ["cnv_next_blood_test", "BLOOD_TEST", "Clinic blood test"],
   ["cnv_next_appointment_date", "OTHER", "Clinic appointment"],
+  ["cnv_legacy_next_date", "OTHER", "Clinic appointment"],
+  ["cnv_next_appt", "OTHER", "Clinic appointment"],
   ["pv_next_appointment_date", "PREP", "PrEP appointment"],
   ["pv_next_med_date", "MEDICATION", "PrEP medication collection"],
   ["pv_next_blood_date", "BLOOD_TEST", "PrEP blood sample collection"],
   ["pv_next_doctor_date", "DOCTOR", "PrEP doctor review"],
 
 ];
+
+const generalClinicAppointmentFields = new Set(["cnv_next_appointment_date", "cnv_legacy_next_date", "cnv_next_appt"]);
+
+function appointmentDate(value: string | undefined) {
+  // REDCap exports dates as YMD and date-times as YMD followed by a time.
+  return String(value ?? "").trim().match(/^(\d{4}-\d{2}-\d{2})(?:$|[ T]\d{2}:\d{2})/)?.[1] ?? "";
+}
 
 export function mauritiusToday() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Indian/Mauritius", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
@@ -59,7 +73,9 @@ export async function expectedAppointments(date: string) {
   for (const row of rows) {
     const recordId = String(row.uic_ori ?? "").trim();
     if (!recordId) continue;
-    const matching = appointmentFields.filter(([field]) => !(row.cnv_no_show === "1" && field.startsWith("cnv_")) && String(row[field] ?? "").trim() === date && (field !== "cnv_next_appointment_date" || ![row.cnv_next_med_date, row.cnv_next_blood_date, row.cnv_next_doctor_date, row.cnv_next_addicto_date].some(value => value === date)));
+    const matchingDates = appointmentFields.filter(([field]) => !(row.cnv_no_show === "1" && field.startsWith("cnv_")) && appointmentDate(row[field]) === date);
+    const hasSpecificClinicService = matchingDates.some(([field]) => field.startsWith("cnv_") && !generalClinicAppointmentFields.has(field));
+    const matching = matchingDates.filter(([field]) => !generalClinicAppointmentFields.has(field) || !hasSpecificClinicService);
     if (!matching.length) continue;
     const identity = identities.get(recordId) ?? row;
     const current = patients.get(recordId) ?? {
@@ -80,12 +96,15 @@ export async function queueForDate(date: string) {
 }
 
 export async function createQueueEntry(data: { queueDate: string; recordId?: string; displayName: string; firstName?: string; lastName?: string; nationalId?: string; alias?: string; patientCode?: string; phone?: string; visitWorkflow?: VisitWorkflow; clinicPurposes?: string[]; prepPurposes?: string[]; source?: string; isNewClient?: boolean; status?: string; currentStation?: string; tasks: string[]; appointmentSources?: string[]; notes?: string }, actor: Actor) {
+  let alreadyQueued = false;
+  data = { ...data, recordId: data.recordId?.trim().toUpperCase() };
   const now = new Date();
   const entry = await db.$transaction(async transaction => {
-    if (data.source === "SCHEDULED" && data.recordId) {
-      const existing = await transaction.clinicQueueEntry.findFirst({ where: { queueDate: data.queueDate, recordId: data.recordId, source: "SCHEDULED" }, orderBy: { createdAt: "asc" } });
+    if (data.recordId) {
+      const existing = await transaction.clinicQueueEntry.findFirst({ where: { queueDate: data.queueDate, recordId: data.recordId }, orderBy: { createdAt: "asc" } });
       if (existing) {
-        if (data.status !== "WAITING" || existing.status !== "EXPECTED") return existing;
+        alreadyQueued = true;
+        if (data.source !== "SCHEDULED" || data.status !== "WAITING" || existing.status !== "EXPECTED") return existing;
         if (existing.noShow) throw new Error("Return the no-show to Expected before checking in the client.");
         const latestNumber = existing.queueNumber === null ? await transaction.clinicQueueEntry.aggregate({ where: { queueDate: data.queueDate }, _max: { queueNumber: true } }) : null;
         return transaction.clinicQueueEntry.update({ where: { id: existing.id }, data: { status: "WAITING", currentStation: data.currentStation ?? "FILE_RETRIEVAL", queueNumber: existing.queueNumber ?? (latestNumber?._max.queueNumber ?? 0) + 1, checkedInAt: now, updatedById: actor.id, updatedByName: actor.name, version: { increment: 1 }, events: { create: { actorId: actor.id, actorName: actor.name, action: "ARRIVED" } } } });
@@ -93,8 +112,15 @@ export async function createQueueEntry(data: { queueDate: string; recordId?: str
     }
     const latest = data.status === "WAITING" ? await transaction.clinicQueueEntry.aggregate({ where: { queueDate: data.queueDate }, _max: { queueNumber: true } }) : null;
     return transaction.clinicQueueEntry.create({ data: { queueDate: data.queueDate, recordId: data.recordId || null, displayName: data.displayName, firstName: data.firstName || null, lastName: data.lastName || null, nationalId: data.nationalId || null, visitWorkflow: data.visitWorkflow || null, clinicPurposes: JSON.stringify(data.clinicPurposes ?? []), prepPurposes: JSON.stringify(data.prepPurposes ?? []), alias: data.alias || null, patientCode: data.patientCode || null, phone: data.phone || null, source: data.source ?? "WALK_IN", isNewClient: Boolean(data.isNewClient), status: data.status ?? "EXPECTED", currentStation: data.currentStation ?? "RECEPTION", queueNumber: data.status === "WAITING" ? (latest?._max.queueNumber ?? 0) + 1 : null, checkedInAt: data.status === "WAITING" ? now : null, tasks: JSON.stringify(data.tasks), appointmentSources: JSON.stringify(data.appointmentSources ?? []), notes: data.notes || null, createdById: actor.id, createdByName: actor.name, updatedById: actor.id, updatedByName: actor.name, events: { create: { actorId: actor.id, actorName: actor.name, action: data.status === "WAITING" ? "WALK_IN_CHECKED_IN" : "ADDED" } } } });
+  }).catch(async error => {
+    // Another request may have committed the same client while this one waited.
+    if (data.recordId && error && typeof error === "object" && "code" in error && ["P2002", "P2034", "P1008"].includes(String(error.code))) {
+      const existing = await db.clinicQueueEntry.findFirst({ where: { queueDate: data.queueDate, recordId: data.recordId } });
+      if (existing) { alreadyQueued = true; return existing; }
+    }
+    throw error;
   });
-  return publicEntry(entry);
+  return { ...publicEntry(entry), alreadyQueued };
 }
 
 export async function updateQueueEntry(id: string, patch: { status?: string; currentStation?: string; tasks?: string[]; notes?: string; recordId?: string; patientCode?: string; noShow?: boolean }, actor: Actor) {

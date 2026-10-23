@@ -2,7 +2,7 @@ import { hivHistoryFields, latestStatus } from "@/lib/status-history";
 import { validateFields } from "@/lib/redcap-validation";
 import { generateUic } from "@/lib/uic";
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, hasAnyRole } from "@/lib/auth";
 import { recordRedcapActivity } from "@/lib/redcap-activity";
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
@@ -48,7 +48,9 @@ async function redcap(params: Record<string, string>) {
 }
 
 export async function GET(request: Request) {
-  if (!await getCurrentUser()) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  if (!hasAnyRole(user, ["HEALTHCARE_NAVIGATOR", "ADMIN"])) return NextResponse.json({ error: "Access to this workflow is not permitted." }, { status: 403 });
   const uic = new URL(request.url).searchParams.get("uic")?.trim().toUpperCase() ?? "";
   if (!uic) return NextResponse.json({ error: "A UIC is required." }, { status: 400 });
   try {
@@ -63,6 +65,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  if (!hasAnyRole(user, ["HEALTHCARE_NAVIGATOR", "ADMIN"])) return NextResponse.json({ error: "Access to this workflow is not permitted." }, { status: 403 });
   let input: Submission;
   try { input = await request.json() as Submission; } catch { return NextResponse.json({ error: "The request body must be valid JSON." }, { status: 400 }); }
 

@@ -120,7 +120,16 @@ assert.equal(noShowVisible.cnv_date, '2026-10-20');
 assert.equal(noShowVisible.cnv_visit_purpose, undefined);
 assert.equal(noShowVisible.cnv_weight, undefined);
 assert.equal(noShowVisible.cnv_next_med_date, undefined);
+for (const purpose of ['', '2', '3', '4', '8', '9', '11', '12', '15', '16', '99']) {
+ const dates={cnv_next_med_date:'2026-11-20',cnv_next_doctor_date:'2026-11-10',cnv_next_blood_date:'2026-11-05',cnv_next_addicto_date:'2026-11-15'};
+ const visible=visibleInstrumentValues('clinic_visit',{cnv_visit_purpose:purpose,...dates});
+ for(const [field,date] of Object.entries(dates))assert.equal(visible[field],date,`${field} must remain available for purpose ${purpose}`);
+ assert.equal(clinicNextAppointment(visible),'2026-11-05');
+}
 assert.equal(clinicNextAppointment({}), '');
+assert.equal(clinicNextAppointment({cnv_next_lab_review_date:'2026-11-01',cnv_next_doctor_date:'2026-11-10',cnv_legacy_next_date:'2020-01-01'}),'2026-11-01');
+assert.equal(visibleInstrumentValues('clinic_visit',{cnv_visit_purpose:'9',cnv_next_lab_review_date:'2026-11-01'}).cnv_next_lab_review_date,'2026-11-01');
+
 assert.equal(clinicNextAppointment({cnv_no_show:'1',cnv_next_doctor_date:'2026-11-01',cnv_legacy_next_date:'2026-10-22'}), '', 'Missed appointments have no clinical follow-up dates');
 assert.equal(clinicNextAppointment({cnv_next_addicto_date:'2026-10-25',cnv_next_doctor_date:'2026-11-01'}),'2026-10-25');
 assert.equal(clinicNextAppointment({cnv_next_addicto_date:'2026-10-25'}),'2026-10-25');
@@ -446,10 +455,18 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', visitWorkflow: 'CLINIC', visit: { ...arvVisit, cnv_visit_purpose: '6' } })).status, 400);
   assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', visitWorkflow: 'CLINIC', visit: { ...arvVisit, cnv_visit_purpose: '12' } })).status, 200);
   assert.equal((await post('clinic',{mode:'existing',recordId:'TEST',visitWorkflow:'CLINIC',visit:{...arvVisit,cnv_visit_purpose:'15',cnv_addictologist:'Example',cnv_next_addicto_date:'2026-11-15',cnv_next_med_date:'2026-10-23',cnv_hiv_lab_test_done:'1',cnv_hiv_lab_test_date:''}})).status,200);
-  assert.equal(imported()[0].cnv_next_appointment_date,'2026-11-15','Deselected medication date must not affect next appointment');
-  assert.equal(imported()[0].cnv_next_med_date,undefined);
+  assert.equal(imported()[0].cnv_next_appointment_date,'2026-10-23','All service dates must affect the calculated appointment, regardless of visit purpose');
+  assert.equal(imported()[0].cnv_next_med_date,'2026-10-23');
   assert.equal(imported()[0].cnv_hiv_lab_test_done,undefined);
   assert.equal(imported()[0].cnv_addictologist,'Example');
+  for (const purpose of ['8','9','11','12','15','16','99']) {
+    const visit={cnv_worker_1:'Tester',cnv_date:'2026-10-23',cnv_visit_purpose:purpose,cnv_next_med_date:'2026-12-01',cnv_next_doctor_date:'2026-11-20',cnv_next_blood_date:'2026-11-10',cnv_next_addicto_date:'2026-11-15',cnv_next_lab_review_date:'2026-11-05',cnv_next_other_date:'2026-11-01',cnv_next_appointment_date:'2099-01-01'};
+    assert.equal((await post('clinic',{mode:'existing',recordId:'TEST',visitWorkflow:'CLINIC',visit})).status,200);
+    for(const field of ['cnv_next_med_date','cnv_next_doctor_date','cnv_next_blood_date','cnv_next_addicto_date','cnv_next_lab_review_date','cnv_next_other_date'])assert.equal(imported()[0][field],visit[field]);
+    assert.equal(imported()[0].cnv_next_appointment_date,'2026-11-01','The server calculates the date instead of trusting client input');
+  }
+  assert.equal((await post('clinic',{mode:'existing',recordId:'TEST',visitWorkflow:'CLINIC',visit:{cnv_worker_1:'Tester',cnv_date:'2026-10-23',cnv_visit_purpose:'15',cnv_next_blood_date:'2026-02-30'}})).status,400,'All appointment dates are validated even when their purpose was not selected');
+
   existing=[{uic_ori:'TEST'}, {uic_ori:'TEST',redcap_repeat_instrument:'risk_assessment',redcap_repeat_instance:'3',ra_date:'2026-10-01'}, {uic_ori:'TEST',redcap_repeat_instrument:'violence_disclosure',redcap_repeat_instance:'2',vd_date:'2026-10-01'}];
   const riskAssessment={ra_date:'2026-10-21',ra_type:'4',ra_drug_alcohol_recent:'0',ra_violence_recent:'0',ra_partners_1w:'2',ra_inject_3m:'1',ra_inject_1w:'2',ra_inject_24h:'1',ra_share_needle_1w:'0',ra_share_needle_24h:'0'};
   const vdNegative={vd_date:'2026-10-21',vd_entry_type:'1',vd_violence_3m:'0',vd_consent:'1',vd_incident_type:'1',vd_perpetrator:'2'};

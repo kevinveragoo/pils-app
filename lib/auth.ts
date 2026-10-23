@@ -4,6 +4,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { isPilsUser } from "@/lib/organization-access";
 
 export const SESSION_COOKIE = "pils_session";
 const SESSION_LENGTH_MS = 7 * 24 * 60 * 60 * 1000;
@@ -61,23 +62,32 @@ export async function requireLogsAccess() {
   return requireUser();
 }
 
+export async function requirePilsUser() {
+  const user = await requireUser();
+  if (!isPilsUser(user)) redirect("/outreach");
+  return user;
+}
+
 export function userRoles(user: { role: string; roles?: string | null }) {
   let saved: unknown = [];
   try { saved = JSON.parse(user.roles || "[]"); } catch { /* Fall back to the legacy role. */ }
   return [...new Set([...(Array.isArray(saved) ? saved.filter((role): role is string => typeof role === "string") : []), user.role].filter(Boolean))];
 }
 
-export function hasRole(user: { role: string; roles?: string | null }, role: string) {
+export function hasRole(user: { role: string; roles?: string | null; organization?: string | null }, role: string) {
+  if (!isPilsUser(user)) return role === "OUTREACH_WORKER";
   const assigned = userRoles(user);
   return assigned.includes("ADMIN") || assigned.includes(role);
 }
 
-export function hasAnyRole(user: { role: string; roles?: string | null }, allowed: string[]) {
+export function hasAnyRole(user: { role: string; roles?: string | null; organization?: string | null }, allowed: string[]) {
+  if (!isPilsUser(user)) return allowed.includes("OUTREACH_WORKER");
   const assigned = new Set(userRoles(user));
   return allowed.some(role => assigned.has(role));
 }
 
-export function defaultRouteForUser(user: { role: string; roles?: string | null }) {
+export function defaultRouteForUser(user: { role: string; roles?: string | null; organization?: string | null }) {
+  if (!isPilsUser(user)) return "/outreach";
   if (hasAnyRole(user, ["OUTREACH_WORKER", "HEALTHCARE_ASSISTANT", "ADMIN"])) return "/outreach";
   if (hasRole(user, "HEALTHCARE_NAVIGATOR")) return "/healthcare-nav";
   if (hasRole(user, "FACILITY_STAFF")) return "/breakfast";

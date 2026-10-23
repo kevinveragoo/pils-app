@@ -43,7 +43,7 @@ for(const role of ['HEALTHCARE_ASSISTANT','ADMIN']){
  user={...user,role};const before=imports.length;assert.equal((await post(base)).status,200);if(before)assert.equal(imports.length,before,'The same appointment is not duplicated');
 }
 assert.deepEqual(imports[0],[{uic_ori:'TEST',redcap_repeat_instrument:'clinic_visit',redcap_repeat_instance:'9',cnv_date:today,cnv_next_doctor_date:'2026-11-15'}],'Only the booking date and matching appointment field are imported; reserved no-show instances are skipped');
-for(const [type,field] of [['BLOOD_TEST','cnv_next_blood_date'],['MEDICATION','cnv_next_med_date'],['ADDICTOLOGY','cnv_next_addicto_date']]){
+for(const [type,field] of [['BLOOD_TEST','cnv_next_blood_date'],['MEDICATION','cnv_next_med_date'],['ADDICTOLOGY','cnv_next_addicto_date'],['LAB_RESULTS','cnv_next_lab_review_date'],['OTHER_SERVICES','cnv_next_other_date']]){
  assert.equal((await post({...base,appointmentType:type})).status,200);
  const record=imports.at(-1)[0];assert.equal(record[field],base.appointmentDate);assert.deepEqual(Object.keys(record).sort(),['uic_ori','redcap_repeat_instrument','redcap_repeat_instance','cnv_date',field].sort());
 }
@@ -66,15 +66,15 @@ assert.deepEqual(JSON.parse(JSON.stringify(countAppointments([
  {uic_ori:'D',redcap_repeat_instrument:'clinic_visit',cnv_next_addicto_date:'2026-11-15'},
  {uic_ori:'OTHER_DATE',redcap_repeat_instrument:'clinic_visit',cnv_next_med_date:'2026-11-16'},
  {uic_ori:'WRONG_FORM',redcap_repeat_instrument:'outreach',cnv_next_med_date:'2026-11-15'},
-], '2026-11-15'))),{DOCTOR:2,BLOOD_TEST:1,MEDICATION:1,ADDICTOLOGY:1});
-assert.deepEqual(JSON.parse(JSON.stringify(countAppointments([], '2026-11-15'))),{DOCTOR:0,BLOOD_TEST:0,MEDICATION:0,ADDICTOLOGY:0});
+], '2026-11-15'))),{DOCTOR:2,BLOOD_TEST:1,MEDICATION:1,ADDICTOLOGY:1,LAB_RESULTS:0,OTHER_SERVICES:0});
+assert.deepEqual(JSON.parse(JSON.stringify(countAppointments([], '2026-11-15'))),{DOCTOR:0,BLOOD_TEST:0,MEDICATION:0,ADDICTOLOGY:0,LAB_RESULTS:0,OTHER_SERVICES:0});
 before=imports.length;
 const countsResponse=await GET(new Request('http://test.invalid/api?date=2026-11-15'));
 assert.equal(countsResponse.status,200);assert.equal(countsResponse.headers.get('Cache-Control'),'no-store');
 const countResult=await countsResponse.json();assert.deepEqual(Object.keys(countResult).sort(),['counts','date']);
-assert.equal(countResult.counts.DOCTOR,2);assert.equal(countResult.counts.BLOOD_TEST,1);
+assert.equal(countResult.counts.OTHER_SERVICES,1);assert.equal(countResult.counts.LAB_RESULTS,1);assert.equal(countResult.counts.DOCTOR,2);assert.equal(countResult.counts.BLOOD_TEST,1);
 assert.equal(imports.length,before,'Loading counts is read-only');
 assert.equal((await GET(new Request('http://test.invalid/api?date=2026-02-30'))).status,400);
 user=null;assert.equal((await post(base)).status,401);assert.equal((await GET(new Request('http://test.invalid/api?date=2026-11-15'))).status,401);
 for(const role of ['OUTREACH_WORKER','FACILITY_STAFF','HEALTHCARE_NAVIGATOR']) { user={role};assert.equal((await post(base)).status,403);assert.equal((await GET(new Request('http://test.invalid/api?date=2026-11-15'))).status,403); }
-console.log('New appointment checks passed: minimal CNV writes, all four types, reserved instances, date validation, duplicate/retry protection, record isolation and role access. No network requests made.');
+console.log('New appointment checks passed: minimal CNV writes, all six types, reserved instances, date validation, duplicate/retry protection, record isolation and role access. No network requests made.');

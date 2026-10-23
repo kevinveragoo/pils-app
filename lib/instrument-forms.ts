@@ -1,4 +1,5 @@
 import definitions from './instrument-forms.json';
+import { isClinicAppointmentDate } from './clinic-appointment-fields';
 export type InstrumentName = keyof typeof definitions;
 export const instrumentFields = (form: InstrumentName) => definitions[form].filter(f => !['descriptive', 'calc','file'].includes(f.kind) && (!/@HIDDEN|@CALC/.test(f.annotation) || ['pv_next_appointment_date','cnv_next_appointment_date','ptp_status'].includes(f.name))).map(f => f.name);
 export const retiredClinicEnrollmentFields = definitions.clinic_enrollment.filter(f=>/@HIDDEN/.test(f.annotation)).map(f=>f.name);
@@ -27,5 +28,5 @@ export function fieldVisible(branch: string, values: Record<string,string>): boo
   try{const result=or();return index===tokens.length&&result;}catch{return false;}
 }
 export function visibleInstrumentValues(form: InstrumentName, values: Record<string,string>) {
-  return Object.fromEntries(definitions[form].filter(f=>instrumentFields(form).includes(f.name)&&fieldVisible(f.branch,values)).map(f=>[f.name, values[f.name] ?? '']));
+  return Object.fromEntries(definitions[form].filter(f=>instrumentFields(form).includes(f.name)&&(form === 'clinic_visit' && isClinicAppointmentDate(f.name) ? values.cnv_no_show !== '1' : fieldVisible(f.branch,values))).map(f=>[f.name, values[f.name] ?? '']));
 }

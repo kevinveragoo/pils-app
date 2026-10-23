@@ -1448,3 +1448,15 @@
 "New Clinic" = "New Clinic";
 
 "Appointment" = "Appointment";
+
+"Next appointments" = "Next appointments";
+
+"Next laboratory results review date" = "Next laboratory results review date";
+
+"Earliest service follow-up date, including laboratory results review. Uses the historical appointment date only when all service dates are blank." = "Earliest service follow-up date, including laboratory results review. Uses the historical appointment date only when all service dates are blank.";
+
+"Next other services appointment date" = "Next other services appointment date";
+
+"Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank." = "Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank.";
+
+"Adding…" = "Adding…";

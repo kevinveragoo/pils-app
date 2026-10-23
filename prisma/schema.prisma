@@ -109,7 +109,7 @@ model ClinicQueueEntry {
 
   @@index([queueDate, status])
   @@index([queueDate, queueNumber])
-  @@index([recordId, queueDate])
+  @@unique([recordId, queueDate])
 }
 
 model ClinicQueueEvent {

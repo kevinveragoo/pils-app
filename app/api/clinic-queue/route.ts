@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     const waitingStation = typeof body.currentStation === "string" && ["BLOOD_TEST", "DOCTOR", "MEDICATION"].includes(body.currentStation) && (QUEUE_STATIONS as readonly string[]).includes(body.currentStation) ? body.currentStation : undefined;
     const scheduledArrival = body.source === "SCHEDULED" && body.status === "WAITING" && body.currentStation === "FILE_RETRIEVAL";
     const entry = await createQueueEntry({ queueDate, recordId, displayName, alias: typeof body.alias === "string" ? body.alias : undefined, patientCode: typeof body.patientCode === "string" ? body.patientCode : undefined, phone: typeof body.phone === "string" ? body.phone : undefined, source: body.source === "SCHEDULED" ? "SCHEDULED" : "WALK_IN", appointmentSources: Array.isArray(body.appointmentSources) ? body.appointmentSources.filter((item): item is string => typeof item === "string") : [], isNewClient: false, status: scheduledArrival || waitingStation ? "WAITING" : "EXPECTED", currentStation: scheduledArrival ? "FILE_RETRIEVAL" : waitingStation, visitWorkflow, clinicPurposes, prepPurposes, tasks: visitWorkflow && body.source !== "SCHEDULED" ? purposeTasks(clinicPurposes, prepPurposes) : tasks, notes: typeof body.notes === "string" ? body.notes : undefined }, user);
-    return NextResponse.json(entry, { status: 201 });
+    return NextResponse.json(entry, { status: entry.alreadyQueued ? 200 : 201 });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to add the queue entry." }, { status: 500 }); }
 }
 

@@ -27,6 +27,8 @@ export function queueVisitDetails(entry: { visitWorkflow?: string | null; clinic
     if (includesClinic(workflow)) {
       if (sources.includes("Clinic blood test") || (!sources.length && entry.tasks.includes("BLOOD_TEST"))) clinicPurposes.push("11");
       if (sources.includes("Clinic doctor review") || (!sources.length && entry.tasks.includes("DOCTOR"))) clinicPurposes.push("12");
+      if (sources.includes("Clinic other services")) clinicPurposes.push("99");
+      if (sources.includes("Clinic laboratory results review")) clinicPurposes.push("3");
       if (sources.includes("Clinic addictologist review")) clinicPurposes.push("15");
       if (sources.includes("Clinic medication collection") || (!sources.length && entry.tasks.includes("MEDICATION"))) clinicPurposes.push("9");
       if (entry.tasks.includes("ARV")) clinicPurposes.push("4");

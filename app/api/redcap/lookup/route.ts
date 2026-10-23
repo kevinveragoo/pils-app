@@ -1,3 +1,4 @@
+import { isPilsUser } from "@/lib/organization-access";
 import { filterRestrictedLookupData } from "@/lib/lookup-privacy";
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasAnyRole } from "@/lib/auth";
@@ -6,6 +7,7 @@ import { buildLookupSections, type LookupField, type LookupInstrument, type Look
 export async function GET(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  if (!isPilsUser(user)) return NextResponse.json({ error: "This feature is available to PILS users only." }, { status: 403 });
   const uic = new URL(request.url).searchParams.get("uic")?.trim() ?? "";
   if (!uic) return NextResponse.json({ error: "Select a client to view their record." }, { status: 400 });
   const url = process.env.REDCAP_API_URL, token = process.env.REDCAP_API_TOKEN;

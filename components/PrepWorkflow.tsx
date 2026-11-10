@@ -2,7 +2,9 @@
 import { InstrumentForm } from "@/components/InstrumentForm";
 import { instrumentInitial } from "@/lib/instrument-forms";
 import { districts } from "@/lib/redcap-options";
-import { prepNextAppointment } from "@/lib/prep-followup";
+import PrepAppointmentDates from "@/components/PrepAppointmentDates";
+import { prepAppointmentDateFields } from "@/lib/clinic-appointment-fields";
+import { PREP_VISIT_SCHEMA_VERSION, validatePrepVisit } from "@/lib/prep-visit-policy";
 
 import { useEffect, useMemo, useState } from "react";
 import { generateUic } from "@/lib/uic";
@@ -101,6 +103,7 @@ export default function PrepWorkflow({ staffName, initialUic, queueId, initialNe
       if (missing.length) return setError(`Still required: ${missing.join(", ")}.`), false;
     }
     if (stage === "visit") {
+      const problem = validatePrepVisit(visit); if (problem) return setError(problem), false;
       const missing = [["pv_visit_date", "Visit date"]].filter(([key]) => !visit[key]).map(([, label]) => label);
       if (missing.length) return setError(`Still required: ${missing.join(", ")}.`), false;
     }
@@ -114,11 +117,11 @@ export default function PrepWorkflow({ staffName, initialUic, queueId, initialNe
   }
 
   async function submit() {
-    const validationError = (mode === "new" ? validateFields(enrollment) : null) || validateFields(visit) || ((mode === "new" || updateProfile) ? validateFields(profile) : null);
+    const validationError = (mode === "new" ? validateFields(enrollment) : null) || validatePrepVisit(visit) || ((mode === "new" || updateProfile) ? validateFields(profile) : null);
     if (validationError) { setError(validationError); return; }
     setSubmitting(true); setError("");
     try {
-      const response = await fetch("/api/redcap/prep", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, recordId: uic, enrollment: mode === "new" ? enrollment : undefined, profile: mode === "new" || updateProfile ? profile : undefined, includeProfile: mode === "new" || updateProfile, visit, queueId }) });
+      const response = await fetch("/api/redcap/prep", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prepSchemaVersion: PREP_VISIT_SCHEMA_VERSION, mode, recordId: uic, enrollment: mode === "new" ? enrollment : undefined, profile: mode === "new" || updateProfile ? profile : undefined, includeProfile: mode === "new" || updateProfile, visit, queueId }) });
       const data = await response.json(); if (!response.ok) throw new Error(data.error ?? "Unable to save the PrEP workflow.");
       setSuccess(`PrEP workflow saved for ${uic}.`);
     } catch (reason) { setError(reason instanceof Error ? reason.message : "Unable to save the PrEP workflow."); }
@@ -157,7 +160,7 @@ function ProfileForm({ values, set, patient }: { values: Values; set: (key: stri
  return <section className="outreach-card grid gap-4"><h2 className="text-xl font-bold">PrEP Treatment Profile</h2><PatientSummary patient={patient}/><InstrumentForm form="prep_treatment_profile" values={values} set={set}/></section>;
 }
 export function PrepVisitForm({ values, set, patient, embedded=false, profileUpdated=false }: { values: Values; set: (key:string,value:string)=>void; patient:PatientSummaryDetails; embedded?:boolean; profileUpdated?:boolean }) {
- return <section className={embedded?"grid gap-4":"outreach-card grid gap-4"}>{!embedded&&<><h2 className="text-xl font-bold">PrEP Visit</h2><PatientSummary patient={patient}/></>}<InstrumentForm form="prep_visit" values={{...values,pv_profile_updated:profileUpdated?"1":"0"}} set={set} readOnlyFields={["pv_profile_updated"]}/><Field label="Next appointment date"><Input type="date" readOnly value={prepNextAppointment(values)}/></Field></section>;
+ return <section className={embedded?"grid gap-4":"outreach-card grid gap-4"}>{!embedded&&<><h2 className="text-xl font-bold">PrEP Visit</h2><PatientSummary patient={patient}/></>}<InstrumentForm form="prep_visit" values={{...values,pv_profile_updated:profileUpdated?"1":"0"}} set={set} readOnlyFields={["pv_profile_updated"]} excludeFields={[...prepAppointmentDateFields,"pv_next_appointment_date"]}/><PrepAppointmentDates values={values} set={set}/></section>;
 }
 
 function Review({ uic, mode, patient, enrollment, profile, visit, includeProfile }: { uic: string; mode: Mode; patient: Patient | null; enrollment: Values; profile: Values; visit: Values; includeProfile: boolean }) {

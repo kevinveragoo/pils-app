@@ -1,3 +1,4 @@
+import { PREP_VISIT_SCHEMA_VERSION, validatePrepVisit } from "@/lib/prep-visit-policy";
 import { instrumentFields, instrumentCheckboxes, visibleInstrumentValues } from "@/lib/instrument-forms";
 import { prepNextAppointment } from "@/lib/prep-followup";
 import { latestStatus } from "@/lib/status-history";
@@ -12,7 +13,7 @@ const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
 
 type Values = Record<string, string>;
-type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; profile?: unknown; visit?: unknown; includeProfile?: unknown; queueId?: unknown };
+type Submission = { prepSchemaVersion?: unknown; mode?: unknown; recordId?: unknown; enrollment?: unknown; profile?: unknown; visit?: unknown; includeProfile?: unknown; queueId?: unknown };
 
 const enrollmentFields = ["ce_active", "ce_date", "ce_implementing_partner", "ce_district", "ce_hotspot", "ce_outreach_worker", "ce_last_name", "ce_first_name", "ce_middle_name_1", "ce_middle_name_2", "ce_middle_name_3", "ce_alias", "ce_dob", "ce_gender_identity", "ce_vision", "ce_kp_type", "ce_tel_primary", "ce_contact_method", "ce_risk_drug_alcohol_sex", "ce_risk_violence_1m", "ce_sw_age_started", "ce_sw_sex_acts_1w", "ce_sw_condom_use_1w", "ce_msm_age_first_anal", "ce_msm_receptive_anal_1w", "ce_msm_condom_anal_1w", "ce_pwid_age_first_inject", "ce_pwid_injections_24h", "ce_pwid_injections_1w", "ce_pwid_shared_24h", "ce_pwid_shared_1w"];
 const profileFields = instrumentFields("prep_treatment_profile");
@@ -93,6 +94,7 @@ export async function POST(request: Request) {
   let input: Submission;
   try { input = await request.json() as Submission; } catch { return NextResponse.json({ error: "The request body must be valid JSON." }, { status: 400 }); }
 
+  if (input.prepSchemaVersion !== PREP_VISIT_SCHEMA_VERSION) return NextResponse.json({ error: "The PrEP form has changed. Keep your unsaved answers, then reload before saving." }, { status: 409 });
   const mode = input.mode;
   const recordId = typeof input.recordId === "string" ? input.recordId.trim().toUpperCase() : "";
   const enrollment = values(input.enrollment);
@@ -109,7 +111,7 @@ export async function POST(request: Request) {
     if (generateUic(enrollment) !== recordId) return NextResponse.json({ error: "The generated UIC does not match the enrollment details." }, { status: 400 });
   }
 
-  const earlyValidation = (mode === "new" && enrollment ? validateFields(enrollment, enrollmentFields) : null) || validateFields(visit, visitFields);
+  const earlyValidation = (mode === "new" && enrollment ? validateFields(enrollment, enrollmentFields) : null) || validatePrepVisit(visit);
   if (earlyValidation) return NextResponse.json({ error: earlyValidation }, { status: 400 });
 
   try {

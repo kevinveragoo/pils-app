@@ -1460,3 +1460,61 @@
 "Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank." = "Date de suivi la plus proche, y compris la revue des résultats de laboratoire et les autres services. Utilise la date historique du rendez-vous uniquement lorsque toutes les dates de service sont vides.";
 
 "Adding…" = "Ajout en cours…";
+
+"All available records" = "Toutes les données disponibles";
+
+"Rolling 12 months" = "12 mois glissants";
+
+"Rolling 3 months" = "3 mois glissants";
+
+"Rolling month" = "Mois glissant";
+
+"Last 7 calendar days" = "7 derniers jours calendaires";
+
+"Rapid test" = "Test rapide";
+
+"Laboratory" = "Laboratoire";
+
+"First time tested" = "Premier dépistage";
+
+"Recorded / unclassified" = "Résultat enregistré / non classé";
+
+"Outreach Contact" = "Contact de proximité";
+
+"Clinic Visit (combined needles/syringes field)" = "Visite clinique (champ combiné aiguilles/seringues)";
+
+"HIV Care Support (combined needles/syringes field)" = "Accompagnement VIH (champ combiné aiguilles/seringues)";
+
+
+
+"Outreach Contact — HIV rapid result" = "Contact de proximité — résultat du test rapide HIV";
+
+"Clinic Visit — HIV laboratory result" = "Visite clinique — résultat de laboratoire HIV";
+
+"PrEP Visit — HIV laboratory result" = "Visite PrEP — résultat de laboratoire HIV";
+
+"Outreach Contact — HBV rapid result" = "Contact de proximité — résultat du test rapide HBV";
+
+"Clinic Visit — HBV laboratory result" = "Visite clinique — résultat de laboratoire HBV";
+
+"PrEP Visit — HBV laboratory result" = "Visite PrEP — résultat de laboratoire HBV";
+
+"Outreach Contact — HCV rapid result" = "Contact de proximité — résultat du test rapide HCV";
+
+"Clinic Visit — HCV laboratory result" = "Visite clinique — résultat de laboratoire HCV";
+
+"PrEP Visit — HCV laboratory result" = "Visite PrEP — résultat de laboratoire HCV";
+
+"Outreach Contact — syphilis rapid result" = "Contact de proximité — résultat du test rapide syphilis";
+
+"Clinic Visit — syphilis laboratory result" = "Visite clinique — résultat de laboratoire syphilis";
+
+"PrEP Visit — syphilis laboratory result" = "Visite PrEP — résultat de laboratoire syphilis";
+
+"PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained." = "Les résultats de laboratoire PrEP utilisent la date de chaque test, puis la date de prélèvement ou de visite pour les anciens dossiers. Les choix sont identiques à ceux des visites cliniques. Les anciens textes de syphilis inattendus sont classés comme Enregistré / non classé. Les tests explicitement non admissibles sont exclus ; les anciens dossiers sans motif ni indicateur de test sont conservés.";
+
+"PrEP laboratory results review" = "PrEP : examen des résultats de laboratoire";
+
+"Conflicting results" = "Résultats contradictoires";
+
+"Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded." = "Les tests sont comptés une fois par patient, infection, méthode et date de test, jusqu’à aujourd’hui à Maurice. Les résultats de laboratoire Clinique et PrEP à la même date sont regroupés. Les résultats différents apparaissent une fois sous Résultats contradictoires. Les consultations comptent les journées par patient et par méthode. Sans identifiant de prélèvement, les prélèvements répétés le même jour ne peuvent pas être distingués. Le filtre des populations clés utilise l’appartenance ; les dossiers sans la valeur démographique sélectionnée sont exclus.";

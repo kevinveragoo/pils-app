@@ -240,7 +240,7 @@
     "label": "<div class=\"rich-text-field-label\"><p>Emergency contact phone</p></div>",
     "form": "client_enrollment",
     "type": "number",
-    "min": 7.0
+    "min": 7
   },
   "ce_marital_status": {
     "label": "<div class=\"rich-text-field-label\"><p>Marital status</p></div>",
@@ -259,7 +259,7 @@
     "label": "<div class=\"rich-text-field-label\"><p>Number of children</p></div>",
     "form": "client_enrollment",
     "type": "number",
-    "max": 15.0
+    "max": 15
   },
   "ce_parent_celib": {
     "label": "<div class=\"rich-text-field-label\"><p>Are you a single parent</p></div>",
@@ -367,16 +367,16 @@
     "form": "client_enrollment",
     "type": "integer",
     "branch": "[ce_kp_type(1)] = '1'",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "ce_sw_sex_acts_1w": {
     "label": "Number of vaginal or anal sex acts in the last week",
     "form": "client_enrollment",
     "type": "integer",
     "branch": "[ce_kp_type(1)] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_sw_condom_use_1w": {
     "label": "Used a condom every time with boyfriend/intimate partner in the last week?",
@@ -393,16 +393,16 @@
     "form": "client_enrollment",
     "type": "integer",
     "branch": "[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "ce_msm_receptive_anal_1w": {
     "label": "Number of receptive anal-sex acts in the last week",
     "form": "client_enrollment",
     "type": "integer",
     "branch": "[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_msm_condom_anal_1w": {
     "label": "Used a condom every time during receptive or penetrative anal sex in the last week?",
@@ -419,40 +419,40 @@
     "form": "client_enrollment",
     "type": "integer",
     "branch": "[ce_kp_type(3)] = '1' or [ce_kp_type(4)] = '1'",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "ce_pwid_injections_24h": {
     "label": "Number of injections in the last 24 hours",
     "form": "client_enrollment",
     "type": "integer",
     "branch": "[ce_kp_type(3)] = '1' or [ce_kp_type(4)] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_pwid_injections_1w": {
     "label": "Number of injections in the last week",
     "form": "client_enrollment",
     "type": "integer",
     "branch": "[ce_kp_type(3)] = '1' or [ce_kp_type(4)] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_pwid_shared_24h": {
     "label": "Times shared nonsterile injecting equipment in the last 24 hours",
     "form": "client_enrollment",
     "type": "integer",
     "branch": "[ce_kp_type(3)] = '1' or [ce_kp_type(4)] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_pwid_shared_1w": {
     "label": "Times shared nonsterile injecting equipment in the last week",
     "form": "client_enrollment",
     "type": "integer",
     "branch": "[ce_kp_type(3)] = '1' or [ce_kp_type(4)] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ce_risk_score_initial": {
     "label": "Initial risk score",
@@ -638,8 +638,8 @@
     "label": "Number of sex acts in the last week",
     "form": "outreach_contact",
     "type": "integer",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "oc_condom_use": {
     "label": "Condom use with sex partners",
@@ -703,44 +703,44 @@
     "label": "Male condoms provided (quantity)",
     "form": "outreach_contact",
     "type": "integer",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "oc_female_condoms": {
     "label": "Female condoms provided (quantity)",
     "form": "outreach_contact",
     "type": "integer",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "oc_lubricant": {
     "label": "Lubricant/ Gel packs provided (quantity)",
     "form": "outreach_contact",
     "type": "integer",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "oc_hiv_self_test": {
     "label": "HIV self (quantity)",
     "form": "outreach_contact",
     "type": "integer",
-    "min": 0.0
+    "min": 0
   },
   "oc_syringes": {
     "label": "Syringes provided (quantity)",
     "form": "outreach_contact",
     "type": "integer",
     "branch": "[ce_kp_type(3)] = '1' or [ce_kp_type(4)] = '1'",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "oc_num_needles": {
     "label": "Needles provided (quantity)",
     "form": "outreach_contact",
     "type": "integer",
     "branch": "[ce_kp_type(3)] = '1' or [ce_kp_type(4)] = '1'",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "oc_hiv_status_prev": {
     "label": "HIV status at this contact",
@@ -988,8 +988,8 @@
     "form": "clinic_enrollment",
     "type": "integer",
     "branch": "[ce_sex_assigned_birth] = '2'",
-    "min": 0.0,
-    "max": 99.0
+    "min": 0,
+    "max": 99
   },
   "cne_pregnant_now": {
     "label": "Currently pregnant?",
@@ -1016,8 +1016,8 @@
     "form": "clinic_enrollment",
     "type": "integer",
     "branch": "[ce_sex_assigned_birth] = '2'",
-    "min": 0.0,
-    "max": 99.0
+    "min": 0,
+    "max": 99
   },
   "cne_contraception_type": {
     "label": "Current method to prevent pregnancy",
@@ -1164,8 +1164,8 @@
     "label": "Age at first sexual intercourse",
     "form": "clinic_enrollment",
     "type": "integer",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "cne_sex_3m": {
     "label": "Had sex in the past three months?",
@@ -1180,8 +1180,8 @@
     "label": "Number of sexual partners in the past week",
     "form": "clinic_enrollment",
     "type": "integer",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "cne_msm_sex_type": {
     "label": "For MSM: type of sex in most encounters",
@@ -1209,24 +1209,24 @@
     "form": "clinic_enrollment",
     "type": "integer",
     "branch": "[cne_sex_exchange] = '1'",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "cne_sw_paid_week": {
     "label": "Partners in past week in exchange for cash/goods",
     "form": "clinic_enrollment",
     "type": "integer",
     "branch": "[cne_sex_exchange] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "cne_sw_unpaid_week": {
     "label": "Partners in past week not in exchange for cash/goods",
     "form": "clinic_enrollment",
     "type": "integer",
     "branch": "[cne_sex_exchange] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "cne_condom_24h": {
     "label": "Used condom every time in last 24 hours?",
@@ -1309,32 +1309,32 @@
     "form": "clinic_enrollment",
     "type": "integer",
     "branch": "[cne_inject_3m] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "cne_share_needle_1w": {
     "label": "Shared nonsterile equipment in last week",
     "form": "clinic_enrollment",
     "type": "integer",
     "branch": "[cne_inject_1w] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "cne_inject_24h": {
     "label": "Injected drugs for nonmedical purposes in last 24 hours",
     "form": "clinic_enrollment",
     "type": "integer",
     "branch": "[cne_inject_1w] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "cne_share_needle_24h": {
     "label": "Shared nonsterile equipment in last 24 hours",
     "form": "clinic_enrollment",
     "type": "integer",
     "branch": "[cne_inject_24h] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "cne_sti_symp_6m": {
     "label": "STI symptoms in past six months",
@@ -1614,8 +1614,8 @@
     "form": "clinic_visit",
     "type": "integer",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(9)] = '1')",
-    "min": 0.0,
-    "max": 24.0
+    "min": 0,
+    "max": 24
   },
   "cnv_next_med_date": {
     "label": "Next medication collection date",
@@ -1650,21 +1650,21 @@
     "form": "clinic_visit",
     "type": "number",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(4)] = '1' or [cnv_visit_purpose(12)] = '1')",
-    "min": 0.0
+    "min": 0
   },
   "cnv_bp_systolic": {
     "label": "Systolic blood pressure (mmHg)",
     "form": "clinic_visit",
     "type": "integer",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(4)] = '1' or [cnv_visit_purpose(12)] = '1')",
-    "min": 0.0
+    "min": 0
   },
   "cnv_bp_diastolic": {
     "label": "Diastolic blood pressure (mmHg)",
     "form": "clinic_visit",
     "type": "integer",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(4)] = '1' or [cnv_visit_purpose(12)] = '1')",
-    "min": 0.0
+    "min": 0
   },
   "cnv_next_doctor_date": {
     "label": "Next doctor review date",
@@ -1689,21 +1689,21 @@
     "form": "clinic_visit",
     "type": "number",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(15)] = '1')",
-    "min": 0.0
+    "min": 0
   },
   "cnv_bp_systolic_addicto": {
     "label": "Systolic blood pressure (mmHg)",
     "form": "clinic_visit",
     "type": "integer",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(15)] = '1')",
-    "min": 0.0
+    "min": 0
   },
   "cnv_bp_diastolic_addicto": {
     "label": "Diastolic blood pressure (mmHg)",
     "form": "clinic_visit",
     "type": "integer",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(15)] = '1')",
-    "min": 0.0
+    "min": 0
   },
   "cnv_next_addicto_date": {
     "label": "Next addictologist review date",
@@ -2071,39 +2071,39 @@
     "form": "clinic_visit",
     "type": "integer",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "cnv_num_female_condoms": {
     "label": "Female condoms given (quantity)",
     "form": "clinic_visit",
     "type": "integer",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "cnv_num_lube": {
     "label": "Lubricant given (quantity)",
     "form": "clinic_visit",
     "type": "integer",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "cnv_num_hiv_selftest_kits": {
     "label": "HIV self-test kits distributed (quantity)",
     "form": "clinic_visit",
     "type": "integer",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
-    "min": 0.0
+    "min": 0
   },
   "cnv_num_needles": {
     "label": "Needles/syringes given (quantity)",
     "form": "clinic_visit",
     "type": "integer",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(16)] = '1')",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "cnv_section_13_hdr": {
     "label": "<div style=\"background-color:#ffffcc;padding:8px 10px;font-weight:bold;border-top:1px solid #ddd;border-bottom:1px solid #ddd;\">SEXUAL AND GENDER BASED VIOLENCE TESTING AND COUNSELLING</div>",
@@ -2387,7 +2387,8 @@
     "choices": [
       "1",
       "2",
-      "3"
+      "3",
+      "4"
     ]
   },
   "pv_followup_stage": {
@@ -2421,6 +2422,7 @@
     "label": "Blood collected?",
     "form": "prep_visit",
     "type": "yesno",
+    "branch": "[pv_visit_purpose(1)] = '1'",
     "choices": [
       "0",
       "1"
@@ -2429,136 +2431,161 @@
   "pv_blood_collected_date": {
     "label": "Blood collected date",
     "form": "prep_visit",
-    "type": "date_dmy"
+    "type": "date_dmy",
+    "branch": "([pv_visit_purpose(1)] = '1') and ([pv_blood_collected] = '1')"
   },
   "pv_blood_draw_notes": {
     "label": "Blood draw notes",
     "form": "prep_visit",
-    "type": "notes"
+    "type": "notes",
+    "branch": "([pv_visit_purpose(1)] = '1') and ([pv_blood_collected] = '1')"
   },
   "pv_next_blood_date": {
     "label": "Blood-test next date",
     "form": "prep_visit",
-    "type": "date_dmy"
+    "type": "date_dmy",
+    "branch": "[pv_visit_purpose(1)] = '1'"
   },
   "pv_hiv_result": {
-    "label": "HIV result",
+    "label": "HIV testing result (Laboratory)",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hiv_lab_test_done] = '1')",
     "choices": [
       "1",
       "2",
       "3",
-      "4",
-      "5"
+      "4"
     ]
   },
   "pv_creatinine_result": {
     "label": "Creatinine result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_syphilis_result": {
-    "label": "Syphilis result",
+    "label": "Syphilis testing result (Laboratory)?",
     "form": "prep_visit",
-    "type": "text"
+    "type": "radio",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_syp_lab_test_done] = '1')",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
   },
   "pv_hbsag_result": {
     "label": "HBsAg result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_hcv_result": {
-    "label": "HCV test result",
+    "label": "HCV testing result (Laboratory)",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hcv_lab_test_done] = '1')",
     "choices": [
       "1",
       "2",
       "3",
-      "4",
-      "5"
+      "4"
     ]
   },
   "pv_hbv_result": {
-    "label": "HBV (Hepatitis B) result",
+    "label": "HBV testing result (Laboratory)",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hbv_lab_test_done] = '1')",
     "choices": [
       "1",
       "2",
       "3",
-      "4",
-      "5"
+      "4"
     ]
   },
   "pv_hb_result": {
     "label": "Hb (Hemoglobin) result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_cholesterol_result": {
     "label": "Cholesterol result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_triglycerides_result": {
     "label": "Triglycerides result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_tpha_result": {
     "label": "TPHA result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_vdrl_result": {
     "label": "VDRL result (Venereal Disease Research Laboratory)",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_other_test_result": {
     "label": "Other test result",
     "form": "prep_visit",
-    "type": "notes"
+    "type": "notes",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_doctor": {
     "label": "Doctor name",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(2)] = '1'"
   },
   "pv_weight": {
     "label": "Weight (kg)",
     "form": "prep_visit",
     "type": "number",
-    "min": 0.0
+    "branch": "[pv_visit_purpose(2)] = '1'",
+    "min": 0
   },
   "pv_bp_systolic": {
     "label": "Systolic blood pressure (mmHg)",
     "form": "prep_visit",
     "type": "integer",
-    "min": 0.0
+    "branch": "[pv_visit_purpose(2)] = '1'",
+    "min": 0
   },
   "pv_bp_diastolic": {
     "label": "Diastolic blood pressure (mmHg)",
     "form": "prep_visit",
     "type": "integer",
-    "min": 0.0
+    "branch": "[pv_visit_purpose(2)] = '1'",
+    "min": 0
   },
   "pv_doctor_comments": {
     "label": "Doctor comments",
     "form": "prep_visit",
-    "type": "notes"
+    "type": "notes",
+    "branch": "[pv_visit_purpose(2)] = '1'"
   },
   "pv_next_doctor_date": {
     "label": "Doctor next date",
     "form": "prep_visit",
-    "type": "date_dmy"
+    "type": "date_dmy",
+    "branch": "[pv_visit_purpose(2)] = '1'"
   },
   "pv_medication": {
     "label": "PrEP medication prescribed",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "[pv_visit_purpose(3)] = '1'",
     "choices": [
       "1",
       "2",
@@ -2568,36 +2595,42 @@
   "pv_other_medication": {
     "label": "Other medication received",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(3)] = '1'"
   },
   "pv_lot_number": {
     "label": "PrEP medication lot number",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(3)] = '1'"
   },
   "pv_medication_dispensed": {
     "label": "No. PrEP medication (tablet/bottle) dispensed this visit",
     "form": "prep_visit",
     "type": "integer",
-    "min": 0.0,
-    "max": 9999.0
+    "branch": "[pv_visit_purpose(3)] = '1'",
+    "min": 0,
+    "max": 9999
   },
   "pv_prescription_months": {
     "label": "Prescription duration (months)",
     "form": "prep_visit",
     "type": "integer",
-    "min": 1.0,
-    "max": 24.0
+    "branch": "[pv_visit_purpose(3)] = '1'",
+    "min": 1,
+    "max": 24
   },
   "pv_next_med_date": {
     "label": "Next medication collection date",
     "form": "prep_visit",
-    "type": "date_dmy"
+    "type": "date_dmy",
+    "branch": "[pv_visit_purpose(3)] = '1'"
   },
   "pv_syphilis_referral": {
     "label": "Syphilis referral",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "[pv_visit_purpose(4)] = '1'",
     "choices": [
       "0",
       "1",
@@ -2608,6 +2641,7 @@
     "label": "Hepatitis C referral",
     "form": "prep_visit",
     "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
     "choices": [
       "0",
       "1"
@@ -2617,6 +2651,7 @@
     "label": "Hepatitis B referral",
     "form": "prep_visit",
     "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
     "choices": [
       "0",
       "1"
@@ -2625,12 +2660,27 @@
   "pv_other_referral": {
     "label": "Other referral",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_hbv_vaccination_status": {
-    "label": "Hepatitis B vaccination status",
+    "label": "HBV vaccination status",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "[pv_visit_purpose(4)] = '1'",
+    "choices": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "pv_hcv_vaccination_status": {
+    "label": "HCV vaccination status",
+    "form": "prep_visit",
+    "type": "radio",
+    "branch": "[pv_visit_purpose(4)] = '1'",
     "choices": [
       "0",
       "1",
@@ -2638,18 +2688,6 @@
       "3",
       "4",
       "5"
-    ]
-  },
-  "pv_hcv_vaccination_status": {
-    "label": "Hepatitis C vaccination status",
-    "form": "prep_visit",
-    "type": "radio",
-    "choices": [
-      "0",
-      "1",
-      "2",
-      "3",
-      "4"
     ]
   },
   "pv_profile_updated": {
@@ -2857,8 +2895,8 @@
     "label": "CD4 level",
     "form": "hiv_clinical_monitoring",
     "type": "number",
-    "min": 0.0,
-    "max": 9999.0
+    "min": 0,
+    "max": 9999
   },
   "htm_vl_date": {
     "label": "Viral load test date",
@@ -2880,8 +2918,8 @@
     "label": "Viral load level (copies/mL)",
     "form": "hiv_clinical_monitoring",
     "type": "integer",
-    "min": 0.0,
-    "max": 999999999.0
+    "min": 0,
+    "max": 999999999
   },
   "htm_notes": {
     "label": "Monitoring notes",
@@ -3064,32 +3102,32 @@
     "form": "hiv_care_support",
     "type": "integer",
     "branch": "[hcs_status_only] <> '1'",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "hcs_num_female_condoms": {
     "label": "Female condoms provided",
     "form": "hiv_care_support",
     "type": "integer",
     "branch": "[hcs_status_only] <> '1'",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "hcs_num_lube": {
     "label": "Lubricant provided",
     "form": "hiv_care_support",
     "type": "integer",
     "branch": "[hcs_status_only] <> '1'",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "hcs_num_needles": {
     "label": "Needles/syringes provided",
     "form": "hiv_care_support",
     "type": "integer",
     "branch": "[hcs_status_only] <> '1'",
-    "min": 0.0,
-    "max": 99999.0
+    "min": 0,
+    "max": 99999
   },
   "hcs_followup_needed": {
     "label": "Follow-up required?",
@@ -3198,8 +3236,8 @@
     "label": "Partner age if DOB unknown",
     "form": "partner_referral_partner",
     "type": "integer",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "itp_gender": {
     "label": "Partner gender",
@@ -3458,8 +3496,8 @@
     "label": "Child age if DOB unknown",
     "form": "partner_referral_child",
     "type": "integer",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "itch_gender": {
     "label": "Child gender",
@@ -3635,8 +3673,8 @@
     "type": "number",
     "required": true,
     "branch": "[ce_kp_type(1)] = '1'",
-    "min": 0.0,
-    "max": 99.0
+    "min": 0,
+    "max": 99
   },
   "ra_sw_acts_1w": {
     "label": "Number of receptive vaginal or anal sex acts during the previous week",
@@ -3644,8 +3682,8 @@
     "type": "integer",
     "required": true,
     "branch": "[ce_kp_type(1)] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ra_sw_condom_use": {
     "label": "Used condom every time with intimate partner in last week?",
@@ -3670,8 +3708,8 @@
     "type": "number",
     "required": true,
     "branch": "[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'",
-    "min": 0.0,
-    "max": 99.0
+    "min": 0,
+    "max": 99
   },
   "ra_msm_receptive_1w": {
     "label": "Receptive anal sex acts in last week",
@@ -3679,8 +3717,8 @@
     "type": "integer",
     "required": true,
     "branch": "[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ra_msm_condom_anal": {
     "label": "Was a condom used for every anal sex act during the previous week (both receptive and penetrative)?",
@@ -3757,8 +3795,8 @@
     "label": "Age at first sexual intercourse",
     "form": "risk_assessment",
     "type": "integer",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "ra_sex_3m": {
     "label": "Had sex in the past three months?",
@@ -3773,8 +3811,8 @@
     "label": "Number of sexual partners in the past week",
     "form": "risk_assessment",
     "type": "integer",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ra_msm_sex_type": {
     "label": "For MSM: type of sex in most encounters",
@@ -3802,24 +3840,24 @@
     "form": "risk_assessment",
     "type": "integer",
     "branch": "[ra_sex_exchange] = '1'",
-    "min": 0.0,
-    "max": 120.0
+    "min": 0,
+    "max": 120
   },
   "ra_sw_paid_week": {
     "label": "Partners in past week in exchange for cash/goods",
     "form": "risk_assessment",
     "type": "integer",
     "branch": "[ra_sex_exchange] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ra_sw_unpaid_week": {
     "label": "Partners in past week not in exchange for cash/goods",
     "form": "risk_assessment",
     "type": "integer",
     "branch": "[ra_sex_exchange] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ra_condom_24h": {
     "label": "Used condom every time in last 24 hours?",
@@ -3902,32 +3940,32 @@
     "form": "risk_assessment",
     "type": "integer",
     "branch": "[ra_inject_3m] = '1'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ra_share_needle_1w": {
     "label": "Shared nonsterile equipment in last week",
     "form": "risk_assessment",
     "type": "integer",
     "branch": "[ra_inject_1w] > '0'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ra_inject_24h": {
     "label": "Injected drugs for nonmedical purposes in last 24 hours",
     "form": "risk_assessment",
     "type": "integer",
     "branch": "[ra_inject_1w] > '0'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "ra_share_needle_24h": {
     "label": "Shared nonsterile equipment in last 24 hours",
     "form": "risk_assessment",
     "type": "integer",
     "branch": "[ra_inject_24h] > '0'",
-    "min": 0.0,
-    "max": 999.0
+    "min": 0,
+    "max": 999
   },
   "vd_client_hdr": {
     "label": "<b>Name:</b> [client_first_name] [client_middle_name] [client_last_name]\r\n\r\n<b>Alias:</b> [client_alias]\r\n\r\n<b>UIC:</b> [uic_ori]\r\n<b>DOB:</b> [client_dob]   <b>Age:</b> [client_age]\r\n<b>Gender:</b> [client_gender_identity]   <b>KP Type:</b> [client_kp_type]",
@@ -5265,7 +5303,7 @@
     "label": "Extra servings:",
     "form": "breakfast_attendance",
     "type": "integer",
-    "min": 0.0
+    "min": 0
   },
   "breakfast_recorded_by": {
     "label": "Recorded by",
@@ -5302,5 +5340,75 @@
     "form": "clinic_visit",
     "type": "date_dmy",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(99)] = '1')"
+  },
+  "pv_hiv_lab_test_done": {
+    "label": "HIV tested (Laboratory)?",
+    "form": "prep_visit",
+    "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_hiv_lab_test_date": {
+    "label": "HIV test date (Laboratory)",
+    "form": "prep_visit",
+    "type": "date_dmy",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hiv_lab_test_done] = '1')"
+  },
+  "pv_syp_lab_test_done": {
+    "label": "Syphilis tested (Laboratiry)?",
+    "form": "prep_visit",
+    "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_syp_lab_test_date": {
+    "label": "Syphilis test date (Laboratory)",
+    "form": "prep_visit",
+    "type": "date_dmy",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_syp_lab_test_done] = '1')"
+  },
+  "pv_hcv_lab_test_done": {
+    "label": "HCV tested (Laboratory)?",
+    "form": "prep_visit",
+    "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_hcv_lab_test_date": {
+    "label": "HCV test date (Laboratory)",
+    "form": "prep_visit",
+    "type": "date_dmy",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hcv_lab_test_done] = '1')"
+  },
+  "pv_hbv_lab_test_done": {
+    "label": "HBV tested (Laboratory?)",
+    "form": "prep_visit",
+    "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_hbv_lab_test_date": {
+    "label": "HBV test date (Laboratory)?",
+    "form": "prep_visit",
+    "type": "date_dmy",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hbv_lab_test_done] = '1')"
+  },
+  "pv_next_lab_review_date": {
+    "label": "Next laboratory results review date",
+    "form": "prep_visit",
+    "type": "date_dmy",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   }
 }

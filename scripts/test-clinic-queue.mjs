@@ -165,3 +165,10 @@ assert.ok(!(await loadedModule.exports.expectedAppointments('2026-11-19')).some(
 assert.deepEqual(Array.from((await loadedModule.exports.expectedAppointments('2026-11-20')).find(row => row.recordId === 'COMBINED').tasks), ['MEDICATION']);
 rows.splice(-3);
 console.log(`All ${cnvDates.length} CNV next-date fields passed selected-day matching, legacy/date-time support, no-show exclusions, cross-visit merging and duplicate suppression.`);
+
+rows.push({uic_ori:'PREP-LAB',redcap_repeat_instrument:'prep_visit',redcap_repeat_instance:1,pv_next_lab_review_date:'2026-11-19',pv_next_appointment_date:'2026-11-19'});
+const prepLab=(await loadedModule.exports.expectedAppointments('2026-11-19')).find(row=>row.recordId==='PREP-LAB');
+assert.ok(exportedQueueFields.includes('pv_next_lab_review_date'));
+assert.equal(prepLab.visitWorkflow,'PREP');assert.deepEqual(Array.from(prepLab.prepPurposes),['4']);assert.deepEqual(Array.from(prepLab.tasks),['DOCTOR']);assert.deepEqual(Array.from(prepLab.appointmentSources),['PrEP laboratory results review']);
+assert.ok(!(await loadedModule.exports.expectedAppointments('2026-11-20')).some(row=>row.recordId==='PREP-LAB'));
+console.log('PrEP laboratory review queue checks passed: selected date, purpose 4, doctor routing and no duplicate generic appointment.');

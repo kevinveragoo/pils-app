@@ -61,12 +61,12 @@ assert.deepEqual(JSON.parse(JSON.stringify(countAppointments([
  {uic_ori:'A',redcap_repeat_instrument:'clinic_visit',cnv_next_doctor_date:'2026-11-15',cnv_next_blood_date:'2026-11-15'},
  {uic_ori:'A',redcap_repeat_instrument:'clinic_visit',cnv_next_doctor_date:'2026-11-15'},
  {uic_ori:'A',redcap_repeat_instrument:'prep_visit',pv_next_doctor_date:'2026-11-15',pv_next_med_date:'2026-11-15'},
- {uic_ori:'B',redcap_repeat_instrument:'prep_visit',pv_next_doctor_date:'2026-11-15'},
+ {uic_ori:'B',redcap_repeat_instrument:'prep_visit',pv_next_doctor_date:'2026-11-15',pv_next_lab_review_date:'2026-11-15'},
  {uic_ori:'MISSED',redcap_repeat_instrument:'clinic_visit',cnv_no_show:'1',cnv_next_blood_date:'2026-11-15'},
  {uic_ori:'D',redcap_repeat_instrument:'clinic_visit',cnv_next_addicto_date:'2026-11-15'},
  {uic_ori:'OTHER_DATE',redcap_repeat_instrument:'clinic_visit',cnv_next_med_date:'2026-11-16'},
  {uic_ori:'WRONG_FORM',redcap_repeat_instrument:'outreach',cnv_next_med_date:'2026-11-15'},
-], '2026-11-15'))),{DOCTOR:2,BLOOD_TEST:1,MEDICATION:1,ADDICTOLOGY:1,LAB_RESULTS:0,OTHER_SERVICES:0});
+], '2026-11-15'))),{DOCTOR:2,BLOOD_TEST:1,MEDICATION:1,ADDICTOLOGY:1,LAB_RESULTS:1,OTHER_SERVICES:0});
 assert.deepEqual(JSON.parse(JSON.stringify(countAppointments([], '2026-11-15'))),{DOCTOR:0,BLOOD_TEST:0,MEDICATION:0,ADDICTOLOGY:0,LAB_RESULTS:0,OTHER_SERVICES:0});
 before=imports.length;
 const countsResponse=await GET(new Request('http://test.invalid/api?date=2026-11-15'));

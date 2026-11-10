@@ -1616,7 +1616,8 @@
     "codes": [
       "1",
       "2",
-      "3"
+      "3",
+      "4"
     ]
   },
   "pv_followup_stage": {
@@ -1646,7 +1647,11 @@
   },
   "pv_blood_collected": {
     "form": "prep_visit",
-    "type": "yesno"
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
   },
   "pv_blood_collected_date": {
     "form": "prep_visit",
@@ -1667,8 +1672,7 @@
       "1",
       "2",
       "3",
-      "4",
-      "5"
+      "4"
     ]
   },
   "pv_creatinine_result": {
@@ -1677,7 +1681,13 @@
   },
   "pv_syphilis_result": {
     "form": "prep_visit",
-    "type": "text"
+    "type": "radio",
+    "codes": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
   },
   "pv_hbsag_result": {
     "form": "prep_visit",
@@ -1690,8 +1700,7 @@
       "1",
       "2",
       "3",
-      "4",
-      "5"
+      "4"
     ]
   },
   "pv_hbv_result": {
@@ -1701,8 +1710,7 @@
       "1",
       "2",
       "3",
-      "4",
-      "5"
+      "4"
     ]
   },
   "pv_hb_result": {
@@ -1793,11 +1801,19 @@
   },
   "pv_hcv_referral": {
     "form": "prep_visit",
-    "type": "yesno"
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
   },
   "pv_hbv_referral": {
     "form": "prep_visit",
-    "type": "yesno"
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
   },
   "pv_other_referral": {
     "form": "prep_visit",
@@ -1811,8 +1827,7 @@
       "1",
       "2",
       "3",
-      "4",
-      "5"
+      "4"
     ]
   },
   "pv_hcv_vaccination_status": {
@@ -1823,7 +1838,8 @@
       "1",
       "2",
       "3",
-      "4"
+      "4",
+      "5"
     ]
   },
   "pv_profile_updated": {
@@ -3735,6 +3751,58 @@
   },
   "cnv_next_other_date": {
     "form": "clinic_visit",
+    "type": "text"
+  },
+  "pv_hiv_lab_test_done": {
+    "form": "prep_visit",
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_hiv_lab_test_date": {
+    "form": "prep_visit",
+    "type": "text"
+  },
+  "pv_syp_lab_test_done": {
+    "form": "prep_visit",
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_syp_lab_test_date": {
+    "form": "prep_visit",
+    "type": "text"
+  },
+  "pv_hcv_lab_test_done": {
+    "form": "prep_visit",
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_hcv_lab_test_date": {
+    "form": "prep_visit",
+    "type": "text"
+  },
+  "pv_hbv_lab_test_done": {
+    "form": "prep_visit",
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_hbv_lab_test_date": {
+    "form": "prep_visit",
+    "type": "text"
+  },
+  "pv_next_lab_review_date": {
+    "form": "prep_visit",
     "type": "text"
   }
 }

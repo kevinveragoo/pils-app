@@ -13,7 +13,7 @@ export const appointmentRoles = ["HEALTHCARE_ASSISTANT", "ADMIN"] as const;
 export type AppointmentCounts = Record<typeof appointmentTypes[number]["value"], number>;
 export function countAppointments(rows: Record<string, string>[], date: string): AppointmentCounts {
   const clients = Object.fromEntries(appointmentTypes.map(type => [type.value, new Set<string>()])) as Record<keyof AppointmentCounts, Set<string>>;
-  const prepFields = { DOCTOR: "pv_next_doctor_date", BLOOD_TEST: "pv_next_blood_date", MEDICATION: "pv_next_med_date", ADDICTOLOGY: "", LAB_RESULTS: "", OTHER_SERVICES: "" };
+  const prepFields = { DOCTOR: "pv_next_doctor_date", BLOOD_TEST: "pv_next_blood_date", MEDICATION: "pv_next_med_date", ADDICTOLOGY: "", LAB_RESULTS: "pv_next_lab_review_date", OTHER_SERVICES: "" };
   for (const row of rows) {
     if (!row.uic_ori) continue;
     for (const type of appointmentTypes) {

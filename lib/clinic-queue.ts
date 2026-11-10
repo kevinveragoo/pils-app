@@ -26,6 +26,7 @@ const appointmentFields: [string, QueueTask, string][] = [
   ["pv_next_med_date", "MEDICATION", "PrEP medication collection"],
   ["pv_next_blood_date", "BLOOD_TEST", "PrEP blood sample collection"],
   ["pv_next_doctor_date", "DOCTOR", "PrEP doctor review"],
+  ["pv_next_lab_review_date", "DOCTOR", "PrEP laboratory results review"],
 
 ];
 
@@ -75,7 +76,8 @@ export async function expectedAppointments(date: string) {
     if (!recordId) continue;
     const matchingDates = appointmentFields.filter(([field]) => !(row.cnv_no_show === "1" && field.startsWith("cnv_")) && appointmentDate(row[field]) === date);
     const hasSpecificClinicService = matchingDates.some(([field]) => field.startsWith("cnv_") && !generalClinicAppointmentFields.has(field));
-    const matching = matchingDates.filter(([field]) => !generalClinicAppointmentFields.has(field) || !hasSpecificClinicService);
+    const hasSpecificPrepService = matchingDates.some(([field]) => field.startsWith("pv_") && field !== "pv_next_appointment_date");
+    const matching = matchingDates.filter(([field]) => (!generalClinicAppointmentFields.has(field) || !hasSpecificClinicService) && (field !== "pv_next_appointment_date" || !hasSpecificPrepService));
     if (!matching.length) continue;
     const identity = identities.get(recordId) ?? row;
     const current = patients.get(recordId) ?? {

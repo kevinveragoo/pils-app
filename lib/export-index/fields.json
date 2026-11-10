@@ -28,7 +28,7 @@
     "choices": {
       "1": "Port Louis",
       "2": "Pamplemousses",
-      "3": "Rivière du Rempart",
+      "3": "Rivi\u00e8re du Rempart",
       "4": "Flacq",
       "5": "Grand Port",
       "6": "Savanne",
@@ -151,7 +151,7 @@
     "type": "radio",
     "choices": {
       "0": "No reduced mobility",
-      "1": "Alité",
+      "1": "Alit\u00e9",
       "2": "Fauteuil roulante",
       "3": "Walking aid"
     }
@@ -516,7 +516,7 @@
     "choices": {
       "1": "Port Louis",
       "2": "Pamplemousses",
-      "3": "Rivière du Rempart",
+      "3": "Rivi\u00e8re du Rempart",
       "4": "Flacq",
       "5": "Grand Port",
       "6": "Savanne",
@@ -823,14 +823,14 @@
     "form": "clinic_enrollment",
     "type": "checkbox",
     "choices": {
+      "0": "None",
       "1": "Pill",
       "2": "Injection",
       "3": "Implant",
       "4": "IUD",
       "5": "Condom",
       "6": "BTL",
-      "99": "Other",
-      "0": "None"
+      "99": "Other"
     }
   },
   "cne_hiv_prev_test": {
@@ -1056,6 +1056,7 @@
     "form": "clinic_enrollment",
     "type": "checkbox",
     "choices": {
+      "0": "None diagnosed",
       "1": "Chlamydia",
       "2": "Gonorrhea",
       "3": "Syphilis",
@@ -1073,9 +1074,8 @@
       "15": "Scabies",
       "16": "Molluscum contagiosum",
       "17": "Hepatitis A",
-      "99": "Other",
-      "0": "None diagnosed",
-      "98": "Unknown"
+      "98": "Unknown",
+      "99": "Other"
     }
   },
   "cne_sti_diagnosed_other": {
@@ -1205,12 +1205,12 @@
     "type": "checkbox",
     "choices": {
       "2": "Positive HIV self-test",
-      "11": "Blood sample collection",
       "3": "Laboratory results review",
       "4": "Doctor - ART review",
-      "12": "Doctor - Pils",
       "8": "STI",
       "9": "Medication collection",
+      "11": "Blood sample collection",
+      "12": "Doctor - Pils",
       "15": "Addictology",
       "16": "Commodities",
       "99": "Other services"
@@ -1547,6 +1547,7 @@
     "form": "clinic_visit",
     "type": "checkbox",
     "choices": {
+      "0": "None diagnosed",
       "1": "Chlamydia",
       "2": "Gonorrhea",
       "3": "Syphilis",
@@ -1564,9 +1565,8 @@
       "15": "Scabies",
       "16": "Molluscum contagiosum",
       "17": "Hepatitis A",
-      "99": "Other",
-      "0": "None diagnosed",
-      "98": "Unknown"
+      "98": "Unknown",
+      "99": "Other"
     }
   },
   "cnv_sti_diagnosed_other": {
@@ -1845,7 +1845,8 @@
     "choices": {
       "1": "Blood sample collection",
       "2": "Doctor",
-      "3": "Medication collection"
+      "3": "Medication collection",
+      "4": "Laboratory results review"
     }
   },
   "pv_followup_stage": {
@@ -1877,7 +1878,10 @@
   "pv_blood_collected": {
     "form": "prep_visit",
     "type": "yesno",
-    "choices": {}
+    "choices": {
+      "0": "No",
+      "1": "Yes"
+    }
   },
   "pv_blood_collected_date": {
     "form": "prep_visit",
@@ -1898,11 +1902,10 @@
     "form": "prep_visit",
     "type": "radio",
     "choices": {
-      "1": "Negative / normal",
-      "2": "Positive / abnormal",
+      "1": "Positive",
+      "2": "Negative",
       "3": "Indeterminate",
-      "4": "Result unavailable",
-      "5": "Not requested"
+      "4": "Invalid"
     }
   },
   "pv_creatinine_result": {
@@ -1912,8 +1915,13 @@
   },
   "pv_syphilis_result": {
     "form": "prep_visit",
-    "type": "text",
-    "choices": {}
+    "type": "radio",
+    "choices": {
+      "1": "Positive",
+      "2": "Negative",
+      "3": "Indeterminate",
+      "4": "Invalid"
+    }
   },
   "pv_hbsag_result": {
     "form": "prep_visit",
@@ -1924,22 +1932,20 @@
     "form": "prep_visit",
     "type": "radio",
     "choices": {
-      "1": "Negative / normal",
-      "2": "Positive / abnormal",
+      "1": "Positive",
+      "2": "Negative",
       "3": "Indeterminate",
-      "4": "Result unavailable",
-      "5": "Not requested"
+      "4": "Invalid"
     }
   },
   "pv_hbv_result": {
     "form": "prep_visit",
     "type": "radio",
     "choices": {
-      "1": "Negative / normal",
-      "2": "Positive / abnormal",
+      "1": "Positive",
+      "2": "Negative",
       "3": "Indeterminate",
-      "4": "Result unavailable",
-      "5": "Not requested"
+      "4": "Invalid"
     }
   },
   "pv_hb_result": {
@@ -2048,12 +2054,18 @@
   "pv_hcv_referral": {
     "form": "prep_visit",
     "type": "yesno",
-    "choices": {}
+    "choices": {
+      "0": "No",
+      "1": "Yes"
+    }
   },
   "pv_hbv_referral": {
     "form": "prep_visit",
     "type": "yesno",
-    "choices": {}
+    "choices": {
+      "0": "No",
+      "1": "Yes"
+    }
   },
   "pv_other_referral": {
     "form": "prep_visit",
@@ -2065,11 +2077,10 @@
     "type": "radio",
     "choices": {
       "0": "Not started",
-      "1": "Box 1",
-      "2": "Box 2",
-      "3": "Box 3",
-      "4": "Box4",
-      "5": "Completed"
+      "1": "Dose 1",
+      "2": "Dose 2",
+      "3": "Dose 3",
+      "4": "Completed"
     }
   },
   "pv_hcv_vaccination_status": {
@@ -2077,10 +2088,11 @@
     "type": "radio",
     "choices": {
       "0": "Not started",
-      "1": "Dose 1",
-      "2": "Dose 2",
-      "3": "Dose 3",
-      "4": "Completed"
+      "1": "Box 1",
+      "2": "Box 2",
+      "3": "Box 3",
+      "4": "Box 4",
+      "5": "Completed"
     }
   },
   "pv_profile_updated": {
@@ -2202,10 +2214,10 @@
       "7": "Lost to follow-up",
       "8": "Abroad",
       "9": "Deported",
-      "99": "Other",
       "10": "Not interested",
       "11": "On demand",
-      "12": "HIV positive"
+      "12": "HIV positive",
+      "99": "Other"
     }
   },
   "htp_care_facility": {
@@ -2332,10 +2344,10 @@
       "7": "Lost to follow-up",
       "8": "Abroad",
       "9": "Deported",
-      "99": "Other",
       "10": "Not interested",
       "11": "On demand",
-      "12": "HIV positive"
+      "12": "HIV positive",
+      "99": "Other"
     }
   },
   "hcs_status_date": {
@@ -3094,8 +3106,8 @@
     "form": "violence_disclosure",
     "type": "radio",
     "choices": {
-      "1": "Agree",
-      "0": "Disagree"
+      "0": "Disagree",
+      "1": "Agree"
     }
   },
   "vd_date": {
@@ -3281,8 +3293,8 @@
     "form": "violence_disclosure",
     "type": "radio",
     "choices": {
-      "1": "Yes",
       "0": "No",
+      "1": "Yes",
       "9": "Did not determine"
     }
   },
@@ -3290,8 +3302,8 @@
     "form": "violence_disclosure",
     "type": "radio",
     "choices": {
-      "1": "Yes",
       "0": "No",
+      "1": "Yes",
       "9": "Did not determine"
     }
   },
@@ -3494,8 +3506,8 @@
     "form": "violence_disclosure",
     "type": "radio",
     "choices": {
-      "1": "Yes",
       "0": "No",
+      "1": "Yes",
       "8": "Not applicable / did not receive PEP",
       "9": "Unknown"
     }
@@ -3708,8 +3720,8 @@
     "form": "social_referral",
     "type": "radio",
     "choices": {
-      "1": "Yes",
       "0": "No",
+      "1": "Yes",
       "9": "Unknown"
     }
   },
@@ -4215,6 +4227,63 @@
   },
   "cnv_next_other_date": {
     "form": "clinic_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_hiv_lab_test_done": {
+    "form": "prep_visit",
+    "type": "yesno",
+    "choices": {
+      "0": "No",
+      "1": "Yes"
+    }
+  },
+  "pv_hiv_lab_test_date": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_syp_lab_test_done": {
+    "form": "prep_visit",
+    "type": "yesno",
+    "choices": {
+      "0": "No",
+      "1": "Yes"
+    }
+  },
+  "pv_syp_lab_test_date": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_hcv_lab_test_done": {
+    "form": "prep_visit",
+    "type": "yesno",
+    "choices": {
+      "0": "No",
+      "1": "Yes"
+    }
+  },
+  "pv_hcv_lab_test_date": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_hbv_lab_test_done": {
+    "form": "prep_visit",
+    "type": "yesno",
+    "choices": {
+      "0": "No",
+      "1": "Yes"
+    }
+  },
+  "pv_hbv_lab_test_date": {
+    "form": "prep_visit",
+    "type": "text",
+    "choices": {}
+  },
+  "pv_next_lab_review_date": {
+    "form": "prep_visit",
     "type": "text",
     "choices": {}
   }

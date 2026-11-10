@@ -177,7 +177,7 @@ assert.ok(validateFields({ ce_active: '' }));
 assert.equal(validateFields({ itch_name: '', itch_gender: '' }), null);
 async function post(route, body) {
   requests = [];
-  return load(`app/api/redcap/${route}/route.ts`).POST(new Request('http://localhost/api', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }));
+  return load(`app/api/redcap/${route}/route.ts`).POST(new Request('http://localhost/api', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({prepSchemaVersion:"cnv-2026-10-23",...body}) }));
 }
 function imported() { return JSON.parse(requests.find(body => body.get('action') === 'import').get('data')); }
 (async () => {
@@ -259,7 +259,7 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[0].ce_middle_name_2, 'Beta');
   existing = [];
   const prepProfile = { ptp_start_date: '2026-09-23', ptp_primary_reason: 'Prevention', ptp_previous_use: '0', ptp_previous_provider: '', ptp_status: '1', ptp_ltfu: '0', ptp_update_date: '2026-09-23', ptp_recorded_by: 'Tester', ptp_change_reason: '' };
-  const prepVisit = { pv_blood_collected: '1', pv_blood_collected_date: '2026-09-23', pv_hbv_referral: '1', pv_hcv_vaccination_status: '4', pv_hbv_vaccination_status: '5', pv_side_effects: 'None reported', pv_visit_date: '2026-09-23', pv_visit_purpose: '2,3', pv_worker_1: 'Tester',  pv_followup_stage: '0', pv_next_doctor_date: '2026-09-23', pv_doctor: 'Dr Test', pv_medication: '1', pv_medication_dispensed: '30', pv_prescription_months: '1', ptp_status: '1' };
+  const prepVisit = { pv_blood_collected: '1', pv_blood_collected_date: '2026-09-23', pv_hbv_referral: '1', pv_hcv_vaccination_status: '5', pv_hbv_vaccination_status: '4', pv_side_effects: 'None reported', pv_visit_date: '2026-09-23', pv_visit_purpose: '1,2,3,4', pv_worker_1: 'Tester',  pv_followup_stage: '0', pv_next_doctor_date: '2026-09-23', pv_doctor: 'Dr Test', pv_medication: '1', pv_medication_dispensed: '30', pv_prescription_months: '1', ptp_status: '1' };
   assert.equal((await post('prep', { mode: 'new', recordId: submission.recordId, enrollment, profile: prepProfile, includeProfile: true, visit: prepVisit })).status, 200);
   assert.equal(imported()[1].redcap_repeat_instrument, 'prep_treatment_profile');
   assert.equal(imported()[1].redcap_repeat_instance, '1');
@@ -271,9 +271,12 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[2].pv_worker_1, 'Tester');
   assert.equal(imported()[2].pv_blood_collected_date, '2026-09-23');
   assert.equal(imported()[2].pv_hbv_referral, '1');
-  assert.equal(imported()[2].pv_hcv_vaccination_status, '4');
-  assert.equal(imported()[2].pv_hbv_vaccination_status, '5');
+  assert.equal(imported()[2].pv_hcv_vaccination_status, '5');
+  assert.equal(imported()[2].pv_hbv_vaccination_status, '4');
   assert.equal(imported()[2].ptp_status, '1');
+  const syphilisDefinition = JSON.parse(fs.readFileSync(path.join(root,'lib/instrument-forms.json'),'utf8')).prep_visit.find(field=>field.name==='pv_syphilis_result');
+  assert.equal(syphilisDefinition.kind,'radio');
+  assert.deepEqual(syphilisDefinition.options,[['1','Positive'],['2','Negative'],['3','Indeterminate'],['4','Invalid']]);
   existing = [{ uic_ori: 'TEST' }, { uic_ori: 'TEST', redcap_repeat_instrument: 'prep_treatment_profile', redcap_repeat_instance: '2', ...prepProfile }, { uic_ori: 'TEST', redcap_repeat_instrument: 'prep_visit', redcap_repeat_instance: '3', ...prepVisit }];
   assert.equal((await post('prep', { mode: 'existing', recordId: 'TEST', includeProfile: false, visit: { ...prepVisit, pv_visit_date: '2026-10-03' } })).status, 200);
   assert.equal(imported().length, 1);
@@ -423,8 +426,8 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[0].ce_active, '0');
   assert.equal(imported()[0].ce_exit_date, '2026-10-04');
   existing = [{ uic_ori: 'TEST' }];
-  const labResults = { pv_hbv_result: '1', pv_hb_result: '13.5 g/dL', pv_cholesterol_result: '4.8 mmol/L', pv_triglycerides_result: '1.1 mmol/L', pv_tpha_result: 'Reactive', pv_vdrl_result: '1:8', pv_other_test_result: 'Other assay: not detected' };
-  const nextPrepVisit = { ...labResults,  pv_visit_date: '2026-10-18', pv_worker_1: 'Tester', pv_visit_purpose: '2', pv_doctor: 'Doctor Name', pv_doctor_comments: 'Visit notes', pv_next_blood_date: '2026-12-01', pv_next_doctor_date: '2026-11-01', pv_next_med_date: '2026-11-20', pv_next_appointment_date: '2026-10-18' };
+  const labResults = { pv_syp_lab_test_done:'1',pv_syp_lab_test_date:'2026-10-18',pv_hbv_lab_test_done:'1',pv_hbv_lab_test_date:'2026-10-18', pv_syphilis_result: '2', pv_hbv_result: '1', pv_hb_result: '13.5 g/dL', pv_cholesterol_result: '4.8 mmol/L', pv_triglycerides_result: '1.1 mmol/L', pv_tpha_result: 'Reactive', pv_vdrl_result: '1:8', pv_other_test_result: 'Other assay: not detected' };
+  const nextPrepVisit = { ...labResults,  pv_visit_date: '2026-10-18', pv_worker_1: 'Tester', pv_visit_purpose: '2,4', pv_doctor: 'Doctor Name', pv_doctor_comments: 'Visit notes', pv_next_blood_date: '2026-12-01', pv_next_doctor_date: '2026-11-01', pv_next_med_date: '2026-11-20', pv_next_appointment_date: '2026-10-18' };
   assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', visitWorkflow: 'PREP', prepVisit: nextPrepVisit })).status, 200);
   assert.equal(imported().length, 1);
   assert.equal(imported()[0].pv_next_appointment_date, '2026-11-01');
@@ -432,9 +435,29 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[0].pv_doctor, 'Doctor Name');
   assert.equal(imported()[0].pv_doctor_comments, 'Visit notes');
   for (const [field, value] of Object.entries(labResults)) assert.equal(imported()[0][field], value);
+  assert.equal((await post('clinic',{mode:'existing',recordId:'TEST',visitWorkflow:'PREP',prepVisit:{...nextPrepVisit,pv_syphilis_result:'1:8'}})).status,400,'Clinic PrEP path also rejects free-text syphilis results');
   assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', visitWorkflow: 'BOTH', visit: arvVisit, prepVisit: { ...nextPrepVisit, pv_next_blood_date: '', pv_next_doctor_date: '', pv_next_med_date: '' } })).status, 200);
   assert.equal(imported().find(row => row.redcap_repeat_instrument === 'prep_visit').pv_next_appointment_date, undefined, 'No next date is invented from the current visit');
   existing = [{ uic_ori: 'TEST' }, { uic_ori: 'TEST', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: '8' }, { uic_ori: 'TEST', redcap_repeat_instrument: 'prep_visit', redcap_repeat_instance: '3' }];
+  for (const route of ['prep','clinic']) {
+    const payload=route==='prep'?{mode:'existing',recordId:'TEST',visit:nextPrepVisit}:{mode:'existing',recordId:'TEST',visitWorkflow:'PREP',prepVisit:nextPrepVisit};
+    for (const prepSchemaVersion of [undefined,'old']) {
+      assert.equal((await post(route,{...payload,prepSchemaVersion})).status,409,'Old forms must never reinterpret negative codes as positive');
+      assert.equal(requests.length,0,'Stale form rejected before any REDCap access');
+    }
+    const bloodOnly={...nextPrepVisit,pv_visit_purpose:'1',pv_hiv_lab_test_done:'1',pv_hiv_result:'2'};
+    const current=route==='prep'?{...payload,visit:bloodOnly}:{...payload,prepVisit:bloodOnly};
+    assert.equal((await post(route,current)).status,200);
+    const row=imported().find(row=>row.redcap_repeat_instrument==='prep_visit');
+    assert.equal(row.pv_doctor,undefined);assert.equal(row.pv_syphilis_result,undefined);assert.equal(row.pv_hiv_result,undefined);
+    assert.equal(row.pv_next_doctor_date,'2026-11-01','Future services can be scheduled independently of current purpose');
+    const lab={...nextPrepVisit,pv_visit_purpose:'4',pv_hiv_lab_test_done:'1',pv_hiv_result:'2',pv_hiv_lab_test_date:''};
+    assert.equal((await post(route,route==='prep'?{...payload,visit:lab}:{...payload,prepVisit:lab})).status,400,'Performed HIV test requires its own date');
+    lab.pv_hiv_lab_test_date='2026-10-18';lab.pv_next_lab_review_date='2026-10-30';
+    assert.equal((await post(route,route==='prep'?{...payload,visit:lab}:{...payload,prepVisit:lab})).status,200);
+    const saved=imported().find(row=>row.redcap_repeat_instrument==='prep_visit');
+    assert.equal(saved.pv_hiv_result,'2');assert.equal(saved.pv_hiv_lab_test_date,'2026-10-18');assert.equal(saved.pv_next_appointment_date,'2026-10-30');assert.equal(saved.pv_doctor,undefined);
+  }
   const isolatedPrep = { pv_visit_date: '2026-10-14', pv_worker_1: 'Tester', pv_visit_purpose: '2', pv_doctor: 'Doctor Example', ptp_status: '1' };
   assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', visitWorkflow: 'PREP', prepVisit: isolatedPrep })).status, 200);
   assert.equal(imported().length, 1);
@@ -494,6 +517,11 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.deepEqual(patients[0].kp_types, ['3', '8']);
   existing.push({ uic_ori: 'TEST', redcap_repeat_instrument: 'outreach_contact', redcap_repeat_instance: '1', oc_date: '2026-09-23', oc_hiv_status_prev: '3', oc_hiv_rapid_result: '2', oc_syp_status_prev: '3', oc_syringes: '7', oc_num_needles: '9', oc_male_condoms: '12' });
   existing.push({ uic_ori: 'TEST', redcap_repeat_instrument: 'clinic_visit', redcap_repeat_instance: '1', cnv_hiv_lab_test_date: '2026-09-24', cnv_hiv_lab_result: '1' });
+  for (const code of ['1','2','3','4']) {
+    assert.equal((await post('prep',{mode:'existing',recordId:'TEST',includeProfile:false,visit:{...prepVisit,pv_syp_lab_test_done:'1',pv_syphilis_result:code}})).status,200);
+    assert.equal(imported().find(row=>row.redcap_repeat_instrument==='prep_visit').pv_syphilis_result,code);
+  }
+  for (const value of ['Positive','1:8','5']) assert.equal((await post('prep',{mode:'existing',recordId:'TEST',includeProfile:false,visit:{...prepVisit,pv_syp_lab_test_done:'1',pv_syphilis_result:value}})).status,400,'Free text is no longer valid for new PrEP syphilis results');
   const dashboard = await (await load('app/api/redcap/dashboard/route.ts').GET(new Request('http://localhost/api?period=all'))).json();
   assert.equal(dashboard.rapid.totals.hiv, 1);
   assert.equal(dashboard.rapid.outcomes.hiv.negative, 1);
@@ -503,7 +531,9 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(dashboard.commodities.totals.syringes, 7);
   assert.equal(dashboard.commodities.totals.needles, 9);
   assert.equal(dashboard.summary.clients, 1);
-  assert.deepEqual(dashboard.trend.labels, ['2026-09']);
+  assert.equal(dashboard.trend.labels[0], '2026-09');
+  assert.equal(dashboard.trend.rapid.reduce((sum,value)=>sum+value,0), 1);
+  assert.equal(dashboard.trend.laboratory.reduce((sum,value)=>sum+value,0), 1);
   const filteredDashboard = await (await load('app/api/redcap/dashboard/route.ts').GET(new Request('http://localhost/api?period=all&gender=1&kp=3'))).json();
   assert.equal(filteredDashboard.rapid.totals.hiv, 1);
   const multiFilteredDashboard = await (await load('app/api/redcap/dashboard/route.ts').GET(new Request('http://localhost/api?period=all&gender=1,2&kp=1,3'))).json();

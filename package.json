@@ -25,7 +25,9 @@
     "test:new-appointment": "node scripts/test-new-appointment.mjs",
     "test:client-enrollment": "node scripts/test-client-enrollment.mjs",
     "check:redcap-schema": "node --env-file=.env.local scripts/check-redcap-schema.mjs",
-    "test:hcs-upcoming": "node scripts/test-hcs-upcoming.mjs"
+    "test:hcs-upcoming": "node scripts/test-hcs-upcoming.mjs",
+    "test:dashboard": "node scripts/test-dashboard.mjs",
+    "test:prep-cnv-alignment": "node scripts/test-prep-cnv-alignment.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

@@ -1460,3 +1460,61 @@
 "Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank." = "Dat swivi ki pli pros, inklir revizion bann rezilta laboratwar ek lezot servis. Servi ansien dat randevou zis kan tou bann dat servis vid.";
 
 "Adding…" = "Pe azoute…";
+
+"All available records" = "Tou bann done disponib";
+
+"Rolling 12 months" = "12 dernie mwa";
+
+"Rolling 3 months" = "3 dernie mwa";
+
+"Rolling month" = "Dernie mwa";
+
+"Last 7 calendar days" = "7 dernie zour kalandriye";
+
+"Rapid test" = "Test rapid";
+
+"Laboratory" = "Laboratwar";
+
+"First time tested" = "Premie fwa teste";
+
+"Recorded / unclassified" = "Rezilta anrezistre / pa klase";
+
+"Outreach Contact" = "Kontak Outreach";
+
+"Clinic Visit (combined needles/syringes field)" = "Vizit klinik (san konbine zegwi/sereng)";
+
+"HIV Care Support (combined needles/syringes field)" = "Swivi VIH (san konbine zegwi/sereng)";
+
+
+
+"Outreach Contact — HIV rapid result" = "Kontak Outreach — rezilta test rapid HIV";
+
+"Clinic Visit — HIV laboratory result" = "Vizit klinik — rezilta laboratwar HIV";
+
+"PrEP Visit — HIV laboratory result" = "Vizit PrEP — rezilta laboratwar HIV";
+
+"Outreach Contact — HBV rapid result" = "Kontak Outreach — rezilta test rapid HBV";
+
+"Clinic Visit — HBV laboratory result" = "Vizit klinik — rezilta laboratwar HBV";
+
+"PrEP Visit — HBV laboratory result" = "Vizit PrEP — rezilta laboratwar HBV";
+
+"Outreach Contact — HCV rapid result" = "Kontak Outreach — rezilta test rapid HCV";
+
+"Clinic Visit — HCV laboratory result" = "Vizit klinik — rezilta laboratwar HCV";
+
+"PrEP Visit — HCV laboratory result" = "Vizit PrEP — rezilta laboratwar HCV";
+
+"Outreach Contact — syphilis rapid result" = "Kontak Outreach — rezilta test rapid syphilis";
+
+"Clinic Visit — syphilis laboratory result" = "Vizit klinik — rezilta laboratwar syphilis";
+
+"PrEP Visit — syphilis laboratory result" = "Vizit PrEP — rezilta laboratwar syphilis";
+
+"PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained." = "Rezilta laboratwar PrEP servi dat sak test, apre dat prelevman ouswa vizit pou ansien dosie. Bann swa parey kouma vizit klinik. Ansien text sifilis ki pa rekonet aparet kouma Anrezistre / pa klase. Bann test ki marke pa elizib exkli ; ansien dosie san rezon ouswa indikater test reste ladan.";
+
+"PrEP laboratory results review" = "PrEP : revizion rezilta laboratwar";
+
+"Conflicting results" = "Rezilta kontradiktwar";
+
+"Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded." = "Bann test konte enn fwa par pasian, enfeksion, metod ek dat test ziska zordi dan Moris. Bann rezilta laboratwar Klinik ek PrEP mem dat regroupe. Bann rezilta diferan aparet enn fwa kouma Rezilta kontradiktwar. Bann rankont konte bann zour par pasian ek metod. San idantifian prelevman, pa kapav disteng bann prelevman repete mem zour. Filtre popilasion kle servi lapartenans ; bann dosie san valer demografik ki finn swazir exkli.";

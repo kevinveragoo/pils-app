@@ -1460,3 +1460,61 @@
 "Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank." = "Earliest service follow-up date, including laboratory results review and other services. Uses the historical appointment date only when all service dates are blank.";
 
 "Adding…" = "Adding…";
+
+"All available records" = "All available records";
+
+"Rolling 12 months" = "Rolling 12 months";
+
+"Rolling 3 months" = "Rolling 3 months";
+
+"Rolling month" = "Rolling month";
+
+"Last 7 calendar days" = "Last 7 calendar days";
+
+"Rapid test" = "Rapid test";
+
+"Laboratory" = "Laboratory";
+
+"First time tested" = "First time tested";
+
+"Recorded / unclassified" = "Recorded / unclassified";
+
+"Outreach Contact" = "Outreach Contact";
+
+"Clinic Visit (combined needles/syringes field)" = "Clinic Visit (combined needles/syringes field)";
+
+"HIV Care Support (combined needles/syringes field)" = "HIV Care Support (combined needles/syringes field)";
+
+
+
+"Outreach Contact — HIV rapid result" = "Outreach Contact — HIV rapid result";
+
+"Clinic Visit — HIV laboratory result" = "Clinic Visit — HIV laboratory result";
+
+"PrEP Visit — HIV laboratory result" = "PrEP Visit — HIV laboratory result";
+
+"Outreach Contact — HBV rapid result" = "Outreach Contact — HBV rapid result";
+
+"Clinic Visit — HBV laboratory result" = "Clinic Visit — HBV laboratory result";
+
+"PrEP Visit — HBV laboratory result" = "PrEP Visit — HBV laboratory result";
+
+"Outreach Contact — HCV rapid result" = "Outreach Contact — HCV rapid result";
+
+"Clinic Visit — HCV laboratory result" = "Clinic Visit — HCV laboratory result";
+
+"PrEP Visit — HCV laboratory result" = "PrEP Visit — HCV laboratory result";
+
+"Outreach Contact — syphilis rapid result" = "Outreach Contact — syphilis rapid result";
+
+"Clinic Visit — syphilis laboratory result" = "Clinic Visit — syphilis laboratory result";
+
+"PrEP Visit — syphilis laboratory result" = "PrEP Visit — syphilis laboratory result";
+
+"PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained." = "PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained.";
+
+"PrEP laboratory results review" = "PrEP laboratory results review";
+
+"Conflicting results" = "Conflicting results";
+
+"Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded." = "Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded.";

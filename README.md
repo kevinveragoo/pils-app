@@ -116,3 +116,11 @@ English is the fallback language. French and Mauritian Creole use the identifier
 - `locales/mfe.lproj/Localizable.strings`
 
 Keep the same keys in all three catalogs and run `npm run test:localization` after editing them.
+
+## Dashboard reporting
+
+See [dashboard reporting rules](docs/DASHBOARD.md) for test sources, PrEP result
+mapping, Mauritius date windows, stale-value safeguards, legacy-data exceptions
+and regression checks. Run `npm run test:dashboard` when changing reporting.
+
+PrEP schema migration and safeguards: [PrEP/CNV alignment](docs/PREP_CNV_ALIGNMENT.md).

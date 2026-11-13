@@ -137,6 +137,8 @@ model NotificationPreference {
   userId          String   @id
   enabled         Boolean  @default(false)
   clinicArrivals  Boolean  @default(false)
+  outreachReactiveHiv Boolean @default(false)
+  outreachReactiveHivEnabledAt DateTime @default(now())
   enabledAt       DateTime @default(now())
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

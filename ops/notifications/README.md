@@ -1,9 +1,32 @@
 # Mobile notifications
 
-Implemented category: **Clinic Queue — patient arrivals**. Any approved user can
+Implemented categories: **Clinic Queue — patient arrivals** and **Outreach — reactive HIV rapid test**. Any approved user can
 open `/notifications` and toggle their account preference. Only users whose
 PILS roles grant Clinic Queue access can subscribe to the arrival category.
 Multi-role users receive one alert per device per daily queue entry.
+
+All approved users whose organization is `PILS`, regardless of staff role, can
+opt into **Outreach — reactive HIV rapid test**. `PILS_VOLUNTEER`, CUT, AILES,
+and other organizations cannot subscribe. The new category is off by default.
+After deploying this change, apply `npm run db:migrate`, regenerate Prisma,
+and restart both the app and notification worker.
+
+The outreach trigger is a successfully imported app outreach contact whose
+`oc_hiv_rapid_result` is `1` (reactive). Its saved `RedcapActivity` entry is the
+durable outbox; edits made directly in REDCap do not trigger it. If REDCap saves
+but local activity logging fails, no alert can be queued; the existing
+`activityLogged: false` response and server error identify this condition.
+The contact date does not control delivery: recording a reactive result now
+can alert even when its contact date is earlier.
+
+Outreach push messages ask staff to review a result without including the
+patient's identity or HIV result. Tapping opens the exact saved activity in
+Logs, behind the existing PILS authentication/access checks. Delivery IDs use
+a hash of record ID and outreach instance to deduplicate repeated activity
+logs for the same contact. New outreach instances can notify again. The
+existing session checks, opt-out, ten-minute expiry, retry limits, and device
+activation checks also apply. Each category tracks its own activation time,
+so opting into one does not replay old events or suppress the other category.
 
 See [notification safeguards](../../docs/SAFEGUARDS.md#n1--only-todays-actual-arrivals-may-push)
 for date examples, test-exercise limits and troubleshooting.

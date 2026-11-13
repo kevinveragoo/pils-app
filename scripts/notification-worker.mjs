@@ -6,7 +6,7 @@
 //
 import { PrismaClient } from '@prisma/client';
 import webpush from 'web-push';
-import { sendArrivalNotifications } from '../lib/notification-sender.mjs';
+import { sendArrivalNotifications, sendOutreachReactiveHivNotifications } from '../lib/notification-sender.mjs';
 const { VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY } = process.env;
 if (!VAPID_SUBJECT || !VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) throw new Error('Configure VAPID_SUBJECT, VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY first.');
 webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
@@ -16,7 +16,7 @@ process.on('SIGTERM', () => { stopping = true; });
 process.on('SIGINT', () => { stopping = true; });
 try {
   do {
-    try { await sendArrivalNotifications(db, webpush.sendNotification); }
+    try { await sendArrivalNotifications(db, webpush.sendNotification); await sendOutreachReactiveHivNotifications(db, webpush.sendNotification); }
     catch { console.error('Notification worker cycle failed; retrying.'); }
     if (process.argv.includes('--once')) break;
     await new Promise(resolve => setTimeout(resolve, 3000));

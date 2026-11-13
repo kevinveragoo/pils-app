@@ -8,7 +8,7 @@
 import { useEffect, useState } from "react";
 import { useLocalization } from "@/components/Localization";
 
-type Settings = { enabled: boolean; clinicArrivals: boolean; eligible: boolean; publicKey: string | null };
+type Settings = { enabled: boolean; clinicArrivals: boolean; eligible: boolean; outreachReactiveHiv: boolean; outreachReactiveHivEligible: boolean; publicKey: string | null };
 async function save(body: object) {
   const response = await fetch("/api/notifications", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
   const result = await response.json();
@@ -46,7 +46,7 @@ export default function NotificationSettings() {
     finally { setBusy(false); }
   }
   async function preferences(next: Settings) {
-    await save({ action: "preferences", enabled: next.enabled, clinicArrivals: next.clinicArrivals });
+    await save({ action: "preferences", enabled: next.enabled, clinicArrivals: next.clinicArrivals, outreachReactiveHiv: next.outreachReactiveHiv });
     setSettings(next); setMessage(t("Notification settings saved."));
   }
   async function enableDevice() {
@@ -84,7 +84,10 @@ export default function NotificationSettings() {
     {!settings && !error && <p>{t("Loading…")}</p>}
     {settings && <>
       <label className="flex items-center gap-3"><input type="checkbox" checked={settings.enabled} disabled={busy} onChange={e => { const enabled = e.target.checked; void run(() => preferences({ ...settings, enabled })); }} />{t("Enable notifications for my account")}</label>
-      {settings.eligible ? <label className="flex items-center gap-3"><input type="checkbox" checked={settings.clinicArrivals} disabled={busy || !settings.enabled} onChange={e => { const clinicArrivals = e.target.checked; void run(() => preferences({ ...settings, clinicArrivals })); }} />{t("Clinic Queue — patient arrivals")}</label> : <p>{t("No notification categories are available for your current access.")}</p>}
+      {settings.eligible ? <label className="flex items-center gap-3"><input type="checkbox" checked={settings.clinicArrivals} disabled={busy || !settings.enabled} onChange={e => { const clinicArrivals = e.target.checked; void run(() => preferences({ ...settings, clinicArrivals })); }} />{t("Clinic Queue — patient arrivals")}</label> : null}
+      {settings.outreachReactiveHivEligible && <label className="flex items-center gap-3"><input type="checkbox" checked={settings.outreachReactiveHiv} disabled={busy || !settings.enabled} onChange={e => { const outreachReactiveHiv = e.target.checked; void run(() => preferences({ ...settings, outreachReactiveHiv })); }} />{t("Outreach — reactive HIV rapid test")}</label>}
+      {!settings.eligible && !settings.outreachReactiveHivEligible && <p>{t("No notification categories are available for your current access.")}</p>}
+      {settings.outreachReactiveHivEligible && <p className="text-sm">{t("Outreach alerts open the saved activity details without showing patient details or the test result on the lock screen.")}</p>}
       <p className="text-sm">{t("Arrival alerts show the patient name and code on your device, including its lock screen. Missing codes appear as Code pending.")}</p>
       <hr />
       <h2 className="text-lg font-semibold">{t("This device")}</h2>

@@ -24,7 +24,7 @@ export function InstrumentForm({ form, values, set, readOnlyFields=[], excludeFi
   const relevant=(title:string)=> {
     const text=title.toUpperCase();
     if(form==='prep_treatment_profile')return true;
-    if(form==='prep_visit')return purposes.some(code=>code==='1'?text.includes('BLOOD'):code==='2'?['TEST RESULTS','DOCTOR','REFERRALS','VACCINATION STATUS'].includes(text):code==='3'?text.includes('MEDICATION'):false);
+    if(form==='prep_visit')return purposes.some(code=>code==='1'?text.includes('BLOOD'):code==='2'?['TEST RESULTS','DOCTOR','REFERRALS','VACCINATION STATUS'].includes(text):code==='3'?text.includes('MEDICATION'):code==='4'?['TEST RESULTS','REFERRALS','VACCINATION STATUS'].includes(text):false);
     return purposes.some(code=>code==='11'?/BLOOD|LABORATORY REFERRAL/.test(text):['4','12'].includes(code)?/DOCTOR/.test(text):['9','10'].includes(code)?/MEDICATION/.test(text):code==='8'?/STI|SYPHILIS/.test(text):code==='3'?/LAB RESULT/.test(text):code==='15'?/ADDICTOLOGY/.test(text):code==='16'?/COMMODITIES/.test(text):code==='99'?/OTHER SERVICES/.test(text):false);
   };
   return <div className="grid gap-4">{[...sections].filter(([,fields])=>fields.some(f=>fieldVisible(f.branch,values))).map(([title,fields])=><details key={title} className="rounded-2xl border p-4" open={fields.some(field=>Boolean(values[field.name]))||relevant(title)}><summary className="cursor-pointer font-bold">{title}</summary><div className="mt-4 grid gap-4 sm:grid-cols-2">{fields.filter(f=>fieldVisible(f.branch,values)).map(field=>{

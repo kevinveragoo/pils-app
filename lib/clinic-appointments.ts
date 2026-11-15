@@ -26,7 +26,7 @@ export function countAppointments(rows: Record<string, string>[], date: string):
       const clinic = (!row.redcap_repeat_instrument || row.redcap_repeat_instrument === "clinic_visit") && row.cnv_no_show !== "1" && row[type.field] === date;
       const prepField = prepFields[type.value];
       const prep = prepField && (!row.redcap_repeat_instrument || row.redcap_repeat_instrument === "prep_visit") && row[prepField] === date;
-      if (clinic || prep) clients[type.value].add(row.uic_ori);
+      if (clinic || prep || (type.value === "DOCTOR" && row.redcap_repeat_instrument === "prep_visit" && row.pv_next_lab_review_date === date)) clients[type.value].add(row.uic_ori);
     }
   }
   return Object.fromEntries(appointmentTypes.map(type => [type.value, clients[type.value].size])) as AppointmentCounts;

@@ -32,6 +32,7 @@ const appointmentFields: [string, QueueTask, string][] = [
   ["pv_next_med_date", "MEDICATION", "PrEP medication collection"],
   ["pv_next_blood_date", "BLOOD_TEST", "PrEP blood sample collection"],
   ["pv_next_doctor_date", "DOCTOR", "PrEP doctor review"],
+  ["pv_next_lab_review_date", "DOCTOR", "PrEP laboratory results review"],
 
 ];
 

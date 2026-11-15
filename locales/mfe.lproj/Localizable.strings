@@ -1532,3 +1532,13 @@
 "No matching clients. Check the UIC or refresh the client list." = "Pena kliyan ki koresponn. Verifie UIC ouswa rafresi lalis bann kliyan.";
 
 "Unable to load clients. Refresh the client list to try again." = "Pa kapav sarz bann kliyan. Rafresi lalis pou reeseye.";
+
+"Previously HEPC positive, treated" = "Ti deza HEPC pozitif, finn gagn tretman";
+
+"Pils - Banian" = "Pils - Banian";
+
+"Select Laboratory results review and the matching laboratory test before saving PrEP results." = "Swazir revizion rezilta laboratwar ek test ki koresponn avan anrezistre rezilta PrEP.";
+
+"Outreach — reactive HIV result" = "Outreach — rezilta VIH reaktif";
+
+"Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Bann alert Outreach demann ou ouver PILS pou swivi san afis non pasyan ouswa rezilta VIH lor lekran bloke.";

@@ -1532,3 +1532,13 @@
 "No matching clients. Check the UIC or refresh the client list." = "No matching clients. Check the UIC or refresh the client list.";
 
 "Unable to load clients. Refresh the client list to try again." = "Unable to load clients. Refresh the client list to try again.";
+
+"Previously HEPC positive, treated" = "Previously HEPC positive, treated";
+
+"Pils - Banian" = "Pils - Banian";
+
+"Select Laboratory results review and the matching laboratory test before saving PrEP results." = "Select Laboratory results review and the matching laboratory test before saving PrEP results.";
+
+"Outreach — reactive HIV result" = "Outreach — reactive HIV result";
+
+"Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen.";

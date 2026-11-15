@@ -28,6 +28,7 @@
     "check:redcap-schema": "node --env-file=.env.local scripts/check-redcap-schema.mjs",
     "test:hcs-upcoming": "node scripts/test-hcs-upcoming.mjs",
     "notifications:worker": "node --env-file=.env.local scripts/notification-worker.mjs",
+    "test:outreach-notifications": "node scripts/test-outreach-notifications.mjs",
     "test:notifications": "node scripts/test-notifications.mjs"
   },
   "dependencies": {

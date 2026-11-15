@@ -33,7 +33,7 @@ export function rescheduleFields(entry: { visitWorkflow?: string | null; clinicP
     if (!clinic.size) for (const task of entry.tasks) clinic.add(task === "BLOOD_TEST" ? "cnv_next_blood_date" : task === "MEDICATION" ? "cnv_next_med_date" : ["DOCTOR", "ARV"].includes(task) ? "cnv_next_doctor_date" : "cnv_next_other_date");
   }
   if (includesPrep(details.visitWorkflow)) {
-    for (const code of details.prepPurposes) prep.add(code === "1" ? "pv_next_blood_date" : code === "3" ? "pv_next_med_date" : "pv_next_doctor_date");
+    for (const code of details.prepPurposes) prep.add(code === "1" ? "pv_next_blood_date" : code === "3" ? "pv_next_med_date" : code === "4" ? "pv_next_lab_review_date" : "pv_next_doctor_date");
     if (!prep.size) prep.add("pv_next_appointment_date");
   }
   return { clinic_visit: Object.fromEntries([...clinic].map(field => [field, date])), prep_visit: Object.fromEntries([...prep].map(field => [field, date])) };

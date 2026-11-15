@@ -13,7 +13,7 @@ import vm from 'node:vm';
 import { createHash } from 'node:crypto';
 import ts from 'typescript';
 import { PrismaClient } from '@prisma/client';
-import { canReceiveClinicArrivals, validPushSubscription, arrivalPayload } from '../lib/notification-policy.mjs';
+import { canReceiveClinicArrivals, canReceiveOutreachHivReactive, validPushSubscription, arrivalPayload } from '../lib/notification-policy.mjs';
 import { sendArrivalNotifications, isLiveArrivalDate } from '../lib/notification-sender.mjs';
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pils-notifications-'));
 const filename = path.join(dir, 'test.db');
@@ -54,7 +54,7 @@ try {
       if (name === 'next/server') return { NextResponse: Response };
       if (name === '@/lib/auth') return { getCurrentUser: async () => currentUser, SESSION_COOKIE: 'pils_session' };
       if (name === '@/lib/db') return { db };
-      if (name === '@/lib/notification-policy.mjs') return { canReceiveClinicArrivals, validPushSubscription };
+      if (name === '@/lib/notification-policy.mjs') return { canReceiveClinicArrivals, canReceiveOutreachHivReactive, validPushSubscription };
       throw new Error(name);
     },
   });
@@ -73,6 +73,19 @@ try {
   currentUser = { ...user, id: 'someone-else' };
   assert.equal((await post({ action: 'unsubscribe', endpoint: sub.endpoint })).status, 200);
   assert.equal(await db.pushSubscription.count(), 1, 'Unsubscribe cannot delete another account’s device');
+  currentUser = user;
+  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: false, outreachHivReactive: true })).status, 403);
+  currentUser = { ...user, role: 'OUTREACH_WORKER' };
+  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: false, outreachHivReactive: true })).status, 200);
+  const reactiveSettings = await (await routeModule.exports.GET()).json();
+  assert.equal(reactiveSettings.outreachHivReactive, true);
+  assert.equal(reactiveSettings.outreachHivReactiveEligible, true);
+  const activatedAt = (await db.notificationPreference.findUnique({ where: { userId: user.id } })).outreachHivReactiveEnabledAt;
+  assert.ok(activatedAt);
+  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: false })).status, 200);
+  assert.equal((await db.notificationPreference.findUnique({ where: { userId: user.id } })).outreachHivReactiveEnabledAt.getTime(), activatedAt.getTime(), 'Old clients preserve new preferences and activation time');
+  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: false, outreachHivReactive: 'yes' })).status, 400);
+  await db.notificationPreference.deleteMany();
   currentUser = user;
   await db.pushSubscription.deleteMany();
   const preference = await db.notificationPreference.create({ data: { userId: user.id, enabled: true, clinicArrivals: true, enabledAt: before } });

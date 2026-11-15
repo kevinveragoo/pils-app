@@ -779,7 +779,8 @@
     "choices": [
       "1",
       "2",
-      "3"
+      "3",
+      "4"
     ]
   },
   "oc_hepc_result": {
@@ -898,7 +899,8 @@
       "9",
       "10",
       "11",
-      "12"
+      "12",
+      "13"
     ]
   },
   "oc_referral_other": {
@@ -2388,7 +2390,8 @@
     "choices": [
       "1",
       "2",
-      "3"
+      "3",
+      "4"
     ]
   },
   "pv_followup_stage": {
@@ -2422,6 +2425,7 @@
     "label": "Blood collected?",
     "form": "prep_visit",
     "type": "yesno",
+    "branch": "[pv_visit_purpose(1)] = '1'",
     "choices": [
       "0",
       "1"
@@ -2430,136 +2434,161 @@
   "pv_blood_collected_date": {
     "label": "Blood collected date",
     "form": "prep_visit",
-    "type": "date_dmy"
+    "type": "date_dmy",
+    "branch": "([pv_visit_purpose(1)] = '1') and ([pv_blood_collected] = '1')"
   },
   "pv_blood_draw_notes": {
     "label": "Blood draw notes",
     "form": "prep_visit",
-    "type": "notes"
+    "type": "notes",
+    "branch": "([pv_visit_purpose(1)] = '1') and ([pv_blood_collected] = '1')"
   },
   "pv_next_blood_date": {
     "label": "Blood-test next date",
     "form": "prep_visit",
-    "type": "date_dmy"
+    "type": "date_dmy",
+    "branch": "[pv_visit_purpose(1)] = '1'"
   },
   "pv_hiv_result": {
-    "label": "HIV result",
+    "label": "HIV testing result (Laboratory)",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hiv_lab_test_done] = '1')",
     "choices": [
       "1",
       "2",
       "3",
-      "4",
-      "5"
+      "4"
     ]
   },
   "pv_creatinine_result": {
     "label": "Creatinine result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_syphilis_result": {
-    "label": "Syphilis result",
+    "label": "Syphilis testing result (Laboratory)?",
     "form": "prep_visit",
-    "type": "text"
+    "type": "radio",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_syp_lab_test_done] = '1')",
+    "choices": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
   },
   "pv_hbsag_result": {
     "label": "HBsAg result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_hcv_result": {
-    "label": "HCV test result",
+    "label": "HCV testing result (Laboratory)",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hcv_lab_test_done] = '1')",
     "choices": [
       "1",
       "2",
       "3",
-      "4",
-      "5"
+      "4"
     ]
   },
   "pv_hbv_result": {
-    "label": "HBV (Hepatitis B) result",
+    "label": "HBV testing result (Laboratory)",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hbv_lab_test_done] = '1')",
     "choices": [
       "1",
       "2",
       "3",
-      "4",
-      "5"
+      "4"
     ]
   },
   "pv_hb_result": {
     "label": "Hb (Hemoglobin) result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_cholesterol_result": {
     "label": "Cholesterol result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_triglycerides_result": {
     "label": "Triglycerides result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_tpha_result": {
     "label": "TPHA result",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_vdrl_result": {
     "label": "VDRL result (Venereal Disease Research Laboratory)",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_other_test_result": {
     "label": "Other test result",
     "form": "prep_visit",
-    "type": "notes"
+    "type": "notes",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_doctor": {
     "label": "Doctor name",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(2)] = '1'"
   },
   "pv_weight": {
     "label": "Weight (kg)",
     "form": "prep_visit",
     "type": "number",
-    "min": 0.0
+    "branch": "[pv_visit_purpose(2)] = '1'",
+    "min": 0
   },
   "pv_bp_systolic": {
     "label": "Systolic blood pressure (mmHg)",
     "form": "prep_visit",
     "type": "integer",
-    "min": 0.0
+    "branch": "[pv_visit_purpose(2)] = '1'",
+    "min": 0
   },
   "pv_bp_diastolic": {
     "label": "Diastolic blood pressure (mmHg)",
     "form": "prep_visit",
     "type": "integer",
-    "min": 0.0
+    "branch": "[pv_visit_purpose(2)] = '1'",
+    "min": 0
   },
   "pv_doctor_comments": {
     "label": "Doctor comments",
     "form": "prep_visit",
-    "type": "notes"
+    "type": "notes",
+    "branch": "[pv_visit_purpose(2)] = '1'"
   },
   "pv_next_doctor_date": {
     "label": "Doctor next date",
     "form": "prep_visit",
-    "type": "date_dmy"
+    "type": "date_dmy",
+    "branch": "[pv_visit_purpose(2)] = '1'"
   },
   "pv_medication": {
     "label": "PrEP medication prescribed",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "[pv_visit_purpose(3)] = '1'",
     "choices": [
       "1",
       "2",
@@ -2569,36 +2598,42 @@
   "pv_other_medication": {
     "label": "Other medication received",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(3)] = '1'"
   },
   "pv_lot_number": {
     "label": "PrEP medication lot number",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(3)] = '1'"
   },
   "pv_medication_dispensed": {
     "label": "No. PrEP medication (tablet/bottle) dispensed this visit",
     "form": "prep_visit",
     "type": "integer",
-    "min": 0.0,
-    "max": 9999.0
+    "branch": "[pv_visit_purpose(3)] = '1'",
+    "min": 0,
+    "max": 9999
   },
   "pv_prescription_months": {
     "label": "Prescription duration (months)",
     "form": "prep_visit",
     "type": "integer",
-    "min": 1.0,
-    "max": 24.0
+    "branch": "[pv_visit_purpose(3)] = '1'",
+    "min": 1,
+    "max": 24
   },
   "pv_next_med_date": {
     "label": "Next medication collection date",
     "form": "prep_visit",
-    "type": "date_dmy"
+    "type": "date_dmy",
+    "branch": "[pv_visit_purpose(3)] = '1'"
   },
   "pv_syphilis_referral": {
     "label": "Syphilis referral",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "[pv_visit_purpose(4)] = '1'",
     "choices": [
       "0",
       "1",
@@ -2609,6 +2644,7 @@
     "label": "Hepatitis C referral",
     "form": "prep_visit",
     "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
     "choices": [
       "0",
       "1"
@@ -2618,6 +2654,7 @@
     "label": "Hepatitis B referral",
     "form": "prep_visit",
     "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
     "choices": [
       "0",
       "1"
@@ -2626,12 +2663,27 @@
   "pv_other_referral": {
     "label": "Other referral",
     "form": "prep_visit",
-    "type": "text"
+    "type": "text",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   },
   "pv_hbv_vaccination_status": {
-    "label": "Hepatitis B vaccination status",
+    "label": "HBV vaccination status",
     "form": "prep_visit",
     "type": "radio",
+    "branch": "[pv_visit_purpose(4)] = '1'",
+    "choices": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "pv_hcv_vaccination_status": {
+    "label": "HCV vaccination status",
+    "form": "prep_visit",
+    "type": "radio",
+    "branch": "[pv_visit_purpose(4)] = '1'",
     "choices": [
       "0",
       "1",
@@ -2639,18 +2691,6 @@
       "3",
       "4",
       "5"
-    ]
-  },
-  "pv_hcv_vaccination_status": {
-    "label": "Hepatitis C vaccination status",
-    "form": "prep_visit",
-    "type": "radio",
-    "choices": [
-      "0",
-      "1",
-      "2",
-      "3",
-      "4"
     ]
   },
   "pv_profile_updated": {
@@ -5303,5 +5343,75 @@
     "form": "clinic_visit",
     "type": "date_dmy",
     "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(99)] = '1')"
+  },
+  "pv_hiv_lab_test_done": {
+    "label": "HIV tested (Laboratory)?",
+    "form": "prep_visit",
+    "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_hiv_lab_test_date": {
+    "label": "HIV test date (Laboratory)",
+    "form": "prep_visit",
+    "type": "date_dmy",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hiv_lab_test_done] = '1')"
+  },
+  "pv_syp_lab_test_done": {
+    "label": "Syphilis tested (Laboratiry)?",
+    "form": "prep_visit",
+    "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_syp_lab_test_date": {
+    "label": "Syphilis test date (Laboratory)",
+    "form": "prep_visit",
+    "type": "date_dmy",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_syp_lab_test_done] = '1')"
+  },
+  "pv_hcv_lab_test_done": {
+    "label": "HCV tested (Laboratory)?",
+    "form": "prep_visit",
+    "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_hcv_lab_test_date": {
+    "label": "HCV test date (Laboratory)",
+    "form": "prep_visit",
+    "type": "date_dmy",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hcv_lab_test_done] = '1')"
+  },
+  "pv_hbv_lab_test_done": {
+    "label": "HBV tested (Laboratory?)",
+    "form": "prep_visit",
+    "type": "yesno",
+    "branch": "[pv_visit_purpose(4)] = '1'",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_hbv_lab_test_date": {
+    "label": "HBV test date (Laboratory)?",
+    "form": "prep_visit",
+    "type": "date_dmy",
+    "branch": "([pv_visit_purpose(4)] = '1') and ([pv_hbv_lab_test_done] = '1')"
+  },
+  "pv_next_lab_review_date": {
+    "label": "Next laboratory results review date",
+    "form": "prep_visit",
+    "type": "date_dmy",
+    "branch": "[pv_visit_purpose(4)] = '1'"
   }
 }

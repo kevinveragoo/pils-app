@@ -1532,3 +1532,13 @@
 "No matching clients. Check the UIC or refresh the client list." = "Aucun client correspondant. Vérifiez le UIC ou actualisez la liste des clients.";
 
 "Unable to load clients. Refresh the client list to try again." = "Impossible de charger les clients. Actualisez la liste pour réessayer.";
+
+"Previously HEPC positive, treated" = "Antérieurement positif à l’hépatite C, traité";
+
+"Pils - Banian" = "Pils - Banian";
+
+"Select Laboratory results review and the matching laboratory test before saving PrEP results." = "Sélectionnez la revue des résultats de laboratoire et le test correspondant avant de sauvegarder les résultats PrEP.";
+
+"Outreach — reactive HIV result" = "Terrain — résultat VIH réactif";
+
+"Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Les alertes de terrain vous invitent à ouvrir PILS pour le suivi sans afficher de nom de patient ni de résultat VIH sur votre écran verrouillé.";

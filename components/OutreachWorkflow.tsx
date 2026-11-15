@@ -71,7 +71,7 @@ const ChoiceChecks = ({ values, onChange, options }: { values: string; onChange:
 const emptyPartner = (): Values => ({ itp_name: "", itp_nickname: "", itp_gender: "", itp_phone: "", itp_relationship: "", itp_violence: "", itp_threats: "", itp_forced_sex: "", itp_notif_method: "" });
 const emptyChild = (): Values => ({ itch_name: "", itch_dob: "", itch_age: "", itch_gender: "", itch_address: "", itch_lives_with: "", itch_violence: "", itch_threats: "", itch_force_sex: "", itch_notif_method: "" });
 
-export default function OutreachWorkflow() {
+export default function OutreachWorkflow({ initialUic, queueId }: { initialUic?: string; queueId?: string }) {
   const [mode, setMode] = useState<"new" | "existing" | null>(null);
   const [step, setStep] = useState(1);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -101,7 +101,7 @@ export default function OutreachWorkflow() {
     setOutreach((current) => ({ ...current, [key]: value, ...(key === "oc_prep_interested" && value !== "0" ? { oc_prep_no_reason: "" } : {}) }));
   };
 
-  useEffect(() => { fetch("/api/redcap/patients").then(async (r) => { const data = await r.json(); if (!r.ok) throw new Error(data.error); setPatients(data); }).catch((e) => setError(e instanceof Error ? e.message : "Unable to load clients.")).finally(() => setLoadingPatients(false)); }, []);
+  useEffect(() => { fetch("/api/redcap/patients").then(async (r) => { const data = await r.json(); if (!r.ok) throw new Error(data.error); setPatients(data); if (initialUic) { const patient = (data as Patient[]).find(p => p.uic === initialUic); if (patient) { setSelected(patient); setQuery(patient.uic); setMode("existing"); } } }).catch((e) => setError(e instanceof Error ? e.message : "Unable to load clients.")).finally(() => setLoadingPatients(false)); }, [initialUic]);
   useEffect(() => {
     if (mode !== "new" || !uic) return;
     const controller = new AbortController();
@@ -163,7 +163,7 @@ export default function OutreachWorkflow() {
     if (validationError) { setError(validationError); return; }
     setSubmitting(true); setError("");
     try {
-      const response = await fetch("/api/redcap/outreach", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, recordId: uic, enrollment: mode === "new" ? enrollment : undefined, outreach: { ...outreach, oc_is_new_client: mode === "new" ? "1" : "0" }, partners: reactive ? partners : [], children: reactive ? children : [] }) });
+      const response = await fetch("/api/redcap/outreach", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, queueId, recordId: uic, enrollment: mode === "new" ? enrollment : undefined, outreach: { ...outreach, oc_is_new_client: mode === "new" ? "1" : "0" }, partners: reactive ? partners : [], children: reactive ? children : [] }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Unable to save outreach contact.");
       setSuccess(`Outreach contact saved for ${uic}.`);
@@ -203,11 +203,11 @@ export function Enrollment({ values: v, set, uic, kp }: { values: Values; set: (
 }
 
 function StatusAndTest({ title, values, set, statusKey, resultKey, iecKey }: { title: string; values: Values; set: (key: string, value: string) => void; statusKey: string; resultKey: string; iecKey: string }) {
-  return <details className="rounded-2xl border p-4"><summary className="cursor-pointer font-bold">{title}</summary><div className="mt-4 grid gap-4 sm:grid-cols-2"><Field label={`${title} status at contact`}><Select value={values[statusKey]} onChange={(value) => set(statusKey, value)}><option value="1">Known positive</option><option value="2">Negative, tested within past 3–6 months</option><option value="3">Unknown / never tested / refuse</option></Select></Field><Field label={`Tested for ${title} on the spot`}><Select value={values[resultKey]} onChange={(value) => set(resultKey, value)}><option value="1">Reactive</option><option value="2">Non-reactive</option>{title === "HIV" && <><option value="3">Indeterminate</option><option value="4">Invalid</option></>}</Select></Field><Field label="Information / education session provided"><YesNo value={values[iecKey]} onChange={(value) => set(iecKey, value)} /></Field>{title === "HIV" && <Field label="Interested in PrEP"><YesNo value={values.oc_prep_interested} onChange={(value) => set("oc_prep_interested", value)} /></Field>}</div></details>;
+  return <details className="rounded-2xl border p-4"><summary className="cursor-pointer font-bold">{title}</summary><div className="mt-4 grid gap-4 sm:grid-cols-2"><Field label={`${title} status at contact`}><Select value={values[statusKey]} onChange={(value) => set(statusKey, value)}><option value="1">Known positive</option><option value="2">Negative, tested within past 3–6 months</option><option value="3">Unknown / never tested / refuse</option>{statusKey === "oc_syp_status_prev" && <option value="4">Previously SYP positive, treated</option>}</Select></Field><Field label={`Tested for ${title} on the spot`}><Select value={values[resultKey]} onChange={(value) => set(resultKey, value)}><option value="1">Reactive</option><option value="2">Non-reactive</option>{title === "HIV" && <><option value="3">Indeterminate</option><option value="4">Invalid</option></>}</Select></Field><Field label="Information / education session provided"><YesNo value={values[iecKey]} onChange={(value) => set(iecKey, value)} /></Field>{title === "HIV" && <Field label="Interested in PrEP"><YesNo value={values.oc_prep_interested} onChange={(value) => set("oc_prep_interested", value)} /></Field>}</div></details>;
 }
 
 function ScreeningSection({ heading, disease, values, set, status, result, iec }: { heading: string; disease: string; values: Values; set: (key: string, value: string) => void; status: string; result: string; iec: string }) {
-  return <details className="rounded-2xl border p-4"><summary className="cursor-pointer font-bold">{heading}</summary><div className="mt-4 grid gap-4 sm:grid-cols-2"><Field label={`${disease} status at this contact`}><Select value={values[status]} onChange={(value) => set(status, value)}><option value="1">Known {disease} positive</option><option value="2">{disease} negative on previous test</option><option value="3">Never tested</option></Select></Field><Field label={disease === "HIV" ? "HIV rapid test result" : `Tested for ${disease} on the spot`}><Select value={values[result]} onChange={(value) => set(result, value)}><option value="1">Reactive</option><option value="2">Non-reactive</option>{disease === "HIV" && <><option value="3">Indeterminate</option><option value="4">Invalid</option></>}</Select></Field><Field label="Information Education Communication session provided?"><YesNo value={values[iec]} onChange={(value) => set(iec, value)} /></Field></div></details>;
+  return <details className="rounded-2xl border p-4"><summary className="cursor-pointer font-bold">{heading}</summary><div className="mt-4 grid gap-4 sm:grid-cols-2"><Field label={`${disease} status at this contact`}><Select value={values[status]} onChange={(value) => set(status, value)}><option value="1">Known {disease} positive</option><option value="2">{disease} negative on previous test</option><option value="3">Never tested</option>{status === "oc_syp_status_prev" && <option value="4">Previously SYP positive, treated</option>}</Select></Field><Field label={disease === "HIV" ? "HIV rapid test result" : `Tested for ${disease} on the spot`}><Select value={values[result]} onChange={(value) => set(result, value)}><option value="1">Reactive</option><option value="2">Non-reactive</option>{disease === "HIV" && <><option value="3">Indeterminate</option><option value="4">Invalid</option></>}</Select></Field><Field label="Information Education Communication session provided?"><YesNo value={values[iec]} onChange={(value) => set(iec, value)} /></Field></div></details>;
 }
 
 function OutreachContactFull({ values: v, set, kp, existing }: { values: Values; set: (key: string, value: string) => void; kp: Set<string>; existing: Patient | null }) {

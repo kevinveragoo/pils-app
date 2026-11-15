@@ -20,6 +20,8 @@
     "test:clinic-appointments": "node scripts/test-clinic-appointments.mjs",
     "test:clinic-lab-review-formula": "node scripts/test-clinic-lab-review-formula.mjs",
     "test:queue-patient-code": "node scripts/test-queue-patient-code.mjs",
+    "test:walk-in-patients": "node scripts/test-walk-in-patients.mjs",
+    "test:queue-reschedule": "node scripts/test-queue-reschedule.mjs",
     "test:queue-no-show": "node scripts/test-queue-no-show.mjs",
     "test:new-appointment": "node scripts/test-new-appointment.mjs",
     "test:client-enrollment": "node scripts/test-client-enrollment.mjs",

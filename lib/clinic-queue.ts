@@ -4,11 +4,11 @@
 //
 //  Created by Elisa Kevin Veragoo + ChatGPT on 09/10/2026.
 //
-import { queueVisitDetails, type VisitWorkflow } from "@/lib/visit-workflow";
+import { queueVisitDetails, type QueueWorkflow } from "@/lib/visit-workflow";
 import { db } from "@/lib/db";
 
-export const QUEUE_TASKS = ["DOCTOR", "BLOOD_TEST", "MEDICATION", "PREP", "ARV", "OTHER"] as const;
-export const QUEUE_STATIONS = ["RECEPTION", "FILE_RETRIEVAL", "DOCTOR", "BLOOD_TEST", "MEDICATION", "CLINICIAN"] as const;
+export const QUEUE_TASKS = ["DOCTOR", "BLOOD_TEST", "MEDICATION", "PREP", "ARV", "OTHER", "SCREENING"] as const;
+export const QUEUE_STATIONS = ["RECEPTION", "FILE_RETRIEVAL", "DOCTOR", "BLOOD_TEST", "MEDICATION", "SCREENING", "CLINICIAN"] as const;
 export const QUEUE_STATUSES = ["EXPECTED", "WAITING", "READY", "DONE", "CANCELLED"] as const;
 export type QueueTask = typeof QUEUE_TASKS[number];
 
@@ -101,7 +101,7 @@ export async function queueForDate(date: string) {
   return [...scheduled.filter(entry => !persistedRecords.has(entry.recordId)), ...local.map(publicEntry)];
 }
 
-export async function createQueueEntry(data: { queueDate: string; recordId?: string; displayName: string; firstName?: string; lastName?: string; nationalId?: string; alias?: string; patientCode?: string; phone?: string; visitWorkflow?: VisitWorkflow; clinicPurposes?: string[]; prepPurposes?: string[]; source?: string; isNewClient?: boolean; status?: string; currentStation?: string; tasks: string[]; appointmentSources?: string[]; notes?: string }, actor: Actor) {
+export async function createQueueEntry(data: { queueDate: string; recordId?: string; displayName: string; firstName?: string; lastName?: string; nationalId?: string; alias?: string; patientCode?: string; phone?: string; visitWorkflow?: QueueWorkflow; clinicPurposes?: string[]; prepPurposes?: string[]; source?: string; isNewClient?: boolean; status?: string; currentStation?: string; tasks: string[]; appointmentSources?: string[]; notes?: string }, actor: Actor) {
   let alreadyQueued = false;
   data = { ...data, recordId: data.recordId?.trim().toUpperCase() };
   const now = new Date();

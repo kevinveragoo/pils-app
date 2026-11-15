@@ -1508,3 +1508,27 @@
 "ChatGPT" = "ChatGPT";
 
 "PILS" = "PILS";
+
+"Physical-file baskets for clinic services and screening" = "Bann dosie pou servis klinik ek depistaz";
+"Open Outreach Workflow" = "Ouver bann etap Outreach";
+"Ready for Clinic or Outreach Workflow capture" = "Pre pou sezi dan Klinik ouswa Outreach";
+
+"Previously SYP positive, treated" = "Ti deza SYP pozitif, finn gagn tretman";
+
+"Re-schedule" = "Replanifie";
+"Re-schedule appointment" = "Replanifie randevou";
+"Mark the original appointment as no show and copy it to the selected date." = "Mark randevou orizinal kouma pa finn vini ek kopie li lor dat ki finn swazir.";
+"New appointment date" = "Nouvo dat randevou";
+"Confirm re-schedule" = "Konfirm replanifikasion";
+
+"What are they here for?" = "Pou ki zot finn vini?";
+
+"Blood" = "Pran disan";
+
+"Choose at least one service." = "Swazir omwin enn servis.";
+
+"Refresh client list" = "Rafresi lalis bann kliyan";
+
+"No matching clients. Check the UIC or refresh the client list." = "Pena kliyan ki koresponn. Verifie UIC ouswa rafresi lalis bann kliyan.";
+
+"Unable to load clients. Refresh the client list to try again." = "Pa kapav sarz bann kliyan. Rafresi lalis pou reeseye.";

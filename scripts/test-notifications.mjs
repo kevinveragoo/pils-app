@@ -92,6 +92,13 @@ try {
   await sendArrivalNotifications(db, send, now); assert.equal(sends, 1, 'No repeat on polling');
   await db.clinicQueueEvent.create({ data: { queueEntryId: entry.id, actorId: user.id, actorName: 'Test', action: 'ARRIVED', createdAt: now } });
   await sendArrivalNotifications(db, send, now); assert.equal(sends, 1, 'Repeated check-in event deduplicated per daily visit/device');
+  const screening = await db.clinicQueueEntry.create({ data: { queueDate: today, displayName: 'Screening test', source: 'WALK_IN', visitWorkflow: 'SCREENING', currentStation: 'SCREENING', tasks: '["SCREENING"]', status: 'WAITING', createdById: user.id, createdByName: 'Test', updatedById: user.id, updatedByName: 'Test', events: { create: { actorId: user.id, actorName: 'Test', action: 'WALK_IN_CHECKED_IN', createdAt: new Date(now.getTime() - 1000) } } } });
+  await sendArrivalNotifications(db, send, now);
+  assert.equal(sends, 2, 'Entering the Screening bin sends an arrival notification');
+  await sendArrivalNotifications(db, send, now);
+  assert.equal(sends, 2, 'Screening arrival does not notify again on polling');
+  assert.equal((await db.pushDelivery.findFirst({ where: { queueEntryId: screening.id } })).state, 'SENT');
+  await db.clinicQueueEntry.delete({ where: { id: screening.id } });
   async function reset() { await db.pushDelivery.deleteMany(); sends = 0; }
   await reset();
   await db.notificationPreference.update({ where: { userId: user.id }, data: { enabled: false } });

@@ -1508,3 +1508,27 @@
 "ChatGPT" = "ChatGPT";
 
 "PILS" = "PILS";
+
+"Physical-file baskets for clinic services and screening" = "Physical-file baskets for clinic services and screening";
+"Open Outreach Workflow" = "Open Outreach Workflow";
+"Ready for Clinic or Outreach Workflow capture" = "Ready for Clinic or Outreach Workflow capture";
+
+"Previously SYP positive, treated" = "Previously SYP positive, treated";
+
+"Re-schedule" = "Re-schedule";
+"Re-schedule appointment" = "Re-schedule appointment";
+"Mark the original appointment as no show and copy it to the selected date." = "Mark the original appointment as no show and copy it to the selected date.";
+"New appointment date" = "New appointment date";
+"Confirm re-schedule" = "Confirm re-schedule";
+
+"What are they here for?" = "What are they here for?";
+
+"Blood" = "Blood";
+
+"Choose at least one service." = "Choose at least one service.";
+
+"Refresh client list" = "Refresh client list";
+
+"No matching clients. Check the UIC or refresh the client list." = "No matching clients. Check the UIC or refresh the client list.";
+
+"Unable to load clients. Refresh the client list to try again." = "Unable to load clients. Refresh the client list to try again.";

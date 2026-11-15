@@ -4,6 +4,7 @@
 //
 //  Created by Elisa Kevin Veragoo + ChatGPT on 09/10/2026.
 //
+import { rescheduleQueueEntry } from "@/lib/queue-reschedule";
 import { setQueueNoShow, QueueNoShowError } from "@/lib/queue-no-show";
 import { db } from "@/lib/db";
 import { saveQueuePatientCode, PatientCodeError } from "@/lib/queue-patient-code";
@@ -23,6 +24,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const tasks = Array.isArray(body.tasks) ? body.tasks.filter((task): task is string => typeof task === "string" && (QUEUE_TASKS as readonly string[]).includes(task)) : undefined;
     const entry = await db.clinicQueueEntry.findUnique({ where: { id } });
     if (!entry) return NextResponse.json({ error: "Queue entry no longer exists." }, { status: 404 });
+    if (currentStation === "SCREENING" && (entry.visitWorkflow !== "SCREENING" || entry.source !== "WALK_IN")) return NextResponse.json({ error: "Screening is only available for screening walk-ins." }, { status: 400 });
+    if (entry.visitWorkflow === "SCREENING" && currentStation && !["SCREENING", "CLINICIAN", "RECEPTION"].includes(currentStation)) return NextResponse.json({ error: "Screening walk-ins must use the screening queue." }, { status: 400 });
+    if (body.rescheduleDate !== undefined) {
+      if (typeof body.rescheduleDate !== "string") return NextResponse.json({ error: "Choose a valid appointment date." }, { status: 400 });
+      return NextResponse.json(await rescheduleQueueEntry(id, body.rescheduleDate, user));
+    }
     if (body.noShow !== undefined && body.noShow !== true) return NextResponse.json({ error: "Return the entry to Expected to remove a no-show." }, { status: 400 });
     if (body.noShow === true) return NextResponse.json(await setQueueNoShow(id, true, user));
     if (status === "EXPECTED" && (entry.noShow || entry.noShowInstance) && ["DONE", "EXPECTED"].includes(entry.status)) return NextResponse.json(await setQueueNoShow(id, false, user));

@@ -141,7 +141,7 @@ export async function GET() {
       })
     );
 
-    return NextResponse.json(uniquePatients);
+    return NextResponse.json(uniquePatients, { headers: { "Cache-Control": "private, no-store, max-age=0" } });
   } catch (error) {
     console.error("REDCap patient export error:", error);
 

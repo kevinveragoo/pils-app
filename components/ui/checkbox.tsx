@@ -1,3 +1,9 @@
+//
+//  checkbox.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 12/09/2026.
+//
 "use client"
 
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"

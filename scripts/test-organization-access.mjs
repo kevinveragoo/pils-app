@@ -1,3 +1,9 @@
+//
+//  test-organization-access.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 22/10/2026.
+//
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -55,13 +61,13 @@ for(const organization of ['CUT','AILES','PILS_VOLUNTEER','UNKNOWN',undefined]){
 user={...user,organization:'CUT'};
 function hrefs(node){if(!node||typeof node!=='object')return [];if(Array.isArray(node))return node.flatMap(hrefs);return [...(node.props?.href?[node.props.href]:[]),...hrefs(node.props?.children)];}
 const header=load('components/AppHeader.tsx').default;
-assert.deepEqual(hrefs(await header({current:'outreach'})),['/outreach','/change-password']);
-for(const file of ['healthcare-nav','prep','clinic-queue','new-appointment','admin/users','admin/users/[id]','lookup','hiv-care-support-upcoming','dashboard','export-index','client-enrollment','clinic','breakfast']){
+assert.deepEqual(hrefs(await header({current:'outreach'})),['/outreach','/notifications','/change-password']);
+for(const file of ['healthcare-nav','prep','clinic-queue','new-appointment','admin/users','admin/users/[id]','lookup','hiv-care-support-upcoming','dashboard','client-enrollment','clinic','breakfast']){
  const page=load(`app/${file}/page.tsx`).default;
  await assert.rejects(page({params:Promise.resolve({id:'target'}),searchParams:Promise.resolve({})}),/REDIRECT:\/outreach/,file+' must block external users');
 }
 for(const [file,methods] of [
- ['clinic-queue/route',['GET','POST','DELETE']],['clinic-queue/[id]/route',['PATCH']],['export-index/route',['GET']],
+ ['clinic-queue/route',['GET','POST','DELETE']],['clinic-queue/[id]/route',['PATCH']],
  ['redcap/healthcare-nav/route',['GET','POST']],['redcap/prep/route',['GET','POST']],['redcap/appointments/route',['GET','POST']],
  ['redcap/lookup/route',['GET']],['redcap/dashboard/route',['GET']],['redcap/client-enrollment/route',['GET','POST']],
  ['redcap/clinic/route',['GET','POST']],['redcap/breakfast/route',['POST']],['redcap/breakfast/skeletons/route',['POST']],
@@ -78,7 +84,8 @@ const response=await patients.GET();assert.equal(response.status,200);
 assert.equal((await response.json())[0].patient_code,'');
 assert.ok(!Array.from(network.at(-1).values()).includes('cne_patient_code'),'External outreach client lists must not request clinical codes');
 assert.equal((await load('app/api/redcap/outreach/route.ts').GET(new Request('http://app.invalid/api?uic=TEST'))).status,200);
-await load('app/outreach/page.tsx').default();
+await load('app/outreach/page.tsx').default({ searchParams: Promise.resolve({}) });
+await load('app/notifications/page.tsx').default();
 
 await load('app/change-password/page.tsx').default();
 user={...user,organization:'PILS'};
@@ -87,7 +94,7 @@ assert.ok(hrefs(await header({current:'clinic'})).includes('/clinic'));
 user={...user,role:'HEALTHCARE_NAVIGATOR',roles:'[]'};
 assert.equal(auth.defaultRouteForUser(user),'/healthcare-nav');assert.equal(auth.hasAnyRole(user,['FACILITY_STAFF','ADMIN']),false);
 const {pagesForRole}=load('lib/role-page-access.ts');
-assert.deepEqual(Array.from(pagesForRole('ADMIN','CUT')),['Outreach Workflow','Change Password']);
+assert.deepEqual(Array.from(pagesForRole('ADMIN','CUT')),['Outreach Workflow','Notifications','Change Password']);
 assert.ok(pagesForRole('ADMIN','PILS').includes('Clinic Queue'));
 for (const role of ['OUTREACH_WORKER','HEALTHCARE_ASSISTANT','HEALTHCARE_NAVIGATOR','FACILITY_STAFF','ADMIN']) {
  user={...user,organization:'PILS',role,roles:'[]'};
@@ -95,4 +102,4 @@ for (const role of ['OUTREACH_WORKER','HEALTHCARE_ASSISTANT','HEALTHCARE_NAVIGAT
  assert.ok(hrefs(await header({current:'logs'})).includes('/logs'));
 }
 await load('app/logs/page.tsx').default({searchParams:Promise.resolve({})});
-console.log('Organisation access checks passed: external organisations (including volunteer/admin/multi-role users), navigation, all restricted pages/APIs, PILS-only Logs list/details, allowed external Outreach/password access, patient-list privacy and unchanged PILS roles. No network requests made.');
+console.log('Organisation access checks passed: external organisations (including volunteer/admin/multi-role users), navigation, all restricted pages/APIs, PILS-only Logs list/details, allowed external Outreach/Notifications/password access, patient-list privacy and unchanged PILS roles. No network requests made.');

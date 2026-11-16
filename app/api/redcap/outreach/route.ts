@@ -1,3 +1,10 @@
+//
+//  route.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 09/10/2026.
+//
+import { completeQueueEntry } from "@/lib/clinic-queue";
 import { enrollmentFields } from "@/lib/client-enrollment";
 import { validateFields } from "@/lib/redcap-validation";
 import { generateUic } from "@/lib/uic";
@@ -9,7 +16,7 @@ const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
 
 type Values = Record<string, string>;
-type Submission = { mode?: unknown; recordId?: unknown; enrollment?: unknown; outreach?: unknown; partners?: unknown; children?: unknown };
+type Submission = { queueId?: unknown; mode?: unknown; recordId?: unknown; enrollment?: unknown; outreach?: unknown; partners?: unknown; children?: unknown };
 
 const outreachFields = ["oc_worker_1","oc_worker_2","oc_worker_3","oc_date","oc_type","oc_hotspot","oc_district","oc_is_new_client","oc_sex_acts_1w","oc_condom_use","oc_drug_alcohol","oc_shared_inject_equip","oc_violence_report","oc_violence_address","oc_male_condoms","oc_female_condoms","oc_lubricant","oc_hiv_self_test","oc_syringes","oc_num_needles","oc_hiv_status_prev","oc_hiv_rapid_result","oc_hiv_comms","oc_hepc_status_prev","oc_hepc_result","oc_hepc_comms","oc_hepb_status_prev","oc_hepb_result","oc_hepb_comms","oc_syp_status_prev","oc_syp_result","oc_syp_comms","oc_prep_com","oc_prep_interested","oc_prep_no_reason","oc_referrals","oc_referral_other","oc_followup_needed","oc_followup_date","oc_notes"];
 const partnerFields = ["itp_name","itp_nickname","itp_dob","itp_age","itp_gender","itp_description","itp_lives_with","itp_address","itp_work_address","itp_work_hours","itp_phone","itp_phone_alt","itp_relationship","itp_violence","itp_threats","itp_forced_sex","itp_notif_method","itp_notif_date","itp_1st_cont_date","itp_1st_cont_method","itp_2nd_cont_date","itp_2nd_cont_method","itp_3rd_cont_date","itp_3rd_cont_method","itp_contact_success","itp_contact_by_who","itp_contact_result","itp_contact_result_other","itp_hiv_result","itp_contact_art","itp_enrolled","itp_new_uic","itp_notes"];
@@ -111,7 +118,8 @@ export async function POST(request: Request) {
     (children as Values[]).forEach((child, index) => records.push({ uic_ori: recordId, redcap_repeat_instrument: "partner_referral_child", redcap_repeat_instance: next("partner_referral_child", index), ...copyAllowed(child, childFields) }));
     const result = await redcap({ content: "record", action: "import", format: "json", type: "flat", overwriteBehavior: "normal", forceAutoNumber: "false", dateFormat: "YMD", data: JSON.stringify(records), returnContent: "count", returnFormat: "json" });
     const activityLogged = await recordRedcapActivity({ user, workflow: "outreach", recordId, staffName: outreach.oc_worker_1, serviceDate: outreach.oc_date, instrumentInstances: records.filter(row => row.redcap_repeat_instrument).map(row => ({ instrument: row.redcap_repeat_instrument, instance: Number(row.redcap_repeat_instance) })), submittedData: records });
-    return NextResponse.json({ success: true, recordId, savedRows: records.length, activityLogged, result });
+    const queueCompleted = await completeQueueEntry(typeof input.queueId === "string" ? input.queueId : undefined, recordId, user);
+    return NextResponse.json({ success: true, queueCompleted, recordId, savedRows: records.length, activityLogged, result });
   } catch (error) {
     console.error("REDCap outreach import error:", error);
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to save outreach contact to REDCap." }, { status: 502 });

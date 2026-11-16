@@ -1,3 +1,9 @@
+//
+//  test-queue-patient-code.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 14/10/2026.
+//
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -34,7 +40,8 @@ vm.runInNewContext(transpile('../app/api/clinic-queue/[id]/route.ts'), { module:
     if (name === '@/lib/auth') return { getCurrentUser: async () => queueUser, hasAnyRole: (user, roles) => roles.includes(user.role) };
     if (name === '@/lib/db') return { db: { clinicQueueEntry: { findUnique: async () => entry } } };
     if (name === '@/lib/queue-patient-code') return loaded.exports;
-    if (name === '@/lib/queue-no-show') return { setQueueNoShow: async () => { throw Error('Unexpected no-show action'); }, QueueNoShowError: class extends Error {} };
+    if (name === '@/lib/queue-reschedule') return { rescheduleQueueEntry: async () => { throw Error('Unexpected reschedule'); } };
+  if (name === '@/lib/queue-no-show') return { setQueueNoShow: async () => { throw Error('Unexpected no-show action'); }, QueueNoShowError: class extends Error {} };
     if (name === '@/lib/clinic-queue') return { QUEUE_STATUSES: ['WAITING', 'EXPECTED'], QUEUE_STATIONS: ['FILE_RETRIEVAL', 'RECEPTION', 'DOCTOR', 'BLOOD_TEST', 'MEDICATION'], QUEUE_TASKS: ['DOCTOR'], updateQueueEntry: async (_id, patch) => { if (patch.patientCode !== undefined) assert.equal(rows[0].cne_patient_code, patch.patientCode); moved.push(patch); return patch; } };
     throw Error(name);
   },

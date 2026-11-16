@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>HOME</key>
+		<string>/Users/kevin</string>
+		<key>PATH</key>
+		<string>/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+	</dict>
+	<key>KeepAlive</key>
+	<true/>
+	<key>Label</key>
+	<string>mu.pils.notifications</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/kevin/.nvm/versions/node/v23.5.0/bin/node</string>
+		<string>--env-file=/Users/kevin/Developer/pils-app/.env.local</string>
+		<string>/Users/kevin/Developer/pils-app/scripts/notification-worker.mjs</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/Users/kevin/Library/Logs/pils-app/notifications-error.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/kevin/Library/Logs/pils-app/notifications.log</string>
+	<key>ThrottleInterval</key>
+	<integer>10</integer>
+	<key>UserName</key>
+	<string>kevin</string>
+	<key>WorkingDirectory</key>
+	<string>/Users/kevin/Developer/pils-app</string>
+</dict>
+</plist>

@@ -1,3 +1,9 @@
+//
+//  test-client-enrollment.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 18/10/2026.
+//
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';

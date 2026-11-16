@@ -563,7 +563,8 @@
     "codes": [
       "1",
       "2",
-      "3"
+      "3",
+      "4"
     ]
   },
   "oc_hepc_result": {
@@ -605,7 +606,8 @@
     "codes": [
       "1",
       "2",
-      "3"
+      "3",
+      "4"
     ]
   },
   "oc_syp_result": {
@@ -647,7 +649,8 @@
       "9",
       "10",
       "11",
-      "12"
+      "12",
+      "13"
     ]
   },
   "oc_referral_other": {
@@ -1681,7 +1684,7 @@
   },
   "pv_syphilis_result": {
     "form": "prep_visit",
-    "type": "radio",
+    "type": "text",
     "codes": [
       "1",
       "2",
@@ -1844,7 +1847,11 @@
   },
   "pv_profile_updated": {
     "form": "prep_visit",
-    "type": "yesno"
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
   },
   "ptp_status": {
     "form": "prep_visit",

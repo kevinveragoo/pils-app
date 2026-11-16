@@ -1,3 +1,9 @@
+//
+//  redcap-validation.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 23/09/2026.
+//
 import { fieldVisible } from "./instrument-forms";
 import definitions from "./redcap-field-rules.json";
 
@@ -51,6 +57,9 @@ export function completedAge(dob: string, now = new Date()) {
 
 export function validateFields(values: Record<string, string>, fields = Object.keys(values)): string | null {
   if (Object.keys(values).some(key => key.startsWith("pv_") && !rules[key] && values[key]?.trim())) return "The PrEP form is out of date. Reload it before saving.";
+  for (const key of fields) {
+    if (key.startsWith("pv_") && /_result$/.test(key) && values[key]?.trim() && rules[key]?.branch && !fieldVisible(rules[key].branch!, values)) return "Select Laboratory results review and the matching laboratory test before saving PrEP results.";
+  }
   if (fields.includes("oc_prep_interested") && values.oc_prep_interested === "0" && !values.oc_prep_no_reason?.trim()) {
     return "Reason not interested in PrEP is required.";
   }

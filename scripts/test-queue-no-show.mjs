@@ -1,3 +1,9 @@
+//
+//  test-queue-no-show.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 21/10/2026.
+//
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -78,6 +84,7 @@ const route={exports:{}};
 vm.runInNewContext(transpile('app/api/clinic-queue/[id]/route.ts'),{module:route,exports:route.exports,Response,
  require:name=>{
   if(name==='@/lib/db')return {db};
+  if (name === '@/lib/queue-reschedule') return { rescheduleQueueEntry: async () => { throw Error('Unexpected reschedule'); } };
   if(name==='@/lib/queue-no-show')return loaded.exports;
   if(name==='next/server')return {NextResponse:Response};
   if(name==='@/lib/auth')return {getCurrentUser:async()=>currentUser,hasAnyRole:(u,roles)=>roles.includes(u.role)};

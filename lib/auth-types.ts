@@ -1,3 +1,9 @@
+//
+//  auth-types.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 27/09/2026.
+//
 export type AuthActionState = {
   error?: string;
   success?: string;

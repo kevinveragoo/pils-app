@@ -457,11 +457,8 @@
 
 "UIC, name, or patient code" = "UIC, nom ou code patient";
 
-"Download" = "Télécharger";
 
-"Downloading…" = "Téléchargement…";
 
-"Unable to download the index. Please try again." = "Impossible de télécharger l’index. Veuillez réessayer.";
 
 "Not interested" = "Pas intéressé";
 
@@ -834,9 +831,6 @@
 "Skip to Clinic workflow" = "Aller au parcours clinique";
 "Skip to clinic queue" = "Aller à la file de la clinique";
 "Skip to dashboard" = "Aller au tableau de bord";
-"Skip to Export Index" = "Aller à l’export de l’index";
-"Clinic services" = "Services de la clinique";
-"Export Index" = "Exporter l’index";
 "Skip to entry details" = "Aller aux détails de l’entrée";
 "← Back to logs" = "← Retour aux journaux";
 "Entry details" = "Détails de l’entrée";
@@ -1369,8 +1363,6 @@
 "Manage arrivals, clinic stations, and completed visits." = "Gérez les arrivées, les postes de la clinique et les visites terminées.";
 "Dashboard | PILS" = "Tableau de bord | PILS";
 "Aggregate outreach testing dashboard by reporting period and key population." = "Tableau de bord agrégé des tests de terrain par période et population clé.";
-"Export Index | PILS" = "Exporter l’index | PILS";
-"Export Index for clinic services." = "Export de l’index pour les services de la clinique.";
 "Healthcare Nav Workflow | PILS" = "Parcours de navigation en santé | PILS";
 "Guided HIV care support and treatment monitoring entry." = "Saisie guidée du soutien aux soins VIH et du suivi du traitement.";
 "PILS Services" = "Services PILS";
@@ -1461,60 +1453,92 @@
 
 "Adding…" = "Ajout en cours…";
 
-"All available records" = "Toutes les données disponibles";
+"Notifications" = "Notifications";
 
-"Rolling 12 months" = "12 mois glissants";
+"Choose which updates you receive. Available categories follow your current page access." = "Choisissez les mises à jour à recevoir. Les catégories disponibles dépendent de vos accès actuels.";
 
-"Rolling 3 months" = "3 mois glissants";
+"Enable notifications for my account" = "Activer les notifications pour mon compte";
 
-"Rolling month" = "Mois glissant";
+"Clinic Queue — patient arrivals" = "File de la clinique — arrivées des patients";
 
-"Last 7 calendar days" = "7 derniers jours calendaires";
+"No notification categories are available for your current access." = "Aucune catégorie de notification disponible pour vos accès actuels.";
 
-"Rapid test" = "Test rapide";
+"Arrival alerts show the patient name and code on your device, including its lock screen. Missing codes appear as Code pending." = "Les alertes affichent le nom et le code du patient, y compris sur l’écran verrouillé. Les codes manquants apparaissent comme Code en attente.";
 
-"Laboratory" = "Laboratoire";
+"This device" = "Cet appareil";
 
-"First time tested" = "Premier dépistage";
+"On iPhone or iPad, add PILS to your Home Screen and open it from there before enabling notifications." = "Sur iPhone ou iPad, ajoutez PILS à l’écran d’accueil et ouvrez-le depuis celui-ci avant d’activer les notifications.";
 
-"Recorded / unclassified" = "Résultat enregistré / non classé";
+"Enable this device again after signing in again. Signing out stops future alerts for that sign-in." = "Réactivez cet appareil après une nouvelle connexion. La déconnexion arrête les prochaines alertes de cette session.";
 
-"Outreach Contact" = "Contact de proximité";
+"Push notifications are unavailable here. Use HTTPS and a supported browser or Home Screen app." = "Les notifications push sont indisponibles ici. Utilisez HTTPS et un navigateur compatible ou l’application depuis l’écran d’accueil.";
 
-"Clinic Visit (combined needles/syringes field)" = "Visite clinique (champ combiné aiguilles/seringues)";
+"Notifications are not configured." = "Les notifications ne sont pas configurées.";
 
-"HIV Care Support (combined needles/syringes field)" = "Accompagnement VIH (champ combiné aiguilles/seringues)";
+"Enable notifications on this device" = "Activer les notifications sur cet appareil";
 
+"Disable notifications on this device" = "Désactiver les notifications sur cet appareil";
 
+"Unable to save notification settings." = "Impossible d’enregistrer les paramètres de notification.";
 
-"Outreach Contact — HIV rapid result" = "Contact de proximité — résultat du test rapide HIV";
+"Unable to load notification settings." = "Impossible de charger les paramètres de notification.";
 
-"Clinic Visit — HIV laboratory result" = "Visite clinique — résultat de laboratoire HIV";
+"Notification settings saved." = "Paramètres de notification enregistrés.";
 
-"PrEP Visit — HIV laboratory result" = "Visite PrEP — résultat de laboratoire HIV";
+"Allow notifications in your browser or phone settings, then try again." = "Autorisez les notifications dans les paramètres du navigateur ou du téléphone, puis réessayez.";
 
-"Outreach Contact — HBV rapid result" = "Contact de proximité — résultat du test rapide HBV";
+"This device is ready for notifications during your current sign-in." = "Cet appareil est prêt à recevoir les notifications pendant votre session actuelle.";
 
-"Clinic Visit — HBV laboratory result" = "Visite clinique — résultat de laboratoire HBV";
+"Notifications disabled on this device." = "Notifications désactivées sur cet appareil.";
 
-"PrEP Visit — HBV laboratory result" = "Visite PrEP — résultat de laboratoire HBV";
+"Enable notifications on this device first." = "Activez d’abord les notifications sur cet appareil.";
+"Test notification sent. Check your device notifications." = "Notification de test envoyée. Vérifiez les notifications de votre appareil.";
+"Send test notification" = "Envoyer une notification de test";
 
-"Outreach Contact — HCV rapid result" = "Contact de proximité — résultat du test rapide HCV";
+"Menu" = "Menu";
 
-"Clinic Visit — HCV laboratory result" = "Visite clinique — résultat de laboratoire HCV";
+"Open navigation" = "Ouvrir la navigation";
 
-"PrEP Visit — HCV laboratory result" = "Visite PrEP — résultat de laboratoire HCV";
+"Close navigation" = "Fermer la navigation";
 
-"Outreach Contact — syphilis rapid result" = "Contact de proximité — résultat du test rapide syphilis";
+"designed and developed by" = "designed and developed by";
 
-"Clinic Visit — syphilis laboratory result" = "Visite clinique — résultat de laboratoire syphilis";
+"Elisa Kevin Veragoo" = "Elisa Kevin Veragoo";
 
-"PrEP Visit — syphilis laboratory result" = "Visite PrEP — résultat de laboratoire syphilis";
+"ChatGPT" = "ChatGPT";
 
-"PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained." = "Les résultats de laboratoire PrEP utilisent la date de chaque test, puis la date de prélèvement ou de visite pour les anciens dossiers. Les choix sont identiques à ceux des visites cliniques. Les anciens textes de syphilis inattendus sont classés comme Enregistré / non classé. Les tests explicitement non admissibles sont exclus ; les anciens dossiers sans motif ni indicateur de test sont conservés.";
+"PILS" = "PILS";
 
-"PrEP laboratory results review" = "PrEP : examen des résultats de laboratoire";
+"Physical-file baskets for clinic services and screening" = "Bacs des dossiers pour les services cliniques et le dépistage";
+"Open Outreach Workflow" = "Ouvrir le parcours de terrain";
+"Ready for Clinic or Outreach Workflow capture" = "Prêt pour la saisie clinique ou de terrain";
 
-"Conflicting results" = "Résultats contradictoires";
+"Previously SYP positive, treated" = "Antérieurement positif à la SYP, traité";
 
-"Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded." = "Les tests sont comptés une fois par patient, infection, méthode et date de test, jusqu’à aujourd’hui à Maurice. Les résultats de laboratoire Clinique et PrEP à la même date sont regroupés. Les résultats différents apparaissent une fois sous Résultats contradictoires. Les consultations comptent les journées par patient et par méthode. Sans identifiant de prélèvement, les prélèvements répétés le même jour ne peuvent pas être distingués. Le filtre des populations clés utilise l’appartenance ; les dossiers sans la valeur démographique sélectionnée sont exclus.";
+"Re-schedule" = "Reprogrammer";
+"Re-schedule appointment" = "Reprogrammer le rendez-vous";
+"Mark the original appointment as no show and copy it to the selected date." = "Marquer le rendez-vous initial comme absent et le copier à la date choisie.";
+"New appointment date" = "Nouvelle date de rendez-vous";
+"Confirm re-schedule" = "Confirmer la reprogrammation";
+
+"What are they here for?" = "Pourquoi sont-ils venus ?";
+
+"Blood" = "Prise de sang";
+
+"Choose at least one service." = "Choisissez au moins un service.";
+
+"Refresh client list" = "Actualiser la liste des clients";
+
+"No matching clients. Check the UIC or refresh the client list." = "Aucun client correspondant. Vérifiez le UIC ou actualisez la liste des clients.";
+
+"Unable to load clients. Refresh the client list to try again." = "Impossible de charger les clients. Actualisez la liste pour réessayer.";
+
+"Previously HEPC positive, treated" = "Antérieurement positif à l’hépatite C, traité";
+
+"Pils - Banian" = "Pils - Banian";
+
+"Select Laboratory results review and the matching laboratory test before saving PrEP results." = "Sélectionnez la revue des résultats de laboratoire et le test correspondant avant de sauvegarder les résultats PrEP.";
+
+"Outreach — reactive HIV result" = "Terrain — résultat VIH réactif";
+
+"Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Les alertes de terrain vous invitent à ouvrir PILS pour le suivi sans afficher de nom de patient ni de résultat VIH sur votre écran verrouillé.";

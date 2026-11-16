@@ -1,3 +1,9 @@
+//
+//  AuthForm.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 27/09/2026.
+//
 "use client";
 
 import Link from "next/link";

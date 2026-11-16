@@ -1,3 +1,9 @@
+//
+//  status-history.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 11/10/2026.
+//
 import { hivStatusChoices, prepStatusChoices } from "./treatment-status";
 export type StatusValues = Record<string,string>;
 export type Programme = "prep" | "hiv";

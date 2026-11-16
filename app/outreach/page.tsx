@@ -1,3 +1,9 @@
+//
+//  page.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 14/09/2026.
+//
 import type { Metadata } from "next";
 import AppHeader from "@/components/AppHeader";
 import OutreachWorkflow from "@/components/OutreachWorkflow";
@@ -8,14 +14,15 @@ export const metadata: Metadata = {
   description: "Guided outreach contact and partner referral entry.",
 };
 
-export default async function OutreachPage() {
+export default async function OutreachPage({ searchParams }: { searchParams: Promise<{ uic?: string; queueId?: string }> }) {
+  const query = await searchParams;
   await requireAnyRole(["OUTREACH_WORKER", "HEALTHCARE_ASSISTANT", "ADMIN"]);
   return (
     <div className="flex flex-1 flex-col">
       <a className="pils-skip-link" href="#outreach">Skip to outreach form</a>
       <AppHeader current="outreach" />
       <main id="outreach" className="w-full flex-1 py-6 sm:py-10">
-        <OutreachWorkflow />
+        <OutreachWorkflow initialUic={query.uic} queueId={query.queueId} />
       </main>
     </div>
   );

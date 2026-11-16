@@ -1,3 +1,9 @@
+//
+//  redcap-activity.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 04/10/2026.
+//
 import "server-only";
 
 import type { User } from "@prisma/client";

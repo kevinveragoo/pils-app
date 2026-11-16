@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+#
+#  split_redcap_sample.py
+#  pils-app
+#
+#  Created by Elisa Kevin Veragoo + ChatGPT on 15/09/2026.
+#
 """Split a REDCap flat CSV without separating rows belonging to one record."""
 
 from __future__ import annotations

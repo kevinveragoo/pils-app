@@ -1,9 +1,45 @@
 # Dashboard reporting rules
 
-The dashboard is PILS-administrator-only. Its API reads REDCap and returns
+The dashboard is available to all PILS staff. The original cards form the
+Default group, visible to every PILS staff role. The 41 new programme cards form
+the Executive group, visible only to PILS administrators (including a secondary
+ADMIN role). Administrators can see both groups. External organisations and
+volunteers outside the PILS organisation remain excluded. Its API reads REDCap and returns
 aggregates; it does not import or change patient records. Calculations are in
 `lib/dashboard.ts`, transport/access checks in `app/api/redcap/dashboard/route.ts`,
 and charts in `components/Dashboard.tsx`.
+
+The administrator view now includes 41 Executive programme indicator cards. Their agreed rules,
+source coverage, and 16 unimplemented templates are documented in
+[Dashboard card mapping](DASHBOARD-CARD-MAPPING.md). The test/chart rules below
+describe the retained detail charts; their counting units deliberately differ
+from latest-result screening person counts and repeat-encounter indicator cards.
+
+The server page decides whether to render the Executive group. The API checks
+the user's organisation and roles independently: non-admin responses omit
+`indicators`, skip executive calculations and request only the original export
+fields. Query parameters cannot grant executive access. Navigation and the role
+page-access listing expose Dashboard to all PILS staff.
+
+All 11 Default summaries/charts now use the same grip and flip-to-info controls
+as Executive cards. Each back includes its own assumptions, calculation and raw
+REDCap field names. Summary metrics and chart calculations are unchanged. The
+Default grid saves its own order in `pils:dashboard-default-card-order:v1`,
+independently of Executive placement; resetting one group preserves the other.
+Chart cards have extra height for their canvas. Info buttons are icon-only,
+without a visible border or background; keyboard focus remains visible.
+
+PILS Healthcare Assistants and administrators can hover a default bar to see
+its contributing UICs in a scrollable popup. The API checks primary and secondary
+roles before including `barContributors`; other staff receive aggregates only,
+regardless of query parameters. Contributor maps are built in the existing
+deduplicated test and eligible-commodity aggregation loops, so each map sums to
+its bar total. A UIC appears once per bar with its contribution amount (test
+count or commodity units), even when it contributes multiple times. Conflicting
+test results contribute to the conflicting bar, not the positive/negative bars.
+UICs are not written to local storage and responses remain `Cache-Control:
+no-store`. Existing numeric tooltips remain for other roles. The line chart is
+unchanged. Tests use synthetic UICs, not live patient records.
 
 ## Dates and reporting windows
 

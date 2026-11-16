@@ -104,20 +104,33 @@ assert.equal(build([identity,...copies,{uic_ori:'OTHER',ce_gender_identity:'2'},
 assert.equal(build([{...justPrepHiv,pv_hiv_lab_test_date:'',pv_blood_collected_date:'2026-10-24'},clinic]).lab.totals.hiv,1,'Resolved legacy dates participate in deduplication');
 assert.equal(build([{...justPrepHiv,pv_syphilis_result:'2'}]).lab.totals.syphilis,1,'Infections remain independent');
 // Transport contract: all eligibility fields must actually be requested from REDCap.
-let actor = { role: 'ADMIN' }, requested = [], exportsCount = 0;
+let actor = { role: 'ADMIN', organization: 'PILS' }, requested = [], exportsCount = 0;
 const route = { exports: {} };
 vm.runInNewContext(ts.transpileModule(fs.readFileSync('app/api/redcap/dashboard/route.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, {
   module: route, exports: route.exports, URL, URLSearchParams, console, process: { env: { REDCAP_API_URL: 'https://mock.invalid', REDCAP_API_TOKEN: 'mock' } },
-  require: name => name === 'next/server' ? { NextResponse: Response } : name === '@/lib/dashboard' ? loaded.exports : { getCurrentUser: async () => actor, hasRole: () => actor?.role === 'ADMIN' },
+  require: name => name === 'next/server' ? { NextResponse: Response } : name === '@/lib/dashboard' ? loaded.exports : name === '@/lib/organization-access' ? { isPilsUser: user => user?.organization === 'PILS' } : { getCurrentUser: async () => actor, hasRole: (_user, role) => actor?.role === 'ADMIN' || actor?.role === role },
   fetch: async (_url, options) => { exportsCount++; assert.equal(options.body.get('action'), 'export'); requested = [...options.body].filter(([key]) => key.startsWith('fields[')).map(([, value]) => value); return Response.json([]); },
 });
 const request = params => route.exports.GET(new Request(`https://app.test/api/redcap/dashboard?${params}`));
-assert.equal((await request('period=week')).status, 200);
+const adminResponse = await request('period=week');
+assert.equal(adminResponse.status, 200);
+assert.ok('indicators' in await adminResponse.json(), 'Admins receive executive aggregates');
+assert.ok(requested.includes('htm_vl_level'));
 assert.ok(['cnv_no_show','cnv_visit_purpose','cnv_hiv_lab_test_done','hcs_status_only','pv_visit_date','pv_blood_collected_date','pv_syphilis_result','pv_hiv_lab_test_date','pv_hcv_lab_test_done','pv_visit_purpose'].every(field => requested.includes(field)));
 assert.equal((await request('period=invalid')).status, 400);
 assert.equal((await request('gender=99')).status, 400);
+for (const role of ['OUTREACH_WORKER', 'HEALTHCARE_ASSISTANT', 'HEALTHCARE_NAVIGATOR', 'FACILITY_STAFF']) {
+  actor = { role, organization: 'PILS' };
+  const response = await request('executive=true&uics=true&period=month');
+  assert.equal(response.status, 200);
+  const result = await response.json();
+  assert.ok(!('indicators' in result), 'Non-admin API responses must not contain executive aggregates');
+  assert.equal('barContributors' in result, role === 'HEALTHCARE_ASSISTANT', 'Only authorized clinical roles receive UICs');
+  assert.ok(result.rapid && result.lab && result.commodities, 'Original aggregates remain available');
+  assert.ok(!requested.includes('htm_vl_level') && !requested.includes('htp_diagnosis_date'), 'Non-admin exports must not request executive-only fields');
+}
 const before = exportsCount;
-actor = { role: 'FACILITY_STAFF' }; assert.equal((await request('')).status, 403);
+actor = { role: 'ADMIN', organization: 'CUT' }; assert.equal((await request('')).status, 403);
 actor = null; assert.equal((await request('')).status, 401);
 assert.equal(exportsCount, before, 'Denied requests must not reach REDCap');
 console.log('Dashboard checks passed: Mauritius/midnight, clamped ranges, date validity, zero-filled trends, Clinic/PrEP code mapping, free-text outcomes, eligibility, legacy rows, filters and API authorization/export fields. No network requests made.');
@@ -136,6 +149,7 @@ vm.runInNewContext(ts.transpileModule(uiSource, { compilerOptions: { module: ts.
     if (name === 'react/jsx-runtime') return { jsx: (type, props) => ({type,props}), jsxs: (type, props) => ({type,props}) };
     if (name === 'chart.js') return MockChart;
     if (name === '@/components/Localization') return { useLocalization: () => ({ locale, t: text => catalogs[locale][text] ?? text }) };
+    if (name === '@/components/DashboardBarTooltip') return { useBarTooltip: () => ({ custom: undefined, popup: null, onCanvasLeave: undefined }) };
     return {};
   },
 });

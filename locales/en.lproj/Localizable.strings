@@ -1542,3 +1542,156 @@
 "Outreach — reactive HIV result" = "Outreach — reactive HIV result";
 
 "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen.";
+
+/* Dashboard card templates */
+"People linked to care and active in care for at least 6 months — HIV, HCV and SYP" = "People linked to care and active in care for at least 6 months — HIV, HCV and SYP";
+"People tested @NVI" = "People tested @NVI";
+"Psychologist consultations @NVI" = "Psychologist consultations @NVI";
+"Psychiatrist consultations @NVI" = "Psychiatrist consultations @NVI";
+"Accompaniments @NVI" = "Accompaniments @NVI";
+"Blood tests @NVI" = "Blood tests @NVI";
+"People receiving wound dressing @NVI" = "People receiving wound dressing @NVI";
+"People receiving nutrition support @NVI" = "People receiving nutrition support @NVI";
+"People linked to care following a reactive screening test — HIV, HCV and SYP" = "People linked to care following a reactive screening test — HIV, HCV and SYP";
+"Patients with more than one active comorbidity" = "Patients with more than one active comorbidity";
+"Linked to care within 30 days — HIV, HCV and SYP (%)" = "Linked to care within 30 days — HIV, HCV and SYP (%)";
+
+"HIV-related communication attendances" = "HIV-related communication attendances";
+
+"First-time screening tests — HIV, HCV and SYP" = "First-time screening tests — HIV, HCV and SYP";
+
+"First-time screening reactivity rate — HIV, HCV and SYP" = "First-time screening reactivity rate — HIV, HCV and SYP";
+
+"4BAZ attendances" = "4BAZ attendances";
+
+"HIV+ people with undetectable viral load" = "HIV+ people with undetectable viral load";
+
+"Outreach activities" = "Outreach activities";
+
+"Average attendances per outreach activity" = "Average attendances per outreach activity";
+
+"Previous LTFU who returned to treatment" = "Previous LTFU who returned to treatment";
+
+"Previous LTFU who returned and achieved undetectable viral load" = "Previous LTFU who returned and achieved undetectable viral load";
+
+"Confirmed HIV diagnoses after starting PrEP (%)" = "Confirmed HIV diagnoses after starting PrEP (%)";
+
+"PrEP retention at M3, M6, M9 and M12 (%)" = "PrEP retention at M3, M6, M9 and M12 (%)";
+
+"Testing encounters / prevention attendances (%)" = "Testing encounters / prevention attendances (%)";
+
+"Breakfast encounters @NVI" = "Breakfast encounters @NVI";
+
+"People initiated on PrEP for the first time" = "People initiated on PrEP for the first time";
+
+"People initiated on ARV for the first time" = "People initiated on ARV for the first time";
+
+"Hospital accompaniments" = "Hospital accompaniments";
+
+"Eye-hospital accompaniments" = "Eye-hospital accompaniments";
+
+"Prevention attendances on sites" = "Prevention attendances on sites";
+
+"HIV rapid tests performed" = "HIV rapid tests performed";
+
+"People with reactive HIV screening" = "People with reactive HIV screening";
+
+"People with reactive HCV screening" = "People with reactive HCV screening";
+
+"People with reactive SYP screening" = "People with reactive SYP screening";
+
+"Clinical and social referrals issued" = "Clinical and social referrals issued";
+
+"People with outstanding missed PrEP appointments" = "People with outstanding missed PrEP appointments";
+
+"People linked to care who achieved undetectable viral load" = "People linked to care who achieved undetectable viral load";
+
+"People lost to ARV follow-up at period end" = "People lost to ARV follow-up at period end";
+
+"Screening reactivity rate — HIV, HCV and SYP" = "Screening reactivity rate — HIV, HCV and SYP";
+
+"Viral suppression rate (%)" = "Viral suppression rate (%)";
+
+"Prevention attendances sensitised to PrEP (%)" = "Prevention attendances sensitised to PrEP (%)";
+
+"Prevention attendances interested in PrEP (%)" = "Prevention attendances interested in PrEP (%)";
+
+"Programme indicators" = "Programme indicators";
+
+"Programme indicators for the selected period and population." = "Programme indicators for the selected period and population.";
+
+"Indicator counting rules" = "Indicator counting rules";
+
+"N/A" = "N/A";
+
+"First time tested" = "First time tested";
+
+"Recorded / unclassified" = "Recorded / unclassified";
+
+"Conflicting results" = "Conflicting results";
+
+"Attendance and screening indicators use Outreach Contact records. Repeat encounters count separately; screening reactivity uses each person's latest result per infection within the period." = "Attendance and screening indicators use Outreach Contact records. Repeat encounters count separately; screening reactivity uses each person's latest result per infection within the period.";
+
+"Outreach activities use recorded sites and dates. Average reach includes attendances with a recorded site. 4BAZ also includes HIV Care Support encounters, excluding same-person, same-day copies already recorded in Outreach." = "Outreach activities use recorded sites and dates. Average reach includes attendances with a recorded site. 4BAZ also includes HIV Care Support encounters, excluding same-person, same-day copies already recorded in Outreach.";
+
+"Referrals count issued clinical and social referral records. PrEP first-time initiations require recorded dispensing and explicit no-prior-use history. Viral suppression uses the latest result by the reporting cutoff: undetectable or below 40 copies/mL." = "Referrals count issued clinical and social referral records. PrEP first-time initiations require recorded dispensing and explicit no-prior-use history. Viral suppression uses the latest result by the reporting cutoff: undetectable or below 40 copies/mL.";
+
+"Blank cards are reserved for indicators requiring additional structured fields. N/A means there is no eligible denominator." = "Blank cards are reserved for indicators requiring additional structured fields. N/A means there is no eligible denominator.";
+
+"PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained." = "PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained.";
+
+"Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded." = "Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded.";
+
+"Rapid test" = "Rapid test";
+
+"Laboratory" = "Laboratory";
+
+"Not Implemented" = "Not Implemented";
+
+"Show card value" = "Show card value";
+
+"Show card details" = "Show card details";
+
+"Assumptions" = "Assumptions";
+
+"Calculation" = "Calculation";
+
+"Planned calculation" = "Planned calculation";
+
+"Missing fields or history" = "Missing fields or history";
+
+"REDCap fields used" = "REDCap fields used";
+
+"None — not implemented" = "None — not implemented";
+
+"Cards marked Not Implemented need additional structured fields or history. N/A means there is no eligible denominator." = "Cards marked Not Implemented need additional structured fields or history. N/A means there is no eligible denominator.";
+
+"No data" = "No data";
+
+"Cards marked Not Implemented need additional structured fields or history. Cards with no available values show No data. Recorded zero counts remain 0." = "Cards marked Not Implemented need additional structured fields or history. Cards with no available values show No data. Recorded zero counts remain 0.";
+
+"Drag a card handle to rearrange. You can also focus a handle and use the arrow keys." = "Drag a card handle to rearrange. You can also focus a handle and use the arrow keys.";
+
+"Reset card layout" = "Reset card layout";
+
+"Default card layout restored" = "Default card layout restored";
+
+"Move card" = "Move card";
+
+"Card position" = "Card position";
+
+"Executive cards" = "Executive cards";
+
+"Default cards" = "Default cards";
+
+"PILS staff access required." = "PILS staff access required.";
+
+"HIV results by method" = "HIV results by method";
+
+"SYP results by method" = "SYP results by method";
+
+"HCV results by method" = "HCV results by method";
+
+"HBV results by method" = "HBV results by method";
+
+"Contributing UICs" = "Contributing UICs";

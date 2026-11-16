@@ -1542,3 +1542,156 @@
 "Outreach — reactive HIV result" = "Terrain — résultat VIH réactif";
 
 "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Les alertes de terrain vous invitent à ouvrir PILS pour le suivi sans afficher de nom de patient ni de résultat VIH sur votre écran verrouillé.";
+
+/* Dashboard card templates */
+"People linked to care and active in care for at least 6 months — HIV, HCV and SYP" = "Personnes liées aux soins et actives depuis au moins 6 mois — VIH, VHC et syphilis";
+"People tested @NVI" = "Personnes dépistées @NVI";
+"Psychologist consultations @NVI" = "Consultations de psychologue @NVI";
+"Psychiatrist consultations @NVI" = "Consultations de psychiatre @NVI";
+"Accompaniments @NVI" = "Accompagnements @NVI";
+"Blood tests @NVI" = "Prélèvements sanguins @NVI";
+"People receiving wound dressing @NVI" = "Personnes recevant des pansements @NVI";
+"People receiving nutrition support @NVI" = "Personnes recevant un soutien nutritionnel @NVI";
+"People linked to care following a reactive screening test — HIV, HCV and SYP" = "Personnes liées aux soins après un dépistage réactif — VIH, VHC et syphilis";
+"Patients with more than one active comorbidity" = "Patients présentant plus d’une comorbidité active";
+"Linked to care within 30 days — HIV, HCV and SYP (%)" = "Liés aux soins dans les 30 jours — VIH, VHC et syphilis (%)";
+
+"HIV-related communication attendances" = "Participations aux activités de communication sur le VIH";
+
+"First-time screening tests — HIV, HCV and SYP" = "Premiers dépistages — VIH, VHC et syphilis";
+
+"First-time screening reactivity rate — HIV, HCV and SYP" = "Taux de réactivité au premier dépistage — VIH, VHC et syphilis";
+
+"4BAZ attendances" = "Participations à 4BAZ";
+
+"HIV+ people with undetectable viral load" = "Personnes vivant avec le VIH avec une charge virale indétectable";
+
+"Outreach activities" = "Activités de proximité";
+
+"Average attendances per outreach activity" = "Participations moyennes par activité de proximité";
+
+"Previous LTFU who returned to treatment" = "Personnes auparavant perdues de vue revenues au traitement";
+
+"Previous LTFU who returned and achieved undetectable viral load" = "Personnes auparavant perdues de vue revenues avec une charge virale indétectable";
+
+"Confirmed HIV diagnoses after starting PrEP (%)" = "Diagnostics VIH confirmés après le début de la PrEP (%)";
+
+"PrEP retention at M3, M6, M9 and M12 (%)" = "Rétention sous PrEP à M3, M6, M9 et M12 (%)";
+
+"Testing encounters / prevention attendances (%)" = "Consultations de dépistage / participations aux activités de prévention (%)";
+
+"Breakfast encounters @NVI" = "Présences au petit-déjeuner @NVI";
+
+"People initiated on PrEP for the first time" = "Personnes ayant commencé la PrEP pour la première fois";
+
+"People initiated on ARV for the first time" = "Personnes ayant commencé les ARV pour la première fois";
+
+"Hospital accompaniments" = "Accompagnements à l’hôpital";
+
+"Eye-hospital accompaniments" = "Accompagnements à l’hôpital ophtalmologique";
+
+"Prevention attendances on sites" = "Participations aux activités de prévention sur les sites";
+
+"HIV rapid tests performed" = "Tests rapides VIH réalisés";
+
+"People with reactive HIV screening" = "Personnes avec un dépistage VIH réactif";
+
+"People with reactive HCV screening" = "Personnes avec un dépistage VHC réactif";
+
+"People with reactive SYP screening" = "Personnes avec un dépistage syphilis réactif";
+
+"Clinical and social referrals issued" = "Orientations cliniques et sociales émises";
+
+"People with outstanding missed PrEP appointments" = "Personnes avec un rendez-vous PrEP manqué non rattrapé";
+
+"People linked to care who achieved undetectable viral load" = "Personnes liées aux soins ayant atteint une charge virale indétectable";
+
+"People lost to ARV follow-up at period end" = "Personnes perdues de vue pour les ARV à la fin de la période";
+
+"Screening reactivity rate — HIV, HCV and SYP" = "Taux de réactivité au dépistage — VIH, VHC et syphilis";
+
+"Viral suppression rate (%)" = "Taux de suppression virale (%)";
+
+"Prevention attendances sensitised to PrEP (%)" = "Participations avec sensibilisation à la PrEP (%)";
+
+"Prevention attendances interested in PrEP (%)" = "Participations avec intérêt pour la PrEP (%)";
+
+"Programme indicators" = "Indicateurs du programme";
+
+"Programme indicators for the selected period and population." = "Indicateurs du programme pour la période et la population sélectionnées.";
+
+"Indicator counting rules" = "Règles de calcul des indicateurs";
+
+"N/A" = "Sans objet";
+
+"First time tested" = "Premier dépistage";
+
+"Recorded / unclassified" = "Enregistré / non classé";
+
+"Conflicting results" = "Résultats contradictoires";
+
+"Attendance and screening indicators use Outreach Contact records. Repeat encounters count separately; screening reactivity uses each person's latest result per infection within the period." = "Les indicateurs de participation et de dépistage utilisent les contacts de proximité. Les visites répétées comptent séparément ; la réactivité utilise le dernier résultat par personne et infection pendant la période.";
+
+"Outreach activities use recorded sites and dates. Average reach includes attendances with a recorded site. 4BAZ also includes HIV Care Support encounters, excluding same-person, same-day copies already recorded in Outreach." = "Les activités de proximité utilisent les sites et dates enregistrés. La participation moyenne inclut les visites avec un site enregistré. 4BAZ inclut aussi les contacts de soutien VIH, sans les doublons de même personne et même jour déjà enregistrés en proximité.";
+
+"Referrals count issued clinical and social referral records. PrEP first-time initiations require recorded dispensing and explicit no-prior-use history. Viral suppression uses the latest result by the reporting cutoff: undetectable or below 40 copies/mL." = "Les orientations comptent les fiches cliniques et sociales émises. Les premières initiations PrEP nécessitent une dispensation enregistrée et une absence explicite d’utilisation antérieure. La suppression virale utilise le dernier résultat à la date limite : indétectable ou inférieur à 40 copies/mL.";
+
+"Blank cards are reserved for indicators requiring additional structured fields. N/A means there is no eligible denominator." = "Les cartes vides sont réservées aux indicateurs nécessitant des champs structurés supplémentaires. Sans objet signifie qu’il n’y a pas de dénominateur admissible.";
+
+"PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained." = "Les résultats de laboratoire PrEP utilisent la date du test, puis celle du prélèvement ou de la visite pour les anciens dossiers. Les choix sont ceux de la clinique. Les anciens textes syphilis non reconnus sont enregistrés sans classement. Les tests explicitement inadmissibles sont exclus ; les anciens dossiers sans motif ou indicateur de test sont conservés.";
+
+"Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded." = "Les tests comptent une fois par patient, infection, méthode et date jusqu’à aujourd’hui à Maurice. Les résultats de laboratoire clinique et PrEP de même date sont fusionnés. Les divergences figurent comme résultats contradictoires. Les consultations comptent les journées par patient et méthode. Les prélèvements répétés le même jour nécessitent un identifiant distinct. Le filtre des populations clés utilise l’appartenance ; les dossiers sans valeur sélectionnée sont exclus.";
+
+"Rapid test" = "Test rapide";
+
+"Laboratory" = "Laboratoire";
+
+"Not Implemented" = "Non implémenté";
+
+"Show card value" = "Afficher la valeur";
+
+"Show card details" = "Afficher les détails";
+
+"Assumptions" = "Hypothèses";
+
+"Calculation" = "Calcul";
+
+"Planned calculation" = "Calcul prévu";
+
+"Missing fields or history" = "Champs ou historique manquants";
+
+"REDCap fields used" = "Champs REDCap utilisés";
+
+"None — not implemented" = "Aucun — non implémenté";
+
+"Cards marked Not Implemented need additional structured fields or history. N/A means there is no eligible denominator." = "Les cartes marquées Non implémenté nécessitent des champs structurés ou un historique supplémentaires. Sans objet signifie qu’il n’y a pas de dénominateur admissible.";
+
+"No data" = "Aucune donnée";
+
+"Cards marked Not Implemented need additional structured fields or history. Cards with no available values show No data. Recorded zero counts remain 0." = "Les cartes marquées Non implémenté nécessitent des champs structurés ou un historique supplémentaires. Les cartes sans valeur disponible affichent Aucune donnée. Les décomptes nuls restent à 0.";
+
+"Drag a card handle to rearrange. You can also focus a handle and use the arrow keys." = "Faites glisser une poignée pour déplacer une carte. Vous pouvez aussi sélectionner une poignée et utiliser les touches fléchées.";
+
+"Reset card layout" = "Réinitialiser la disposition";
+
+"Default card layout restored" = "Disposition par défaut rétablie";
+
+"Move card" = "Déplacer la carte";
+
+"Card position" = "Position de la carte";
+
+"Executive cards" = "Cartes de direction";
+
+"Default cards" = "Cartes par défaut";
+
+"PILS staff access required." = "Accès réservé au personnel PILS.";
+
+"HIV results by method" = "Résultats VIH par méthode";
+
+"SYP results by method" = "Résultats syphilis par méthode";
+
+"HCV results by method" = "Résultats VHC par méthode";
+
+"HBV results by method" = "Résultats VHB par méthode";
+
+"Contributing UICs" = "UIC contribuant au total";

@@ -23,7 +23,9 @@ export function localizationSources() {
     function visit(node) {
       if(ts.isJsxText(node))add(node.text,relative);
       if(ts.isJsxAttribute(node)&&['label','title','placeholder','aria-label','description'].includes(node.name.text)&&node.initializer&&ts.isStringLiteral(node.initializer))add(node.initializer.text,relative);
-      if(ts.isArrayLiteralExpression(node)&&node.elements.length===2&&node.elements.every(ts.isStringLiteral)&&/^(?:\d+|[a-z][a-z0-9_/-]*)$/.test(node.elements[0].text))add(node.elements[1].text,relative);
+      // Raw REDCap field-name lists are identifiers, not translated choice labels.
+      const fieldNames=node.parent&&ts.isPropertyAssignment(node.parent)&&node.parent.name.getText(ast)==='fields';
+      if(!fieldNames&&ts.isArrayLiteralExpression(node)&&node.elements.length===2&&node.elements.every(ts.isStringLiteral)&&/^(?:\d+|[a-z][a-z0-9_/-]*)$/.test(node.elements[0].text))add(node.elements[1].text,relative);
       if(ts.isPropertyAssignment(node)&&['label','title','description'].includes(node.name.getText(ast).replace(/['"]/g,''))&&ts.isStringLiteral(node.initializer))add(node.initializer.text,relative);
       if(ts.isCallExpression(node)&&ts.isIdentifier(node.expression)&&['setError','setMessage'].includes(node.expression.text)&&node.arguments[0]&&ts.isStringLiteral(node.arguments[0]))add(node.arguments[0].text,relative);
       // Literal text returned by conditional JSX expressions (button states, badges).
@@ -42,6 +44,8 @@ export function localizationSources() {
   function scan(dir){for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory())scan(file);else if(file.endsWith('.tsx'))read(file);}}
   scan(path.join(root,'components'));scan(path.join(root,'app'));
   for(const file of ['lib/role-page-access.ts','lib/redcap-options.ts','lib/visit-workflow.ts','lib/treatment-status.ts','lib/clinic-enrollment.ts','lib/clinic-appointments.ts'])read(path.join(root,file));
+  read(path.join(root,'lib/dashboard-cards.ts'));
+  read(path.join(root,'lib/dashboard-default-cards.ts'));
   const forms=JSON.parse(fs.readFileSync(path.join(root,'lib/instrument-forms.json'),'utf8'));
   for(const [form,fields] of Object.entries(forms))for(const field of fields){
     if(/@HIDDEN/.test(field.annotation))continue;

@@ -29,7 +29,8 @@
     "test:hcs-upcoming": "node scripts/test-hcs-upcoming.mjs",
     "notifications:worker": "node --env-file=.env.local scripts/notification-worker.mjs",
     "test:outreach-notifications": "node scripts/test-outreach-notifications.mjs",
-    "test:notifications": "node scripts/test-notifications.mjs"
+    "test:notifications": "node scripts/test-notifications.mjs",
+    "test:dashboard": "node scripts/test-dashboard.mjs && node scripts/test-dashboard-indicators.mjs && node scripts/test-dashboard-layout.mjs && node scripts/test-dashboard-contributors.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

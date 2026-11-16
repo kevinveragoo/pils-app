@@ -22,7 +22,7 @@ export default async function AppHeader({ current }: { current: "notifications" 
   const showClinicQueue = Boolean(user && hasAnyRole(user, ["FACILITY_STAFF", "HEALTHCARE_ASSISTANT", "ADMIN"]));
   const showEnrollment = Boolean(user && hasAnyRole(user, ["FACILITY_STAFF", "ADMIN"]));
   const showBreakfast = Boolean(user && hasAnyRole(user, ["FACILITY_STAFF", "ADMIN"]));
-  const showDashboard = Boolean(user && hasRole(user, "ADMIN"));
+  const showDashboard = Boolean(user && isPilsUser(user));
   const showLogs = Boolean(user && isPilsUser(user));
   return (
     <header className="pils-header">

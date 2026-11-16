@@ -1509,5 +1509,36 @@
 
 "PILS" = "PILS";
 
-"Outreach — reactive HIV rapid test" = "Outreach — reactive HIV rapid test";
-"Outreach alerts open the saved activity details without showing patient details or the test result on the lock screen." = "Outreach alerts open the saved activity details without showing patient details or the test result on the lock screen.";
+"Physical-file baskets for clinic services and screening" = "Physical-file baskets for clinic services and screening";
+"Open Outreach Workflow" = "Open Outreach Workflow";
+"Ready for Clinic or Outreach Workflow capture" = "Ready for Clinic or Outreach Workflow capture";
+
+"Previously SYP positive, treated" = "Previously SYP positive, treated";
+
+"Re-schedule" = "Re-schedule";
+"Re-schedule appointment" = "Re-schedule appointment";
+"Mark the original appointment as no show and copy it to the selected date." = "Mark the original appointment as no show and copy it to the selected date.";
+"New appointment date" = "New appointment date";
+"Confirm re-schedule" = "Confirm re-schedule";
+
+"What are they here for?" = "What are they here for?";
+
+"Blood" = "Blood";
+
+"Choose at least one service." = "Choose at least one service.";
+
+"Refresh client list" = "Refresh client list";
+
+"No matching clients. Check the UIC or refresh the client list." = "No matching clients. Check the UIC or refresh the client list.";
+
+"Unable to load clients. Refresh the client list to try again." = "Unable to load clients. Refresh the client list to try again.";
+
+"Previously HEPC positive, treated" = "Previously HEPC positive, treated";
+
+"Pils - Banian" = "Pils - Banian";
+
+"Select Laboratory results review and the matching laboratory test before saving PrEP results." = "Select Laboratory results review and the matching laboratory test before saving PrEP results.";
+
+"Outreach — reactive HIV result" = "Outreach — reactive HIV result";
+
+"Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen.";

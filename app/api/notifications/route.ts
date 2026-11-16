@@ -10,13 +10,13 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { getCurrentUser, SESSION_COOKIE } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { canReceiveClinicArrivals, canReceiveOutreachReactiveHiv, validPushSubscription } from "@/lib/notification-policy.mjs";
+import { canReceiveClinicArrivals, canReceiveOutreachHivReactive, validPushSubscription } from "@/lib/notification-policy.mjs";
 
 export async function GET() {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   const preference = await db.notificationPreference.findUnique({ where: { userId: user.id } });
-  return NextResponse.json({ enabled: preference?.enabled ?? false, clinicArrivals: canReceiveClinicArrivals(user) && (preference?.clinicArrivals ?? false), eligible: canReceiveClinicArrivals(user), outreachReactiveHiv: canReceiveOutreachReactiveHiv(user) && (preference?.outreachReactiveHiv ?? false), outreachReactiveHivEligible: canReceiveOutreachReactiveHiv(user), publicKey: process.env.VAPID_PUBLIC_KEY || null }, { headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json({ enabled: preference?.enabled ?? false, outreachHivReactive: canReceiveOutreachHivReactive(user) && (preference?.outreachHivReactive ?? false), outreachHivReactiveEligible: canReceiveOutreachHivReactive(user), clinicArrivals: canReceiveClinicArrivals(user) && (preference?.clinicArrivals ?? false), eligible: canReceiveClinicArrivals(user), publicKey: process.env.VAPID_PUBLIC_KEY || null }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(request: Request) {
@@ -31,13 +31,13 @@ export async function POST(request: Request) {
     if (body.action === "preferences") {
       if (typeof body.enabled !== "boolean" || typeof body.clinicArrivals !== "boolean") throw new Error("Invalid preferences.");
       if (body.enabled && body.clinicArrivals && !canReceiveClinicArrivals(user)) return NextResponse.json({ error: "Clinic Queue access is required." }, { status: 403 });
-      if (body.outreachReactiveHiv !== undefined && typeof body.outreachReactiveHiv !== "boolean") throw new Error("Invalid preferences.");
-      if (body.outreachReactiveHiv && !canReceiveOutreachReactiveHiv(user)) return NextResponse.json({ error: "PILS staff access is required." }, { status: 403 });
       const previous = await db.notificationPreference.findUnique({ where: { userId: user.id } });
+      if (body.outreachHivReactive !== undefined && typeof body.outreachHivReactive !== "boolean") throw new Error("Invalid preferences.");
+      const outreachHivReactive = body.outreachHivReactive ?? previous?.outreachHivReactive ?? false;
+      if (outreachHivReactive && !canReceiveOutreachHivReactive(user)) return NextResponse.json({ error: "PILS Outreach access is required." }, { status: 403 });
+      const reactiveActivating = body.enabled && outreachHivReactive && (!previous?.enabled || !previous?.outreachHivReactive);
       const activating = body.enabled && body.clinicArrivals && (!previous?.enabled || !previous?.clinicArrivals);
-      const outreachReactiveHiv = body.outreachReactiveHiv ?? previous?.outreachReactiveHiv ?? false;
-      const reactiveActivating = body.enabled && outreachReactiveHiv && (!previous?.enabled || !previous?.outreachReactiveHiv);
-      await db.notificationPreference.upsert({ where: { userId: user.id }, create: { userId: user.id, enabled: body.enabled, clinicArrivals: body.clinicArrivals, outreachReactiveHiv }, update: { enabled: body.enabled, clinicArrivals: body.clinicArrivals, outreachReactiveHiv, ...(reactiveActivating ? { outreachReactiveHivEnabledAt: new Date() } : {}), ...(activating ? { enabledAt: new Date() } : {}) } });
+      await db.notificationPreference.upsert({ where: { userId: user.id }, create: { userId: user.id, enabled: body.enabled, clinicArrivals: body.clinicArrivals, outreachHivReactive, ...(reactiveActivating ? { outreachHivReactiveEnabledAt: new Date() } : {}) }, update: { enabled: body.enabled, clinicArrivals: body.clinicArrivals, outreachHivReactive, ...(reactiveActivating ? { outreachHivReactiveEnabledAt: new Date() } : {}), ...(activating ? { enabledAt: new Date() } : {}) } });
     } else if (body.action === "subscribe") {
       if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) return NextResponse.json({ error: "Notifications are not configured." }, { status: 503 });
       if (!validPushSubscription(body.subscription)) throw new Error("Unsupported push subscription.");

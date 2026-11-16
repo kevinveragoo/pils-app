@@ -104,6 +104,14 @@ assert.equal(filteredInjection.cne_share_needle_1w, undefined);
 assert.equal(filteredInjection.cne_sti_treated, '1');
 const { fieldVisible, instrumentFields, visibleInstrumentValues, instrumentInitial } = load('lib/instrument-forms.ts');
 assert.equal(fieldVisible("[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'", { ce_kp_type: '1,5' }), true);
+for (const field of ['pv_creatinine_result', 'pv_hb_result', 'pv_cholesterol_result', 'pv_triglycerides_result']) {
+  assert.equal(visibleInstrumentValues('prep_visit', { pv_visit_purpose: '2,3', [field]: '1' })[field], undefined);
+  assert.ok(validateFields({ pv_visit_purpose: '2,3', [field]: '1' }));
+  assert.equal(validateFields({ pv_visit_purpose: '4', [field]: '1' }), null);
+}
+assert.ok(validateFields({ pv_visit_purpose: '4', pv_hiv_result: '1' }));
+assert.equal(validateFields({ pv_visit_purpose: '4', pv_hiv_lab_test_done: '1', pv_hiv_result: '1' }), null);
+assert.equal(visibleInstrumentValues('prep_visit', { pv_visit_purpose: '4', pv_hiv_lab_test_done: '1', pv_hiv_result: '1' }).pv_hiv_result, '1');
 assert.equal(fieldVisible("[a] = '1' and [b] = '2'", {a:'1',b:'0'}), false);
 assert.equal(fieldVisible("([a] = '1' or [b] = '2') and [c] > 0", {a:'1',c:'3'}), true);
 assert.equal(instrumentFields('prep_treatment_profile').includes('ptp_status'), false);
@@ -265,7 +273,7 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[0].ce_middle_name_2, 'Beta');
   existing = [];
   const prepProfile = { ptp_start_date: '2026-09-23', ptp_primary_reason: 'Prevention', ptp_previous_use: '0', ptp_previous_provider: '', ptp_status: '1', ptp_ltfu: '0', ptp_update_date: '2026-09-23', ptp_recorded_by: 'Tester', ptp_change_reason: '' };
-  const prepVisit = { pv_blood_collected: '1', pv_blood_collected_date: '2026-09-23', pv_hbv_referral: '1', pv_hcv_vaccination_status: '4', pv_hbv_vaccination_status: '5', pv_side_effects: 'None reported', pv_visit_date: '2026-09-23', pv_visit_purpose: '2,3', pv_worker_1: 'Tester',  pv_followup_stage: '0', pv_next_doctor_date: '2026-09-23', pv_doctor: 'Dr Test', pv_medication: '1', pv_medication_dispensed: '30', pv_prescription_months: '1', ptp_status: '1' };
+  const prepVisit = { pv_blood_collected: '1', pv_blood_collected_date: '2026-09-23', pv_hbv_referral: '1', pv_hcv_vaccination_status: '4', pv_hbv_vaccination_status: '4', pv_side_effects: 'None reported', pv_visit_date: '2026-09-23', pv_visit_purpose: '1,2,3,4', pv_worker_1: 'Tester',  pv_followup_stage: '0', pv_next_doctor_date: '2026-09-23', pv_doctor: 'Dr Test', pv_medication: '1', pv_medication_dispensed: '30', pv_prescription_months: '1', ptp_status: '1' };
   assert.equal((await post('prep', { mode: 'new', recordId: submission.recordId, enrollment, profile: prepProfile, includeProfile: true, visit: prepVisit })).status, 200);
   assert.equal(imported()[1].redcap_repeat_instrument, 'prep_treatment_profile');
   assert.equal(imported()[1].redcap_repeat_instance, '1');
@@ -278,7 +286,7 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[2].pv_blood_collected_date, '2026-09-23');
   assert.equal(imported()[2].pv_hbv_referral, '1');
   assert.equal(imported()[2].pv_hcv_vaccination_status, '4');
-  assert.equal(imported()[2].pv_hbv_vaccination_status, '5');
+  assert.equal(imported()[2].pv_hbv_vaccination_status, '4');
   assert.equal(imported()[2].ptp_status, '1');
   existing = [{ uic_ori: 'TEST' }, { uic_ori: 'TEST', redcap_repeat_instrument: 'prep_treatment_profile', redcap_repeat_instance: '2', ...prepProfile }, { uic_ori: 'TEST', redcap_repeat_instrument: 'prep_visit', redcap_repeat_instance: '3', ...prepVisit }];
   assert.equal((await post('prep', { mode: 'existing', recordId: 'TEST', includeProfile: false, visit: { ...prepVisit, pv_visit_date: '2026-10-03' } })).status, 200);
@@ -430,7 +438,7 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[0].ce_exit_date, '2026-10-04');
   existing = [{ uic_ori: 'TEST' }];
   const labResults = { pv_hbv_result: '1', pv_hb_result: '13.5 g/dL', pv_cholesterol_result: '4.8 mmol/L', pv_triglycerides_result: '1.1 mmol/L', pv_tpha_result: 'Reactive', pv_vdrl_result: '1:8', pv_other_test_result: 'Other assay: not detected' };
-  const nextPrepVisit = { ...labResults,  pv_visit_date: '2026-10-18', pv_worker_1: 'Tester', pv_visit_purpose: '2', pv_doctor: 'Doctor Name', pv_doctor_comments: 'Visit notes', pv_next_blood_date: '2026-12-01', pv_next_doctor_date: '2026-11-01', pv_next_med_date: '2026-11-20', pv_next_appointment_date: '2026-10-18' };
+  const nextPrepVisit = { ...labResults, pv_hbv_lab_test_done: '1',  pv_visit_date: '2026-10-18', pv_worker_1: 'Tester', pv_visit_purpose: '1,2,3,4', pv_doctor: 'Doctor Name', pv_doctor_comments: 'Visit notes', pv_next_blood_date: '2026-12-01', pv_next_doctor_date: '2026-11-01', pv_next_med_date: '2026-11-20', pv_next_appointment_date: '2026-10-18' };
   assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', visitWorkflow: 'PREP', prepVisit: nextPrepVisit })).status, 200);
   assert.equal(imported().length, 1);
   assert.equal(imported()[0].pv_next_appointment_date, '2026-11-01');

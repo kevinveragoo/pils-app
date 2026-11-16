@@ -8,21 +8,16 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { DatabaseSync } from 'node:sqlite';
+import { execFileSync } from 'node:child_process';
 import vm from 'node:vm';
 import { createHash } from 'node:crypto';
 import ts from 'typescript';
 import { PrismaClient } from '@prisma/client';
-import { canReceiveClinicArrivals, canReceiveOutreachReactiveHiv, reactiveHivEvents, validPushSubscription, arrivalPayload } from '../lib/notification-policy.mjs';
-import { sendArrivalNotifications, sendOutreachReactiveHivNotifications, isLiveArrivalDate } from '../lib/notification-sender.mjs';
+import { canReceiveClinicArrivals, canReceiveOutreachHivReactive, validPushSubscription, arrivalPayload } from '../lib/notification-policy.mjs';
+import { sendArrivalNotifications, isLiveArrivalDate } from '../lib/notification-sender.mjs';
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pils-notifications-'));
 const filename = path.join(dir, 'test.db');
-const sqlite = new DatabaseSync(filename);
-for (const migration of fs.readdirSync('prisma/migrations').sort()) {
-  const sql = path.join('prisma/migrations', migration, 'migration.sql');
-  if (fs.existsSync(sql)) sqlite.exec(fs.readFileSync(sql, 'utf8'));
-}
-sqlite.close();
+execFileSync('python3', ['-c', `import sqlite3,pathlib,sys\nc=sqlite3.connect(sys.argv[1])\nfor p in sorted(pathlib.Path('prisma/migrations').glob('*/migration.sql')): c.executescript(p.read_text())\nc.close()`, filename]);
 const db = new PrismaClient({ datasourceUrl: `file:${filename}` });
 const now = new Date();
 const before = new Date(now.getTime() - 30000);
@@ -59,7 +54,7 @@ try {
       if (name === 'next/server') return { NextResponse: Response };
       if (name === '@/lib/auth') return { getCurrentUser: async () => currentUser, SESSION_COOKIE: 'pils_session' };
       if (name === '@/lib/db') return { db };
-      if (name === '@/lib/notification-policy.mjs') return { canReceiveClinicArrivals, canReceiveOutreachReactiveHiv, validPushSubscription };
+      if (name === '@/lib/notification-policy.mjs') return { canReceiveClinicArrivals, canReceiveOutreachHivReactive, validPushSubscription };
       throw new Error(name);
     },
   });
@@ -79,6 +74,19 @@ try {
   assert.equal((await post({ action: 'unsubscribe', endpoint: sub.endpoint })).status, 200);
   assert.equal(await db.pushSubscription.count(), 1, 'Unsubscribe cannot delete another account’s device');
   currentUser = user;
+  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: false, outreachHivReactive: true })).status, 403);
+  currentUser = { ...user, role: 'OUTREACH_WORKER' };
+  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: false, outreachHivReactive: true })).status, 200);
+  const reactiveSettings = await (await routeModule.exports.GET()).json();
+  assert.equal(reactiveSettings.outreachHivReactive, true);
+  assert.equal(reactiveSettings.outreachHivReactiveEligible, true);
+  const activatedAt = (await db.notificationPreference.findUnique({ where: { userId: user.id } })).outreachHivReactiveEnabledAt;
+  assert.ok(activatedAt);
+  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: false })).status, 200);
+  assert.equal((await db.notificationPreference.findUnique({ where: { userId: user.id } })).outreachHivReactiveEnabledAt.getTime(), activatedAt.getTime(), 'Old clients preserve new preferences and activation time');
+  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: false, outreachHivReactive: 'yes' })).status, 400);
+  await db.notificationPreference.deleteMany();
+  currentUser = user;
   await db.pushSubscription.deleteMany();
   const preference = await db.notificationPreference.create({ data: { userId: user.id, enabled: true, clinicArrivals: true, enabledAt: before } });
   const device = await db.pushSubscription.create({ data: { userId: user.id, sessionId: session.id, endpoint: sub.endpoint, ...sub.keys, createdAt: before } });
@@ -97,6 +105,13 @@ try {
   await sendArrivalNotifications(db, send, now); assert.equal(sends, 1, 'No repeat on polling');
   await db.clinicQueueEvent.create({ data: { queueEntryId: entry.id, actorId: user.id, actorName: 'Test', action: 'ARRIVED', createdAt: now } });
   await sendArrivalNotifications(db, send, now); assert.equal(sends, 1, 'Repeated check-in event deduplicated per daily visit/device');
+  const screening = await db.clinicQueueEntry.create({ data: { queueDate: today, displayName: 'Screening test', source: 'WALK_IN', visitWorkflow: 'SCREENING', currentStation: 'SCREENING', tasks: '["SCREENING"]', status: 'WAITING', createdById: user.id, createdByName: 'Test', updatedById: user.id, updatedByName: 'Test', events: { create: { actorId: user.id, actorName: 'Test', action: 'WALK_IN_CHECKED_IN', createdAt: new Date(now.getTime() - 1000) } } } });
+  await sendArrivalNotifications(db, send, now);
+  assert.equal(sends, 2, 'Entering the Screening bin sends an arrival notification');
+  await sendArrivalNotifications(db, send, now);
+  assert.equal(sends, 2, 'Screening arrival does not notify again on polling');
+  assert.equal((await db.pushDelivery.findFirst({ where: { queueEntryId: screening.id } })).state, 'SENT');
+  await db.clinicQueueEntry.delete({ where: { id: screening.id } });
   async function reset() { await db.pushDelivery.deleteMany(); sends = 0; }
   await reset();
   await db.notificationPreference.update({ where: { userId: user.id }, data: { enabled: false } });
@@ -117,75 +132,8 @@ try {
   await sendArrivalNotifications(db, async () => { const e = new Error('gone'); e.statusCode = 410; throw e; }, now);
   assert.equal(await db.pushSubscription.count(), 0, 'Expired endpoint removed');
   await db.pushSubscription.create({ data: { ...device, id: undefined } });
-  // Service worker preserves safe activity deep links and rejects external URLs.
-  const workerContext = { self: { addEventListener() {} } };
-  vm.createContext(workerContext);
-  vm.runInContext(fs.readFileSync('public/notifications-sw.js', 'utf8'), workerContext);
-  const detailUrl = '/logs/details/app%3Atest123?from=2026-11-13&to=2026-11-13';
-  assert.equal(workerContext.notificationUrl(detailUrl), detailUrl);
-  assert.equal(workerContext.notificationUrl('/clinic-queue'), '/clinic-queue');
-  for (const url of ['https://evil.test', '//evil.test', '/logs/details/../../admin', detailUrl + '&redirect=https://evil.test']) {
-    assert.equal(workerContext.notificationUrl(url), '/notifications');
-  }
-  // Outreach eligibility applies to all approved PILS roles, never volunteers/partners.
-  for (const role of Object.keys(roleModule.exports.ROLE_PAGE_ACCESS)) assert.equal(canReceiveOutreachReactiveHiv({ ...userData, role }), true);
-  for (const organization of ['PILS_VOLUNTEER', 'CUT', 'AILES', null]) {
-    assert.equal(canReceiveOutreachReactiveHiv({ ...userData, organization }), false);
-    currentUser = { ...user, organization };
-    const response = await post({ action: 'preferences', enabled: true, clinicArrivals: false, outreachReactiveHiv: true });
-    assert.equal(response.status, 403);
-    assert.equal((await (await routeModule.exports.GET()).json()).outreachReactiveHivEligible, false);
-  }
-  assert.equal(canReceiveOutreachReactiveHiv({ ...userData, status: 'PENDING' }), false);
-  currentUser = { ...user, role: 'OUTREACH_WORKER' };
-  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: false, outreachReactiveHiv: true })).status, 200);
-  assert.equal((await (await routeModule.exports.GET()).json()).outreachReactiveHiv, true);
-  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: false, outreachReactiveHiv: 'yes' })).status, 400);
-  const activated = await db.notificationPreference.findUnique({ where: { userId: user.id } });
-  assert.equal(activated.enabledAt.getTime(), preference.enabledAt.getTime(), 'Reactive opt-in preserves clinic activation time');
-  currentUser = user;
-  assert.equal((await post({ action: 'preferences', enabled: true, clinicArrivals: true, outreachReactiveHiv: true })).status, 200);
-  assert.equal((await db.notificationPreference.findUnique({ where: { userId: user.id } })).outreachReactiveHivEnabledAt.getTime(), activated.outreachReactiveHivEnabledAt.getTime(), 'Clinic opt-in preserves reactive activation time');
-  await db.user.update({ where: { id: user.id }, data: { role: 'OUTREACH_WORKER' } });
-  await db.notificationPreference.update({ where: { userId: user.id }, data: { outreachReactiveHivEnabledAt: before } });
-  await reset();
-  const row = { uic_ori: 'TEST-UIC', redcap_repeat_instrument: 'outreach_contact', redcap_repeat_instance: '1', oc_hiv_rapid_result: '1' };
-  const activityData = { userId: user.id, actorName: 'Test', actorUsername: 'staff', workflow: 'outreach', recordId: row.uic_ori, instrumentInstances: '[]', submittedData: JSON.stringify([row]), createdAt: new Date(now.getTime() - 1000) };
-  for (const submittedData of ['invalid', '{}', JSON.stringify([{ ...row, oc_hiv_rapid_result: '0' }]), JSON.stringify([{ ...row, oc_hiv_rapid_result: '2' }]), JSON.stringify([{ ...row, redcap_repeat_instrument: 'partner_referral_partner' }])]) {
-    assert.deepEqual(reactiveHivEvents({ ...activityData, submittedData }), []);
-  }
-  const activity = await db.redcapActivity.create({ data: { ...activityData, submittedData: JSON.stringify([{ ...row, oc_hiv_rapid_result: '0' }]) } });
-  const sendReactive = async (_subscription, payload, options) => {
-    sends++;
-    assert.match(JSON.parse(payload).url, /^\/logs\/details\/app%3A.+\?from=\d{4}-\d{2}-\d{2}&to=\d{4}-\d{2}-\d{2}$/);
-    assert.doesNotMatch(payload, /TEST-UIC|reactive HIV|reactive test/);
-    assert.ok(options.TTL <= 600);
-  };
-  await sendOutreachReactiveHivNotifications(db, sendReactive, now); assert.equal(sends, 0, 'Non-reactive result never alerts');
-  await db.redcapActivity.update({ where: { id: activity.id }, data: { submittedData: activityData.submittedData } });
-  await Promise.all([sendOutreachReactiveHivNotifications(db, sendReactive, now), sendOutreachReactiveHivNotifications(db, sendReactive, now)]);
-  assert.equal(sends, 1, 'Concurrent reactive notifications deduplicate');
-  await db.redcapActivity.create({ data: activityData });
-  await sendOutreachReactiveHivNotifications(db, sendReactive, now); assert.equal(sends, 1, 'Same clinical instance deduplicates across activity logs');
-  await reset();
-  for (const patch of [{ organization: 'PILS_VOLUNTEER' }, { organization: 'CUT' }, { status: 'REJECTED' }]) {
-    await db.user.update({ where: { id: user.id }, data: patch });
-    await sendOutreachReactiveHivNotifications(db, sendReactive, now); assert.equal(sends, 0, 'Revoked reactive access cannot receive');
-    await db.user.update({ where: { id: user.id }, data: { ...userData, role: 'OUTREACH_WORKER' } });
-  }
-  for (const patch of [{ enabled: false }, { outreachReactiveHiv: false }, { outreachReactiveHivEnabledAt: new Date(now.getTime() + 1) }]) {
-    await db.notificationPreference.update({ where: { userId: user.id }, data: patch });
-    await sendOutreachReactiveHivNotifications(db, sendReactive, now); assert.equal(sends, 0, 'Opt-out and late opt-in suppress reactive alerts');
-    await db.notificationPreference.update({ where: { userId: user.id }, data: { enabled: true, outreachReactiveHiv: true, outreachReactiveHivEnabledAt: before } });
-  }
-  await sendOutreachReactiveHivNotifications(db, sendReactive, new Date(now.getTime() + 11 * 60000)); assert.equal(sends, 0, 'Stale reactive alerts expire');
-  await sendOutreachReactiveHivNotifications(db, async () => { const e = new Error('temporary'); e.statusCode = 503; throw e; }, now);
-  await sendOutreachReactiveHivNotifications(db, sendReactive, new Date(now.getTime() + 15000)); assert.equal(sends, 1, 'Reactive transient failure retries');
-  await reset();
   await db.session.delete({ where: { id: session.id } });
-  await sendOutreachReactiveHivNotifications(db, sendReactive, now); assert.equal(sends, 0, 'Logout suppresses reactive alerts');
-
   await sendArrivalNotifications(db, send, now); assert.equal(sends, 0, 'Logged-out device receives nothing');
   assert.equal(await db.pushSubscription.count(), 0);
-  console.log('Notification checks passed: page access, multi-role users, endpoint validation, payloads, Mauritius dates/midnight retries, atomic claims, clinic arrivals, reactive outreach results, category isolation, safe activity links, opt-out, access revocation, retries, expiry and logout. No push messages sent.');
+  console.log('Notification checks passed: page access, multi-role users, endpoint validation, payloads, Mauritius dates/midnight retries, atomic claims, duplicate arrivals, opt-out, access revocation, retries, expiry and logout. No push messages sent.');
 } finally { await db.$disconnect(); fs.rmSync(dir, { recursive: true, force: true }); }

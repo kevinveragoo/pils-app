@@ -118,3 +118,27 @@ patient records or push subscriptions are created by the tests.
 After setup, perform a real iPhone and Android device test, followed by a
 scheduled arrival and a walk-in. Confirm disabled categories/accounts/devices
 receive no new alerts and a multi-role recipient gets only one alert per device.
+
+## Outreach reactive HIV category
+
+Approved PILS Outreach Workers, Healthcare Assistants and Admins can separately
+opt in to **Outreach — reactive HIV result**. A successful Outreach save through
+the app must contain `oc_hiv_rapid_result = 1` (Reactive). Its local REDCap activity
+log is the durable outbox; failed REDCap saves and edits made directly in REDCap
+do not produce an app activity and therefore do not notify. If local activity
+logging fails, the successful clinical save is not retried automatically and no
+alert is generated; the response's `activityLogged` indicates this condition.
+
+The alert contains a generic follow-up message, with no patient name or HIV
+result on the lock screen. Tapping it opens the signed-in Outreach workflow for
+the saved client. Recipients must have an active device session and must have
+enabled this category before the activity was recorded. Clinic arrival and
+Outreach category preferences are independent. New devices do not get earlier
+alerts. Deliveries deduplicate by REDCap record/contact repeat and device, retry
+transient failures, expire after ten minutes and recheck access at each attempt.
+A newly saved backdated contact can notify; old activity logs are not replayed.
+
+Apply database migrations and regenerate Prisma before restarting the app and
+notification worker. Existing accounts start with this category switched off.
+`npm run test:outreach-notifications` uses a temporary database and mocked transport;
+it never sends a real push notification.

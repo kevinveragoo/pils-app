@@ -30,7 +30,7 @@ async function read(recordId: string): Promise<Row[]> {
 }
 export async function getAppointmentCounts(date: string) {
   if (!validDate(date)) throw new AppointmentError("Choose a valid appointment date.");
-  const fields = ["uic_ori", "cnv_no_show", ...appointmentTypes.map(type => type.field), "pv_next_doctor_date", "pv_next_blood_date", "pv_next_med_date"];
+  const fields = ["uic_ori", "cnv_no_show", ...appointmentTypes.map(type => type.field), "pv_next_doctor_date", "pv_next_blood_date", "pv_next_med_date", "pv_next_lab_review_date"];
   const rows = await redcap({ content: "record", action: "export", type: "flat", rawOrLabel: "raw", ...Object.fromEntries(fields.map((field, index) => [`fields[${index}]`, field])) }, "Unable to load appointment counts.");
   if (!Array.isArray(rows)) throw new AppointmentError("Unable to load appointment counts.", 502);
   return countAppointments(rows, date);

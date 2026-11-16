@@ -84,7 +84,7 @@ const response=await patients.GET();assert.equal(response.status,200);
 assert.equal((await response.json())[0].patient_code,'');
 assert.ok(!Array.from(network.at(-1).values()).includes('cne_patient_code'),'External outreach client lists must not request clinical codes');
 assert.equal((await load('app/api/redcap/outreach/route.ts').GET(new Request('http://app.invalid/api?uic=TEST'))).status,200);
-await load('app/outreach/page.tsx').default();
+await load('app/outreach/page.tsx').default({ searchParams: Promise.resolve({}) });
 await load('app/notifications/page.tsx').default();
 
 await load('app/change-password/page.tsx').default();

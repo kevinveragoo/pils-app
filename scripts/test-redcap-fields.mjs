@@ -59,7 +59,7 @@ function load(relative) {
     },
     require: (name) => {
       if (name === 'next/server') return { NextResponse: Response };
-      if (name === '@/lib/auth') return { isAuthenticatedRequest: async () => true, getCurrentUser: async () => ({ id: 'test-user', name: 'Test User', username: 'tester', role: 'ADMIN', roles: '["ADMIN"]' }), hasRole: () => true, hasAnyRole: () => true };
+      if (name === '@/lib/auth') return { isAuthenticatedRequest: async () => true, getCurrentUser: async () => ({ id: 'test-user', name: 'Test User', username: 'tester', organization: 'PILS', role: 'ADMIN', roles: '["ADMIN"]' }), hasRole: () => true, hasAnyRole: () => true };
       if (name === '@/lib/redcap-activity') return { recordRedcapActivity: async () => true };
       if (name === '@/lib/clinic-queue') return { completeQueueEntry: async () => false };
       if (name.startsWith('@/')) return load(`${name.slice(2)}.ts`);

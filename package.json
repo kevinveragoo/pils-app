@@ -27,11 +27,10 @@
     "test:client-enrollment": "node scripts/test-client-enrollment.mjs",
     "check:redcap-schema": "node --env-file=.env.local scripts/check-redcap-schema.mjs",
     "test:hcs-upcoming": "node scripts/test-hcs-upcoming.mjs",
-    "test:dashboard": "node scripts/test-dashboard.mjs",
-    "test:prep-cnv-alignment": "node scripts/test-prep-cnv-alignment.mjs",
     "notifications:worker": "node --env-file=.env.local scripts/notification-worker.mjs",
     "test:outreach-notifications": "node scripts/test-outreach-notifications.mjs",
     "test:notifications": "node scripts/test-notifications.mjs",
+    "test:dashboard": "node scripts/test-dashboard.mjs && node scripts/test-dashboard-indicators.mjs && node scripts/test-dashboard-layout.mjs && node scripts/test-dashboard-contributors.mjs",
     "test:dashboard-cards": "node scripts/test-dashboard-cards.mjs",
     "test:dashboard-grid": "node scripts/test-dashboard-grid.mjs"
   },

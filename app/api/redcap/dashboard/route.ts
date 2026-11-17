@@ -5,8 +5,9 @@
 //  Created by Elisa Kevin Veragoo + ChatGPT on 07/10/2026.
 //
 import { NextResponse } from "next/server";
-import { getCurrentUser, hasAnyRole } from "@/lib/auth";
-import { buildDashboard, dashboardFields, genderCodes, kpCodes, parseMultiFilter, periods, type Period, type Values } from "@/lib/dashboard";
+import { getCurrentUser, hasRole, hasAnyRole } from "@/lib/auth";
+import { isPilsUser } from "@/lib/organization-access";
+import { buildDashboard, dashboardFields, defaultDashboardFields, genderCodes, kpCodes, parseMultiFilter, periods, type Period, type Values } from "@/lib/dashboard";
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
 const REDCAP_API_TOKEN = process.env.REDCAP_API_TOKEN;
@@ -27,7 +28,10 @@ async function redcap(params: Record<string, string>) {
 export async function GET(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  if (!isPilsUser(user)) return NextResponse.json({ error: "PILS staff access required." }, { status: 403 });
   if (!hasAnyRole(user, ["HEALTHCARE_ASSISTANT", "ADMIN"])) return NextResponse.json({ error: "Healthcare Assistant or Administrator access required." }, { status: 403 });
+  const executive = hasRole(user, "ADMIN");
+  const includeUics = executive || hasRole(user, "HEALTHCARE_ASSISTANT");
 
   const search = new URL(request.url).searchParams;
   const period = search.get("period") ?? "all";
@@ -37,9 +41,9 @@ export async function GET(request: Request) {
 
   try {
     const params: Record<string, string> = { content: "record", action: "export", format: "json", type: "flat", rawOrLabel: "raw", rawOrLabelHeaders: "raw", exportCheckboxLabel: "false", exportDataAccessGroups: "false", returnFormat: "json" };
-    dashboardFields.forEach((field, index) => { params[`fields[${index}]`] = field; });
+    (executive ? dashboardFields : defaultDashboardFields).forEach((field, index) => { params[`fields[${index}]`] = field; });
     const rows = await redcap(params);
-    return NextResponse.json(buildDashboard(rows, { period: period as Period, genders, kps }), { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json(buildDashboard(rows, { period: period as Period, genders, kps }, new Date(), executive, includeUics), { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("REDCap dashboard error:", error);
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to load dashboard data." }, { status: 502 });

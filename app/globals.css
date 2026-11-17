@@ -362,6 +362,92 @@
     padding: clamp(1rem, 2vw, 1.5rem);
     box-shadow: var(--pils-shadow);
   }
+  .indicator-slot { position: relative; min-width: 0; }
+  .indicator-slot[data-dragging="true"] .indicator-card { opacity: 0.45; }
+  .indicator-slot[data-drop-target="true"] { outline: 3px solid var(--primary); outline-offset: 3px; border-radius: 24px; }
+  .indicator-slot .indicator-card-face > h2,
+  .indicator-slot .indicator-card-face > h3 { padding-left: 2.5rem; }
+  .indicator-card-move {
+    position: absolute;
+    z-index: 3;
+    top: 0.75rem;
+    left: 0.75rem;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--card);
+    color: var(--muted-foreground);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  .indicator-card-move:active { cursor: grabbing; }
+  .indicator-card-move:hover { background: var(--secondary); }
+  .indicator-card-move:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  .indicator-drag-preview {
+    position: fixed;
+    z-index: 100;
+    max-width: min(18rem, 70vw);
+    pointer-events: none;
+    border: 1px solid var(--primary);
+    border-radius: 12px;
+    background: var(--card);
+    padding: 0.75rem 1rem;
+    box-shadow: var(--pils-shadow);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .indicator-card {
+    position: relative;
+    min-width: 0;
+    height: clamp(17rem, 26vw, 20rem);
+    perspective: 1200px;
+  }
+  .indicator-card-rotor {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform-origin: center center;
+    transition: transform 500ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .indicator-card[data-flipped="true"] .indicator-card-rotor { transform: rotateY(180deg); }
+  .indicator-card-face {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .indicator-card-back { transform: rotateY(180deg); }
+  .indicator-card-chart { height: 28rem; }
+  .indicator-card-info {
+    position: absolute;
+    z-index: 2;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--primary);
+    cursor: pointer;
+  }
+  .indicator-card-info:hover { color: var(--destructive); }
+  .indicator-card-info:focus-visible, .indicator-card-back:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+  }
+  .indicator-card-status { color: #c0264b; }
+  @media (prefers-reduced-motion: reduce) {
+    .indicator-card-rotor { transition: none; }
+  }
   .dashboard-kicker {
     color: var(--primary);
     font-size: 0.72rem;

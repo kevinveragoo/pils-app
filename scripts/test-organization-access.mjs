@@ -100,6 +100,28 @@ for (const role of ['OUTREACH_WORKER','HEALTHCARE_ASSISTANT','HEALTHCARE_NAVIGAT
  user={...user,organization:'PILS',role,roles:'[]'};
  await auth.requireLogsAccess();
  assert.ok(hrefs(await header({current:'logs'})).includes('/logs'));
+ if (!['ADMIN','HEALTHCARE_ASSISTANT'].includes(role)) {
+  assert.equal(hrefs(await header({current:'dashboard'})).includes('/dashboard'),false);
+  assert.equal(pagesForRole(role,'PILS').includes('Dashboard'),false);
+  await assert.rejects(() => load('app/dashboard/page.tsx').default());
+  assert.equal((await load('app/api/redcap/dashboard/route.ts').GET(new Request('http://app.invalid/api'))).status,403);
+  continue;
+ }
+ assert.ok(hrefs(await header({current:'dashboard'})).includes('/dashboard'),`${role} can navigate to Dashboard`);
+ assert.ok(pagesForRole(role,'PILS').includes('Dashboard'));
+ const page=await load('app/dashboard/page.tsx').default();
+ function executiveFlags(node){if(!node||typeof node!=='object')return [];if(Array.isArray(node))return node.flatMap(executiveFlags);return [...(typeof node.props?.showExecutive==='boolean'?[node.props.showExecutive]:[]),...executiveFlags(node.props?.children)];}
+ assert.deepEqual(executiveFlags(page),[role==='ADMIN'],`${role} gets the correct dashboard group`);
+ const response=await load('app/api/redcap/dashboard/route.ts').GET(new Request('http://app.invalid/api?executive=true'));
+ assert.equal(response.status,200);
+ const dashboardResult=await response.json();
+ assert.equal('indicators' in dashboardResult,role==='ADMIN','Executive data is admin-only');
+ assert.equal('barContributors' in dashboardResult,role==='ADMIN'||role==='HEALTHCARE_ASSISTANT','Contributing UICs are clinical-role-only');
 }
+user={...user,role:'FACILITY_STAFF',roles:'["ADMIN"]'};
+assert.equal('indicators' in await (await load('app/api/redcap/dashboard/route.ts').GET(new Request('http://app.invalid/api'))).json(),true,'Secondary ADMIN role grants executive access');
+user={...user,role:'FACILITY_STAFF',roles:'["HEALTHCARE_ASSISTANT"]'};
+const assistantDashboard=await (await load('app/api/redcap/dashboard/route.ts').GET(new Request('http://app.invalid/api?uics=true'))).json();
+assert.ok('barContributors' in assistantDashboard && !('indicators' in assistantDashboard),'Secondary Healthcare Assistant role grants UICs without executive access');
 await load('app/logs/page.tsx').default({searchParams:Promise.resolve({})});
 console.log('Organisation access checks passed: external organisations (including volunteer/admin/multi-role users), navigation, all restricted pages/APIs, PILS-only Logs list/details, allowed external Outreach/Notifications/password access, patient-list privacy and unchanged PILS roles. No network requests made.');

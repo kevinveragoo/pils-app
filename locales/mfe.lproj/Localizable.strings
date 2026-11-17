@@ -1453,63 +1453,6 @@
 
 "Adding…" = "Pe azoute…";
 
-"All available records" = "Tou bann done disponib";
-
-"Rolling 12 months" = "12 dernie mwa";
-
-"Rolling 3 months" = "3 dernie mwa";
-
-"Rolling month" = "Dernie mwa";
-
-"Last 7 calendar days" = "7 dernie zour kalandriye";
-
-"Rapid test" = "Test rapid";
-
-"Laboratory" = "Laboratwar";
-
-"First time tested" = "Premie fwa teste";
-
-"Recorded / unclassified" = "Rezilta anrezistre / pa klase";
-
-"Outreach Contact" = "Kontak Outreach";
-
-"Clinic Visit (combined needles/syringes field)" = "Vizit klinik (san konbine zegwi/sereng)";
-
-"HIV Care Support (combined needles/syringes field)" = "Swivi VIH (san konbine zegwi/sereng)";
-
-
-
-"Outreach Contact — HIV rapid result" = "Kontak Outreach — rezilta test rapid HIV";
-
-"Clinic Visit — HIV laboratory result" = "Vizit klinik — rezilta laboratwar HIV";
-
-"PrEP Visit — HIV laboratory result" = "Vizit PrEP — rezilta laboratwar HIV";
-
-"Outreach Contact — HBV rapid result" = "Kontak Outreach — rezilta test rapid HBV";
-
-"Clinic Visit — HBV laboratory result" = "Vizit klinik — rezilta laboratwar HBV";
-
-"PrEP Visit — HBV laboratory result" = "Vizit PrEP — rezilta laboratwar HBV";
-
-"Outreach Contact — HCV rapid result" = "Kontak Outreach — rezilta test rapid HCV";
-
-"Clinic Visit — HCV laboratory result" = "Vizit klinik — rezilta laboratwar HCV";
-
-"PrEP Visit — HCV laboratory result" = "Vizit PrEP — rezilta laboratwar HCV";
-
-"Outreach Contact — syphilis rapid result" = "Kontak Outreach — rezilta test rapid syphilis";
-
-"Clinic Visit — syphilis laboratory result" = "Vizit klinik — rezilta laboratwar syphilis";
-
-"PrEP Visit — syphilis laboratory result" = "Vizit PrEP — rezilta laboratwar syphilis";
-
-"PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained." = "Rezilta laboratwar PrEP servi dat sak test, apre dat prelevman ouswa vizit pou ansien dosie. Bann swa parey kouma vizit klinik. Ansien text sifilis ki pa rekonet aparet kouma Anrezistre / pa klase. Bann test ki marke pa elizib exkli ; ansien dosie san rezon ouswa indikater test reste ladan.";
-
-"PrEP laboratory results review" = "PrEP : revizion rezilta laboratwar";
-
-"Conflicting results" = "Rezilta kontradiktwar";
-
-"Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded." = "Bann test konte enn fwa par pasian, enfeksion, metod ek dat test ziska zordi dan Moris. Bann rezilta laboratwar Klinik ek PrEP mem dat regroupe. Bann rezilta diferan aparet enn fwa kouma Rezilta kontradiktwar. Bann rankont konte bann zour par pasian ek metod. San idantifian prelevman, pa kapav disteng bann prelevman repete mem zour. Filtre popilasion kle servi lapartenans ; bann dosie san valer demografik ki finn swazir exkli.";
 "Notifications" = "Notifikasion";
 
 "Choose which updates you receive. Available categories follow your current page access." = "Swazir ki bann nouvel ou resevwar. Bann kategori disponib depann lor ou bann akse aktyel.";
@@ -1600,22 +1543,183 @@
 
 "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Bann alert Outreach demann ou ouver PILS pou swivi san afis non pasyan ouswa rezilta VIH lor lekran bloke.";
 
-"Contributing UICs" = "Bann UIC ki kontribie dan total";
+/* Dashboard card templates */
+"People linked to care and active in care for at least 6 months — HIV, HCV and SYP" = "Bann dimounn dan swin ek ankor aktif apre omwin 6 mwa — VIH, VHC ek sifilis";
+"People tested @NVI" = "Bann dimounn teste @NVI";
+"Psychologist consultations @NVI" = "Konsiltasion psikolog @NVI";
+"Psychiatrist consultations @NVI" = "Konsiltasion psikiat @NVI";
+"Accompaniments @NVI" = "Akonpagnman @NVI";
+"Blood tests @NVI" = "Pran disan @NVI";
+"People receiving wound dressing @NVI" = "Bann dimounn ki resev pansman @NVI";
+"People receiving nutrition support @NVI" = "Bann dimounn ki resev soutien nitrisional @NVI";
+"People linked to care following a reactive screening test — HIV, HCV and SYP" = "Bann dimounn dan swin apre enn test depistaz reaktif — VIH, VHC ek sifilis";
+"Patients with more than one active comorbidity" = "Bann pasian avek plis ki enn komorbidite aktif";
+"Linked to care within 30 days — HIV, HCV and SYP (%)" = "Dan swin dan 30 zour — VIH, VHC ek sifilis (%)";
 
-"About this card" = "Lor sa kart-la";
+"HIV-related communication attendances" = "Partisipasion dan bann aktivite kominikasion lor VIH";
 
-"Back to card" = "Retourn lor kart";
+"First-time screening tests — HIV, HCV and SYP" = "Premie test depistaz — VIH, VHC ek sifilis";
+
+"First-time screening reactivity rate — HIV, HCV and SYP" = "To reaktivite premie depistaz — VIH, VHC ek sifilis";
+
+"4BAZ attendances" = "Partisipasion dan 4BAZ";
+
+"HIV+ people with undetectable viral load" = "Bann dimounn VIH+ avek sarz viral indetektab";
+
+"Outreach activities" = "Bann aktivite teren";
+
+"Average attendances per outreach activity" = "Mwayenn partisipasion par aktivite teren";
+
+"Previous LTFU who returned to treatment" = "Bann dimounn perdi de vi ki finn retourn dan tretman";
+
+"Previous LTFU who returned and achieved undetectable viral load" = "Bann dimounn perdi de vi ki finn retourne ek gagn sarz viral indetektab";
+
+"Confirmed HIV diagnoses after starting PrEP (%)" = "Diagnostik VIH konfirme apre koumans PrEP (%)";
+
+"PrEP retention at M3, M6, M9 and M12 (%)" = "Retansion dan PrEP a M3, M6, M9 ek M12 (%)";
+
+"Testing encounters / prevention attendances (%)" = "Rankont depistaz / partisipasion dan prevansion (%)";
+
+"Breakfast encounters @NVI" = "Prezans pou ti-dezene @NVI";
+
+"People initiated on PrEP for the first time" = "Bann dimounn ki finn koumans PrEP pou premie fwa";
+
+"People initiated on ARV for the first time" = "Bann dimounn ki finn koumans ARV pou premie fwa";
+
+"Hospital accompaniments" = "Akonpagnman lopital";
+
+"Eye-hospital accompaniments" = "Akonpagnman lopital lizie";
+
+"Prevention attendances on sites" = "Partisipasion dan bann aktivite prevansion lor sit";
+
+"HIV rapid tests performed" = "Bann test rapid VIH ki finn fer";
+
+"People with reactive HIV screening" = "Bann dimounn avek depistaz VIH reaktif";
+
+"People with reactive HCV screening" = "Bann dimounn avek depistaz VHC reaktif";
+
+"People with reactive SYP screening" = "Bann dimounn avek depistaz sifilis reaktif";
+
+"Clinical and social referrals issued" = "Bann referans klinik ek sosial ki finn fer";
+
+"People with outstanding missed PrEP appointments" = "Bann dimounn avek randevou PrEP rate ki pankor vini";
+
+"People linked to care who achieved undetectable viral load" = "Bann dimounn dan swin ki finn gagn sarz viral indetektab";
+
+"People lost to ARV follow-up at period end" = "Bann dimounn perdi de vi pou ARV dan fin peryod";
+
+"Screening reactivity rate — HIV, HCV and SYP" = "To reaktivite depistaz — VIH, VHC ek sifilis";
+
+"Viral suppression rate (%)" = "To sipresion viral (%)";
+
+"Prevention attendances sensitised to PrEP (%)" = "Partisipasion avek sansibilizasion lor PrEP (%)";
+
+"Prevention attendances interested in PrEP (%)" = "Partisipasion avek lintere pou PrEP (%)";
+
+"Programme indicators" = "Bann indikater program";
+
+"Programme indicators for the selected period and population." = "Bann indikater program pou peryod ek popilasion swazir.";
+
+"Indicator counting rules" = "Bann reg pou kalkil indikater";
+
+"N/A" = "Pa aplikab";
+
+"First time tested" = "Premie fwa teste";
+
+"Recorded / unclassified" = "Anrezistre / pa klase";
+
+"Conflicting results" = "Bann rezilta kontradiktwar";
+
+"Attendance and screening indicators use Outreach Contact records. Repeat encounters count separately; screening reactivity uses each person's latest result per infection within the period." = "Bann indikater partisipasion ek depistaz servi bann kontak teren. Bann rankont repete konte separeman ; reaktivite servi dernie rezilta sak dimounn pou sak infeksion dan peryod.";
+
+"Outreach activities use recorded sites and dates. Average reach includes attendances with a recorded site. 4BAZ also includes HIV Care Support encounters, excluding same-person, same-day copies already recorded in Outreach." = "Bann aktivite teren servi sit ek dat anrezistre. Mwayenn partisipasion inklir prezans avek enn sit anrezistre. 4BAZ inklir osi bann kontak soutien VIH, san kopi mem dimounn mem zour deza dan teren.";
+
+"Referrals count issued clinical and social referral records. PrEP first-time initiations require recorded dispensing and explicit no-prior-use history. Viral suppression uses the latest result by the reporting cutoff: undetectable or below 40 copies/mL." = "Bann referans konte bann fich klinik ek sosial ki finn fer. Premie koumansman PrEP bizin enn distribision anrezistre ek enn istorik kler ki pa ti servi avan. Sipresion viral servi dernie rezilta ziska dat limit : indetektab ouswa anba 40 kopi/mL.";
+
+"Blank cards are reserved for indicators requiring additional structured fields. N/A means there is no eligible denominator." = "Bann kart vid rezerve pou indikater ki bizin lezot san striktire. Pa aplikab vedir pena denominate ki kalifie.";
+
+"PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained." = "Bann rezilta laboratwar PrEP servi dat sak test, sinon dat pran disan apre dat vizit pou ansien dosie. Bann swa parey kouma klinik. Ansien text sifilis pa rekonet paret anrezistre san klasman. Bann test ki pa kalifie exkli ; ansien dosie san rezon ouswa indikater test reste.";
+
+"Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded." = "Bann test konte enn fwa par pasian, infeksion, metod ek dat ziska zordi Moris. Bann rezilta laboratwar klinik ek PrEP mem dat ansam. Bann rezilta diferan paret enn fwa kouma kontradiktwar. Bann rankont konte zour pasian par metod. Pa kapav separ bann echantiyon mem zour san idantifian. Filt popilasion kle servi apartenans ; dosie san valer swazir exkli.";
+
+"Rapid test" = "Test rapid";
+
+"Laboratory" = "Laboratwar";
+
+"Not Implemented" = "Pankor implemante";
+
+"Show card value" = "Montre valer kart";
+
+"Show card details" = "Montre detay kart";
+
+"Assumptions" = "Bann sipozision";
 
 "Calculation" = "Kalkil";
 
-"Assumptions" = "Sipozision";
+"Planned calculation" = "Kalkil prevwar";
 
-"REDCap fields" = "Bann san REDCap";
+"Missing fields or history" = "Bann san ouswa istorik ki manke";
 
-"An asterisk matches the infection-specific fields for HIV, syphilis, HCV and HBV." = "En asterisk reprezant bann san spesifik pou HIV, sifilis, HCV ek HBV.";
+"REDCap fields used" = "Bann san REDCap ki servi";
 
-"Reset grid positions" = "Reinisializ pozision bann kart";
+"None — not implemented" = "Okenn — pankor implemante";
+
+"Cards marked Not Implemented need additional structured fields or history. N/A means there is no eligible denominator." = "Bann kart make Pankor implemante bizin lezot san striktire ouswa istorik. Pa aplikab vedir pena denominate ki kalifie.";
+
+"No data" = "Pena done";
+
+"Cards marked Not Implemented need additional structured fields or history. Cards with no available values show No data. Recorded zero counts remain 0." = "Bann kart make Pankor implemante bizin lezot san striktire ouswa istorik. Bann kart san valer disponib montre Pena done. Bann kontaz zero res 0.";
+
+"Drag a card handle to rearrange. You can also focus a handle and use the arrow keys." = "Trenn enn pwagne pou deplas enn kart. Ou kapav osi seleksionn enn pwagne ek servi bann fless lor klavie.";
+
+"Reset card layout" = "Remet bann kart kouma avan";
+
+"Default card layout restored" = "Bann kart finn retourn dan plas par defo";
 
 "Move card" = "Deplas kart";
 
+"Card position" = "Pozision kart";
+
+"Executive cards" = "Bann kart direksion";
+
+"Default cards" = "Bann kart par defo";
+
+"PILS staff access required." = "Akse rezerve pou staff PILS.";
+
+"HIV results by method" = "Bann rezilta VIH par metod";
+
+"SYP results by method" = "Bann rezilta sifilis par metod";
+
+"HCV results by method" = "Bann rezilta VHC par metod";
+
+"HBV results by method" = "Bann rezilta VHB par metod";
+
+"Contributing UICs" = "Bann UIC ki kontribie dan total";
+
+"All available records" = "Tou bann done disponib";
+"Rolling 12 months" = "12 dernie mwa";
+"Rolling 3 months" = "3 dernie mwa";
+"Rolling month" = "Dernie mwa";
+"Last 7 calendar days" = "7 dernie zour kalandriye";
+"Outreach Contact" = "Kontak Outreach";
+"Clinic Visit (combined needles/syringes field)" = "Vizit klinik (san konbine zegwi/sereng)";
+"HIV Care Support (combined needles/syringes field)" = "Swivi VIH (san konbine zegwi/sereng)";
+"Outreach Contact — HIV rapid result" = "Kontak Outreach — rezilta test rapid HIV";
+"Clinic Visit — HIV laboratory result" = "Vizit klinik — rezilta laboratwar HIV";
+"PrEP Visit — HIV laboratory result" = "Vizit PrEP — rezilta laboratwar HIV";
+"Outreach Contact — HBV rapid result" = "Kontak Outreach — rezilta test rapid HBV";
+"Clinic Visit — HBV laboratory result" = "Vizit klinik — rezilta laboratwar HBV";
+"PrEP Visit — HBV laboratory result" = "Vizit PrEP — rezilta laboratwar HBV";
+"Outreach Contact — HCV rapid result" = "Kontak Outreach — rezilta test rapid HCV";
+"Clinic Visit — HCV laboratory result" = "Vizit klinik — rezilta laboratwar HCV";
+"PrEP Visit — HCV laboratory result" = "Vizit PrEP — rezilta laboratwar HCV";
+"Outreach Contact — syphilis rapid result" = "Kontak Outreach — rezilta test rapid syphilis";
+"Clinic Visit — syphilis laboratory result" = "Vizit klinik — rezilta laboratwar syphilis";
+"PrEP Visit — syphilis laboratory result" = "Vizit PrEP — rezilta laboratwar syphilis";
+"PrEP laboratory results review" = "PrEP : revizion rezilta laboratwar";
+"About this card" = "Lor sa kart-la";
+"Back to card" = "Retourn lor kart";
+"REDCap fields" = "Bann san REDCap";
+"An asterisk matches the infection-specific fields for HIV, syphilis, HCV and HBV." = "En asterisk reprezant bann san spesifik pou HIV, sifilis, HCV ek HBV.";
+"Reset grid positions" = "Reinisializ pozision bann kart";
 "Drag to move; use arrow keys to reorder" = "Ris pou deplase; servi bann fles pou sanz lord";

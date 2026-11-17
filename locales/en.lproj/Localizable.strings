@@ -457,11 +457,8 @@
 
 "UIC, name, or patient code" = "UIC, name, or patient code";
 
-"Download" = "Download";
 
-"Downloading…" = "Downloading…";
 
-"Unable to download the index. Please try again." = "Unable to download the index. Please try again.";
 
 "Not interested" = "Not interested";
 
@@ -834,9 +831,6 @@
 "Skip to Clinic workflow" = "Skip to Clinic workflow";
 "Skip to clinic queue" = "Skip to clinic queue";
 "Skip to dashboard" = "Skip to dashboard";
-"Skip to Export Index" = "Skip to Export Index";
-"Clinic services" = "Clinic services";
-"Export Index" = "Export Index";
 "Skip to entry details" = "Skip to entry details";
 "← Back to logs" = "← Back to logs";
 "Entry details" = "Entry details";
@@ -1369,8 +1363,6 @@
 "Manage arrivals, clinic stations, and completed visits." = "Manage arrivals, clinic stations, and completed visits.";
 "Dashboard | PILS" = "Dashboard | PILS";
 "Aggregate outreach testing dashboard by reporting period and key population." = "Aggregate outreach testing dashboard by reporting period and key population.";
-"Export Index | PILS" = "Export Index | PILS";
-"Export Index for clinic services." = "Export Index for clinic services.";
 "Healthcare Nav Workflow | PILS" = "Healthcare Nav Workflow | PILS";
 "Guided HIV care support and treatment monitoring entry." = "Guided HIV care support and treatment monitoring entry.";
 "PILS Services" = "PILS Services";
@@ -1518,3 +1510,92 @@
 "Conflicting results" = "Conflicting results";
 
 "Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded." = "Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded.";
+"Notifications" = "Notifications";
+
+"Choose which updates you receive. Available categories follow your current page access." = "Choose which updates you receive. Available categories follow your current page access.";
+
+"Enable notifications for my account" = "Enable notifications for my account";
+
+"Clinic Queue — patient arrivals" = "Clinic Queue — patient arrivals";
+
+"No notification categories are available for your current access." = "No notification categories are available for your current access.";
+
+"Arrival alerts show the patient name and code on your device, including its lock screen. Missing codes appear as Code pending." = "Arrival alerts show the patient name and code on your device, including its lock screen. Missing codes appear as Code pending.";
+
+"This device" = "This device";
+
+"On iPhone or iPad, add PILS to your Home Screen and open it from there before enabling notifications." = "On iPhone or iPad, add PILS to your Home Screen and open it from there before enabling notifications.";
+
+"Enable this device again after signing in again. Signing out stops future alerts for that sign-in." = "Enable this device again after signing in again. Signing out stops future alerts for that sign-in.";
+
+"Push notifications are unavailable here. Use HTTPS and a supported browser or Home Screen app." = "Push notifications are unavailable here. Use HTTPS and a supported browser or Home Screen app.";
+
+"Notifications are not configured." = "Notifications are not configured.";
+
+"Enable notifications on this device" = "Enable notifications on this device";
+
+"Disable notifications on this device" = "Disable notifications on this device";
+
+"Unable to save notification settings." = "Unable to save notification settings.";
+
+"Unable to load notification settings." = "Unable to load notification settings.";
+
+"Notification settings saved." = "Notification settings saved.";
+
+"Allow notifications in your browser or phone settings, then try again." = "Allow notifications in your browser or phone settings, then try again.";
+
+"This device is ready for notifications during your current sign-in." = "This device is ready for notifications during your current sign-in.";
+
+"Notifications disabled on this device." = "Notifications disabled on this device.";
+
+"Enable notifications on this device first." = "Enable notifications on this device first.";
+"Test notification sent. Check your device notifications." = "Test notification sent. Check your device notifications.";
+"Send test notification" = "Send test notification";
+
+"Menu" = "Menu";
+
+"Open navigation" = "Open navigation";
+
+"Close navigation" = "Close navigation";
+
+"designed and developed by" = "designed and developed by";
+
+"Elisa Kevin Veragoo" = "Elisa Kevin Veragoo";
+
+"ChatGPT" = "ChatGPT";
+
+"PILS" = "PILS";
+
+"Physical-file baskets for clinic services and screening" = "Physical-file baskets for clinic services and screening";
+"Open Outreach Workflow" = "Open Outreach Workflow";
+"Ready for Clinic or Outreach Workflow capture" = "Ready for Clinic or Outreach Workflow capture";
+
+"Previously SYP positive, treated" = "Previously SYP positive, treated";
+
+"Re-schedule" = "Re-schedule";
+"Re-schedule appointment" = "Re-schedule appointment";
+"Mark the original appointment as no show and copy it to the selected date." = "Mark the original appointment as no show and copy it to the selected date.";
+"New appointment date" = "New appointment date";
+"Confirm re-schedule" = "Confirm re-schedule";
+
+"What are they here for?" = "What are they here for?";
+
+"Blood" = "Blood";
+
+"Choose at least one service." = "Choose at least one service.";
+
+"Refresh client list" = "Refresh client list";
+
+"No matching clients. Check the UIC or refresh the client list." = "No matching clients. Check the UIC or refresh the client list.";
+
+"Unable to load clients. Refresh the client list to try again." = "Unable to load clients. Refresh the client list to try again.";
+
+"Previously HEPC positive, treated" = "Previously HEPC positive, treated";
+
+"Pils - Banian" = "Pils - Banian";
+
+"Select Laboratory results review and the matching laboratory test before saving PrEP results." = "Select Laboratory results review and the matching laboratory test before saving PrEP results.";
+
+"Outreach — reactive HIV result" = "Outreach — reactive HIV result";
+
+"Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen.";

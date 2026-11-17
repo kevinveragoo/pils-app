@@ -1,3 +1,9 @@
+//
+//  table.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 12/09/2026.
+//
 "use client"
 
 import * as React from "react"

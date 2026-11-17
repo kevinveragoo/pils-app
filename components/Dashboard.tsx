@@ -1,3 +1,9 @@
+//
+//  Dashboard.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 07/10/2026.
+//
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";

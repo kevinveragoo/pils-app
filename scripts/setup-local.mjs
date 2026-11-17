@@ -1,3 +1,9 @@
+//
+//  setup-local.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 07/10/2026.
+//
 import { closeSync, copyFileSync, existsSync, openSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 

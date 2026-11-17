@@ -1,3 +1,9 @@
+//
+//  route.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 12/09/2026.
+//
 import { isPilsUser } from "@/lib/organization-access";
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
@@ -135,7 +141,7 @@ export async function GET() {
       })
     );
 
-    return NextResponse.json(uniquePatients);
+    return NextResponse.json(uniquePatients, { headers: { "Cache-Control": "private, no-store, max-age=0" } });
   } catch (error) {
     console.error("REDCap patient export error:", error);
 

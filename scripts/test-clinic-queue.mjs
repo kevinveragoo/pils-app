@@ -1,3 +1,9 @@
+//
+//  test-clinic-queue.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 14/10/2026.
+//
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -87,7 +93,8 @@ for (const invalid of [{ recordId: '' }, { recordId: '   ' }, { recordId: null }
 }
 assert.equal((await post({ visitWorkflow: 'BOTH', clinicPurposes: ['8'], prepPurposes: ['1'], currentStation: 'MEDICATION' })).status, 201);
 assert.deepEqual(Array.from(created.tasks), ['DOCTOR', 'BLOOD_TEST']);
-assert.equal(created.currentStation, 'MEDICATION', 'First waiting queue is independent of visit purposes');
+assert.equal(created.currentStation, 'FILE_RETRIEVAL', 'Walk-ins enter file retrieval even if an old client supplies a service queue');
+assert.equal(created.status, 'WAITING');
 assert.deepEqual(created.clinicPurposes, ['8']); assert.deepEqual(created.prepPurposes, ['1']);
 assert.equal((await post({ visitWorkflow: 'BOTH', clinicPurposes: ['8'], prepPurposes: [] })).status, 400);
 assert.equal((await post({ visitWorkflow: 'CLINIC', clinicPurposes: ['7'] })).status, 400);
@@ -95,7 +102,14 @@ assert.equal((await post({ visitWorkflow: 'PREP', clinicPurposes: ['8'], prepPur
 assert.equal((await post({ visitWorkflow: 'PREP', prepPurposes: ['2'], currentStation: 'DOCTOR' })).status, 201);
 assert.equal((await post({ source: 'SCHEDULED', visitWorkflow: 'PREP', tasks: ['PREP'], prepPurposes: [] })).status, 201);
 assert.deepEqual(created.tasks, ['PREP']);
-console.log('Queue workflow checks passed: separate purposes, routing defaults, validation and independent first waiting queue.');
+assert.equal((await post({ visitWorkflow: 'CLINIC', clinicPurposes: ['8'] })).status, 201);
+assert.equal(created.status, 'WAITING');
+assert.equal(created.currentStation, 'FILE_RETRIEVAL', 'Walk-ins require no first waiting queue');
+assert.deepEqual(Array.from(created.tasks), ['DOCTOR']);
+const board = fs.readFileSync(new URL('../components/ClinicQueueBoard.tsx', import.meta.url), 'utf8');
+assert.ok(!board.includes('firstQueue'));
+assert.ok(!board.includes('First waiting queue'));
+console.log('Queue workflow checks passed: separate purposes, validation and walk-in file retrieval without a service queue.');
 
 const persisted = queueVisitDetails({ visitWorkflow: 'BOTH', clinicPurposes: '["11","12"]', prepPurposes: '["3"]', tasks: ['BLOOD_TEST', 'DOCTOR', 'MEDICATION'], appointmentSources: [] });
 assert.deepEqual(Array.from(persisted.clinicPurposes), ['11', '12']);
@@ -172,3 +186,27 @@ assert.ok(exportedQueueFields.includes('pv_next_lab_review_date'));
 assert.equal(prepLab.visitWorkflow,'PREP');assert.deepEqual(Array.from(prepLab.prepPurposes),['4']);assert.deepEqual(Array.from(prepLab.tasks),['DOCTOR']);assert.deepEqual(Array.from(prepLab.appointmentSources),['PrEP laboratory results review']);
 assert.ok(!(await loadedModule.exports.expectedAppointments('2026-11-20')).some(row=>row.recordId==='PREP-LAB'));
 console.log('PrEP laboratory review queue checks passed: selected date, purpose 4, doctor routing and no duplicate generic appointment.');
+queueUser = { id: 'staff', role: 'FACILITY_STAFF' };
+assert.equal((await post({ visitWorkflow: 'SCREENING' })).status, 201);
+assert.equal(created.status, 'WAITING');
+assert.equal(created.source, 'WALK_IN');
+assert.equal(created.currentStation, 'SCREENING');
+assert.deepEqual(Array.from(created.tasks), ['SCREENING']);
+assert.equal((await post({ visitWorkflow: 'SCREENING', clinicPurposes: ['8'] })).status, 400);
+assert.equal((await post({ source: 'SCHEDULED', visitWorkflow: 'SCREENING' })).status, 400);
+assert.equal(workflowModule.exports.includesClinic('SCREENING'), false);
+assert.equal(workflowModule.exports.includesPrep('SCREENING'), false);
+assert.equal(queueVisitDetails({ visitWorkflow: 'SCREENING', tasks: ['SCREENING'], appointmentSources: [] }).visitWorkflow, 'SCREENING');
+assert.ok(board.includes('Open Outreach Workflow'));
+console.log('Screening checks passed: walk-in only, direct waiting bin, separate service tasks and Outreach capture link.');
+
+queueUser = { id: 'staff', role: 'FACILITY_STAFF' };
+assert.equal((await post({ visitWorkflow: 'CLINIC', clinicPurposes: ['8'], walkInServices: ['BLOOD_TEST', 'MEDICATION', 'BLOOD_TEST'] })).status, 201);
+assert.deepEqual(Array.from(created.tasks), ['BLOOD_TEST', 'MEDICATION'], 'Explicit service tags are independent of clinical purposes');
+assert.equal(created.currentStation, 'FILE_RETRIEVAL');
+assert.equal(created.status, 'WAITING');
+for (const walkInServices of [[], ['OTHER'], ['SCREENING'], 'DOCTOR', [null]]) assert.equal((await post({ visitWorkflow: 'CLINIC', clinicPurposes: ['8'], walkInServices })).status, 400);
+assert.equal((await post({ visitWorkflow: 'SCREENING', walkInServices: ['DOCTOR'] })).status, 201);
+assert.deepEqual(Array.from(created.tasks), ['SCREENING']);
+assert.equal(created.currentStation, 'SCREENING');
+console.log('Walk-in service checks passed: multiple explicit tags, validation, file retrieval and unchanged Screening routing.');

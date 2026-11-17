@@ -1,3 +1,9 @@
+//
+//  auth-actions.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 27/09/2026.
+//
 "use server";
 
 import { redirect } from "next/navigation";

@@ -1,3 +1,9 @@
+//
+//  password.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 27/09/2026.
+//
 import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
 function derive(password: string, salt: string) {
   return new Promise<Buffer>((resolve, reject) => {

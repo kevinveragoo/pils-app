@@ -1,3 +1,9 @@
+//
+//  ClientEnrollmentWorkflow.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 18/10/2026.
+//
 "use client";
 import { useEffect, useState } from "react";
 import { Check } from "lucide-react";

@@ -1,3 +1,9 @@
+//
+//  migrate-patient-code.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 21/10/2026.
+//
 // Additive migration: never rename/delete the populated source field.
 // node --env-file=.env.local scripts/migrate-patient-code.mjs prepare|copy|retire BACKUP_DIR
 import fs from 'node:fs';

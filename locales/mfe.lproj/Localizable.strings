@@ -457,11 +457,8 @@
 
 "UIC, name, or patient code" = "UIC, nom ouswa kod pasian";
 
-"Download" = "Telechargé";
 
-"Downloading…" = "Pe telechargé…";
 
-"Unable to download the index. Please try again." = "Pa kapav telecharg index-la. Eseye ankor.";
 
 "Not interested" = "Pa interese";
 
@@ -834,9 +831,6 @@
 "Skip to Clinic workflow" = "Al lor parkour klinik";
 "Skip to clinic queue" = "Al lor lalis klinik";
 "Skip to dashboard" = "Al lor tablo bor";
-"Skip to Export Index" = "Al lor export index";
-"Clinic services" = "Servis klinik";
-"Export Index" = "Export index";
 "Skip to entry details" = "Al lor detay lantre";
 "← Back to logs" = "← Retourn lor zournal";
 "Entry details" = "Detay lantre";
@@ -1369,8 +1363,6 @@
 "Manage arrivals, clinic stations, and completed visits." = "Zer bann larive, pos klinik ek vizit termine.";
 "Dashboard | PILS" = "Tablo bor | PILS";
 "Aggregate outreach testing dashboard by reporting period and key population." = "Tablo bor total test teren par peryod ek popilasion kle.";
-"Export Index | PILS" = "Export index | PILS";
-"Export Index for clinic services." = "Export index pou bann servis klinik.";
 "Healthcare Nav Workflow | PILS" = "Parkour navigasion lasante | PILS";
 "Guided HIV care support and treatment monitoring entry." = "Sezi gide sipor swin VIH ek swivi tretman.";
 "PILS Services" = "Servis PILS";
@@ -1518,3 +1510,92 @@
 "Conflicting results" = "Rezilta kontradiktwar";
 
 "Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded." = "Bann test konte enn fwa par pasian, enfeksion, metod ek dat test ziska zordi dan Moris. Bann rezilta laboratwar Klinik ek PrEP mem dat regroupe. Bann rezilta diferan aparet enn fwa kouma Rezilta kontradiktwar. Bann rankont konte bann zour par pasian ek metod. San idantifian prelevman, pa kapav disteng bann prelevman repete mem zour. Filtre popilasion kle servi lapartenans ; bann dosie san valer demografik ki finn swazir exkli.";
+"Notifications" = "Notifikasion";
+
+"Choose which updates you receive. Available categories follow your current page access." = "Swazir ki bann nouvel ou resevwar. Bann kategori disponib depann lor ou bann akse aktyel.";
+
+"Enable notifications for my account" = "Aktiv bann notifikasion pou mo kont";
+
+"Clinic Queue — patient arrivals" = "Lalis klinik — larive bann pasyan";
+
+"No notification categories are available for your current access." = "Pena kategori notifikasion disponib pou ou bann akse aktyel.";
+
+"Arrival alerts show the patient name and code on your device, including its lock screen. Missing codes appear as Code pending." = "Bann alert montre non ek kod pasyan lor ou laparey, mem lor lekran bloke. Bann kod ki manke paret kouma Kod an atant.";
+
+"This device" = "Sa laparey-la";
+
+"On iPhone or iPad, add PILS to your Home Screen and open it from there before enabling notifications." = "Lor iPhone ouswa iPad, azout PILS lor ou lekran lakey ek ouver li depi laba avan aktiv bann notifikasion.";
+
+"Enable this device again after signing in again. Signing out stops future alerts for that sign-in." = "Aktiv sa laparey-la ankor apre enn nouvo koneksion. Dekoneksion aret bann prosin alert pou sa sesion-la.";
+
+"Push notifications are unavailable here. Use HTTPS and a supported browser or Home Screen app." = "Bann notifikasion push pa disponib isi. Servi HTTPS ek enn navigater konpatib ouswa aplikasion depi lekran lakey.";
+
+"Notifications are not configured." = "Bann notifikasion pa ankor konfigire.";
+
+"Enable notifications on this device" = "Aktiv bann notifikasion lor sa laparey-la";
+
+"Disable notifications on this device" = "Dezaktiv bann notifikasion lor sa laparey-la";
+
+"Unable to save notification settings." = "Pa kapav anrezistre bann reglaz notifikasion.";
+
+"Unable to load notification settings." = "Pa kapav sarz bann reglaz notifikasion.";
+
+"Notification settings saved." = "Bann reglaz notifikasion finn anrezistre.";
+
+"Allow notifications in your browser or phone settings, then try again." = "Permet bann notifikasion dan reglaz ou navigater ouswa telefonn, apre esey ankor.";
+
+"This device is ready for notifications during your current sign-in." = "Sa laparey-la pare pou resevwar bann notifikasion pandan ou sesion aktyel.";
+
+"Notifications disabled on this device." = "Bann notifikasion dezaktive lor sa laparey-la";
+
+"Enable notifications on this device first." = "Aktiv bann notifikasion lor sa laparey-la avan.";
+"Test notification sent. Check your device notifications." = "Notifikasion test finn avoye. Verifie bann notifikasion ou laparey.";
+"Send test notification" = "Avoy enn notifikasion test";
+
+"Menu" = "Meni";
+
+"Open navigation" = "Ouver navigasion";
+
+"Close navigation" = "Ferm navigasion";
+
+"designed and developed by" = "designed and developed by";
+
+"Elisa Kevin Veragoo" = "Elisa Kevin Veragoo";
+
+"ChatGPT" = "ChatGPT";
+
+"PILS" = "PILS";
+
+"Physical-file baskets for clinic services and screening" = "Bann dosie pou servis klinik ek depistaz";
+"Open Outreach Workflow" = "Ouver bann etap Outreach";
+"Ready for Clinic or Outreach Workflow capture" = "Pre pou sezi dan Klinik ouswa Outreach";
+
+"Previously SYP positive, treated" = "Ti deza SYP pozitif, finn gagn tretman";
+
+"Re-schedule" = "Replanifie";
+"Re-schedule appointment" = "Replanifie randevou";
+"Mark the original appointment as no show and copy it to the selected date." = "Mark randevou orizinal kouma pa finn vini ek kopie li lor dat ki finn swazir.";
+"New appointment date" = "Nouvo dat randevou";
+"Confirm re-schedule" = "Konfirm replanifikasion";
+
+"What are they here for?" = "Pou ki zot finn vini?";
+
+"Blood" = "Pran disan";
+
+"Choose at least one service." = "Swazir omwin enn servis.";
+
+"Refresh client list" = "Rafresi lalis bann kliyan";
+
+"No matching clients. Check the UIC or refresh the client list." = "Pena kliyan ki koresponn. Verifie UIC ouswa rafresi lalis bann kliyan.";
+
+"Unable to load clients. Refresh the client list to try again." = "Pa kapav sarz bann kliyan. Rafresi lalis pou reeseye.";
+
+"Previously HEPC positive, treated" = "Ti deza HEPC pozitif, finn gagn tretman";
+
+"Pils - Banian" = "Pils - Banian";
+
+"Select Laboratory results review and the matching laboratory test before saving PrEP results." = "Swazir revizion rezilta laboratwar ek test ki koresponn avan anrezistre rezilta PrEP.";
+
+"Outreach — reactive HIV result" = "Outreach — rezilta VIH reaktif";
+
+"Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Bann alert Outreach demann ou ouver PILS pou swivi san afis non pasyan ouswa rezilta VIH lor lekran bloke.";

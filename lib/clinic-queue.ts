@@ -1,8 +1,14 @@
-import { queueVisitDetails, type VisitWorkflow } from "@/lib/visit-workflow";
+//
+//  clinic-queue.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 09/10/2026.
+//
+import { queueVisitDetails, type QueueWorkflow } from "@/lib/visit-workflow";
 import { db } from "@/lib/db";
 
-export const QUEUE_TASKS = ["DOCTOR", "BLOOD_TEST", "MEDICATION", "PREP", "ARV", "OTHER"] as const;
-export const QUEUE_STATIONS = ["RECEPTION", "FILE_RETRIEVAL", "DOCTOR", "BLOOD_TEST", "MEDICATION", "CLINICIAN"] as const;
+export const QUEUE_TASKS = ["DOCTOR", "BLOOD_TEST", "MEDICATION", "PREP", "ARV", "OTHER", "SCREENING"] as const;
+export const QUEUE_STATIONS = ["RECEPTION", "FILE_RETRIEVAL", "DOCTOR", "BLOOD_TEST", "MEDICATION", "SCREENING", "CLINICIAN"] as const;
 export const QUEUE_STATUSES = ["EXPECTED", "WAITING", "READY", "DONE", "CANCELLED"] as const;
 export type QueueTask = typeof QUEUE_TASKS[number];
 
@@ -97,7 +103,7 @@ export async function queueForDate(date: string) {
   return [...scheduled.filter(entry => !persistedRecords.has(entry.recordId)), ...local.map(publicEntry)];
 }
 
-export async function createQueueEntry(data: { queueDate: string; recordId?: string; displayName: string; firstName?: string; lastName?: string; nationalId?: string; alias?: string; patientCode?: string; phone?: string; visitWorkflow?: VisitWorkflow; clinicPurposes?: string[]; prepPurposes?: string[]; source?: string; isNewClient?: boolean; status?: string; currentStation?: string; tasks: string[]; appointmentSources?: string[]; notes?: string }, actor: Actor) {
+export async function createQueueEntry(data: { queueDate: string; recordId?: string; displayName: string; firstName?: string; lastName?: string; nationalId?: string; alias?: string; patientCode?: string; phone?: string; visitWorkflow?: QueueWorkflow; clinicPurposes?: string[]; prepPurposes?: string[]; source?: string; isNewClient?: boolean; status?: string; currentStation?: string; tasks: string[]; appointmentSources?: string[]; notes?: string }, actor: Actor) {
   let alreadyQueued = false;
   data = { ...data, recordId: data.recordId?.trim().toUpperCase() };
   const now = new Date();
@@ -132,7 +138,7 @@ export async function updateQueueEntry(id: string, patch: { status?: string; cur
     if (current.noShow && patch.noShow === undefined && (patch.status && patch.status !== "DONE" || patch.currentStation && patch.currentStation !== current.currentStation)) throw new Error("Return the no-show to Expected before moving it.");
     const enteringWaiting = patch.status === "WAITING" && current.status !== "WAITING";
     const latest = enteringWaiting && current.queueNumber === null ? await transaction.clinicQueueEntry.aggregate({ where: { queueDate: current.queueDate }, _max: { queueNumber: true } }) : null;
-    return transaction.clinicQueueEntry.update({ where: { id }, data: { ...(patch.status ? { status: patch.status, ...(enteringWaiting ? { checkedInAt: now, queueNumber: current.queueNumber ?? (latest?._max.queueNumber ?? 0) + 1 } : {}), ...(patch.status === "READY" ? { readyAt: now } : {}), ...(patch.status === "DONE" ? { completedAt: now } : {}) } : {}), ...(patch.status === "EXPECTED" ? { completedAt: null, readyAt: null, checkedInAt: null, queueNumber: null } : {}), ...(patch.noShow !== undefined ? { noShow: patch.noShow } : {}), ...(patch.currentStation ? { currentStation: patch.currentStation } : {}), ...(patch.tasks ? { tasks: JSON.stringify(patch.tasks) } : {}), ...(patch.notes !== undefined ? { notes: patch.notes || null } : {}), ...(patch.recordId ? { recordId: patch.recordId } : {}), ...(patch.patientCode !== undefined ? { patientCode: patch.patientCode } : {}), updatedById: actor.id, updatedByName: actor.name, version: { increment: 1 }, events: { create: { actorId: actor.id, actorName: actor.name, action: patch.status ?? patch.currentStation ?? "UPDATED", details: JSON.stringify(patch) } } } });
+    return transaction.clinicQueueEntry.update({ where: { id }, data: { ...(patch.status ? { status: patch.status, ...(enteringWaiting ? { checkedInAt: now, queueNumber: current.queueNumber ?? (latest?._max.queueNumber ?? 0) + 1 } : {}), ...(patch.status === "READY" ? { readyAt: now } : {}), ...(patch.status === "DONE" ? { completedAt: now } : {}) } : {}), ...(patch.status === "EXPECTED" ? { completedAt: null, readyAt: null, checkedInAt: null, queueNumber: null } : {}), ...(patch.noShow !== undefined ? { noShow: patch.noShow } : {}), ...(patch.currentStation ? { currentStation: patch.currentStation } : {}), ...(patch.tasks ? { tasks: JSON.stringify(patch.tasks) } : {}), ...(patch.notes !== undefined ? { notes: patch.notes || null } : {}), ...(patch.recordId ? { recordId: patch.recordId } : {}), ...(patch.patientCode !== undefined ? { patientCode: patch.patientCode } : {}), updatedById: actor.id, updatedByName: actor.name, version: { increment: 1 }, events: { create: { actorId: actor.id, actorName: actor.name, action: patch.status === "WAITING" && current.status === "EXPECTED" ? "ARRIVED" : patch.status ?? patch.currentStation ?? "UPDATED", details: JSON.stringify(patch) } } } });
   });
   return publicEntry(entry);
 }

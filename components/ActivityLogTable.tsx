@@ -1,3 +1,9 @@
+//
+//  ActivityLogTable.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 04/10/2026.
+//
 "use client";
 
 import { useRouter } from "next/navigation";

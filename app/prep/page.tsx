@@ -1,3 +1,9 @@
+//
+//  page.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 09/10/2026.
+//
 import { redirect } from "next/navigation";
 import { requireAnyRole } from "@/lib/auth";
 

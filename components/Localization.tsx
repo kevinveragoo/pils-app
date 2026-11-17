@@ -1,3 +1,9 @@
+//
+//  Localization.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 09/10/2026.
+//
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo } from "react";

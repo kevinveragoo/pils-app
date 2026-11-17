@@ -1,3 +1,9 @@
+//
+//  add-clinic-no-show.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 21/10/2026.
+//
 // Additive schema migration; never imports or deletes patient records.
 import fs from 'node:fs';
 import assert from 'node:assert/strict';

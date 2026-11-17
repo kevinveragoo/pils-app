@@ -1,3 +1,9 @@
+//
+//  queue-no-show.ts
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 21/10/2026.
+//
 import type { User } from "@prisma/client";
 import { db } from "@/lib/db";
 import { updateQueueEntry } from "@/lib/clinic-queue";

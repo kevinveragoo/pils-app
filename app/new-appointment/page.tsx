@@ -1,3 +1,9 @@
+//
+//  page.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 21/10/2026.
+//
 import type { Metadata } from "next";
 import AppHeader from "@/components/AppHeader";
 import RecordLookup from "@/components/RecordLookup";

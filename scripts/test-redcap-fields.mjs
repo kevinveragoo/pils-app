@@ -1,3 +1,9 @@
+//
+//  test-redcap-fields.mjs
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 09/10/2026.
+//
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -98,6 +104,14 @@ assert.equal(filteredInjection.cne_share_needle_1w, undefined);
 assert.equal(filteredInjection.cne_sti_treated, '1');
 const { fieldVisible, instrumentFields, visibleInstrumentValues, instrumentInitial } = load('lib/instrument-forms.ts');
 assert.equal(fieldVisible("[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'", { ce_kp_type: '1,5' }), true);
+for (const field of ['pv_creatinine_result', 'pv_hb_result', 'pv_cholesterol_result', 'pv_triglycerides_result']) {
+  assert.equal(visibleInstrumentValues('prep_visit', { pv_visit_purpose: '2,3', [field]: '1' })[field], undefined);
+  assert.ok(validateFields({ pv_visit_purpose: '2,3', [field]: '1' }));
+  assert.equal(validateFields({ pv_visit_purpose: '4', [field]: '1' }), null);
+}
+assert.ok(validateFields({ pv_visit_purpose: '4', pv_hiv_result: '1' }));
+assert.equal(validateFields({ pv_visit_purpose: '4', pv_hiv_lab_test_done: '1', pv_hiv_result: '1' }), null);
+assert.equal(visibleInstrumentValues('prep_visit', { pv_visit_purpose: '4', pv_hiv_lab_test_done: '1', pv_hiv_result: '1' }).pv_hiv_result, '1');
 assert.equal(fieldVisible("[a] = '1' and [b] = '2'", {a:'1',b:'0'}), false);
 assert.equal(fieldVisible("([a] = '1' or [b] = '2') and [c] > 0", {a:'1',c:'3'}), true);
 assert.equal(instrumentFields('prep_treatment_profile').includes('ptp_status'), false);

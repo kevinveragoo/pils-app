@@ -1,3 +1,9 @@
+//
+//  PatientSummary.tsx
+//  pils-app
+//
+//  Created by Elisa Kevin Veragoo + ChatGPT on 03/10/2026.
+//
 export type PatientSummaryDetails = { alias?: string; firstName?: string; lastName?: string; phone?: string; uic?: string };
 
 export function PatientSummary({ patient, className = "" }: { patient: PatientSummaryDetails; className?: string }) {

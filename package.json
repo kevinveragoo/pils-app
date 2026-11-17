@@ -31,7 +31,8 @@
     "test:prep-cnv-alignment": "node scripts/test-prep-cnv-alignment.mjs",
     "notifications:worker": "node --env-file=.env.local scripts/notification-worker.mjs",
     "test:outreach-notifications": "node scripts/test-outreach-notifications.mjs",
-    "test:notifications": "node scripts/test-notifications.mjs"
+    "test:notifications": "node scripts/test-notifications.mjs",
+    "test:lookup-edit": "node scripts/test-lookup-edit.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

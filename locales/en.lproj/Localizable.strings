@@ -1599,3 +1599,33 @@
 "Outreach — reactive HIV result" = "Outreach — reactive HIV result";
 
 "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen.";
+
+"Medication collected by someone else?" = "Medication collected by someone else?";
+
+"Name of person collecting medication" = "Name of person collecting medication";
+
+"Name of person collecting medication is required." = "Name of person collecting medication is required.";
+
+"Edit client details" = "Edit client details";
+
+"Edit entry" = "Edit entry";
+
+"Save changes" = "Save changes";
+
+"Data grouped by instrument" = "Data grouped by instrument";
+
+"Update" = "Update";
+
+"Client record lookup with role-controlled editing." = "Client record lookup with role-controlled editing.";
+
+"Changes update this existing entry. Identifiers and calculated fields cannot be edited." = "Changes update this existing entry. Identifiers and calculated fields cannot be edited.";
+
+"Loading entry…" = "Loading entry…";
+
+"This entry changed since you opened it. Close and reopen it before saving." = "This entry changed since you opened it. Close and reopen it before saving.";
+
+"Unable to confirm the update. Reload the entry to check its current values before trying again." = "Unable to confirm the update. Reload the entry to check its current values before trying again.";
+
+"You cannot edit this instrument." = "You cannot edit this instrument.";
+
+"Unable to open this entry for editing." = "Unable to open this entry for editing.";

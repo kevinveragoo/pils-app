@@ -6,6 +6,7 @@
 //
 "use client";
 
+import LookupEntryEditor, { type EditIdentity } from "@/components/LookupEntryEditor";
 import NewAppointmentForm from "@/components/NewAppointmentForm";
 import { LockKeyhole } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -15,9 +16,10 @@ import { PatientSummary } from "@/components/PatientSummary";
 import { sortLookupRows, type LookupSort, type LookupSection } from "@/lib/record-lookup";
 
 type Patient = { uic: string; display_name: string; first_name: string; middle_name: string; last_name: string; alias: string; patient_code: string; phone: string };
-type RecordView = { uic: string; restrictedClinicalAccess: boolean; restrictedRiskViolenceAccess: boolean; sections: LookupSection[] };
+type RecordView = { uic: string; restrictedClinicalAccess: boolean; restrictedRiskViolenceAccess: boolean; editableForms?: string[]; sections: LookupSection[] };
 
 export default function RecordLookup({ appointment = false }: { appointment?: boolean } = {}) {
+  const [editing, setEditing] = useState<EditIdentity | null>(null);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Patient | null>(null);
@@ -31,6 +33,7 @@ export default function RecordLookup({ appointment = false }: { appointment?: bo
     fetch("/api/redcap/patients", { signal: controller.signal, cache: "no-store" }).then(async response => {
       const data = await response.json(); if (!response.ok) throw Error("Unable to load clients.");
       setPatients(data);
+      setSelected(current => current ? data.find((patient: Patient) => patient.uic === current.uic) ?? current : null);
     }).catch(reason => { if (reason.name !== "AbortError") setError("Unable to load clients."); })
       .finally(() => { if (!controller.signal.aborted) setLoadingClients(false); });
     return () => controller.abort();
@@ -63,23 +66,24 @@ export default function RecordLookup({ appointment = false }: { appointment?: bo
       </div>}
       {selected && <PatientSummary className="mt-5" patient={{ uic: selected.uic, firstName: selected.first_name, lastName: selected.last_name, alias: selected.alias, phone: selected.phone }} />}
     </section>
+    {editing && <LookupEntryEditor key={`${editing.uic}-${editing.form}-${editing.event}-${editing.instance}`} identity={editing} onClose={() => setEditing(null)} onSaved={() => { setEditing(null);setRecord(null);setLoadingRecord(true);setRetry(value => value + 1); }} />}
     {error && <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}<Button variant="outline" className="ml-3" onClick={() => { setError(""); setRecord(null); if (selected) setLoadingRecord(true); else setLoadingClients(true); setRetry(value => value + 1); }}>Retry</Button></div>}
     {loadingRecord && <p role="status" className="p-4">Loading record…</p>}
     {record && record.uic === selected?.uic && <>
       {appointment && <NewAppointmentForm key={record.uic} recordId={record.uic} onSaved={() => setRetry(value => value + 1)} />}
-      <p className="text-sm text-muted-foreground">Read only · Data grouped by instrument</p>
+      <p className="text-sm text-muted-foreground">Data grouped by instrument</p>
       {sections.filter(section => !section.repeating).map(section => <details key={`${record.uic}-${section.name}`} open={section.hasData} className="outreach-card">
         <summary className="cursor-pointer text-xl font-bold">{section.label}</summary>
-        {section.rows.map((row, index) => <div key={`${row.event}-${index}`} className="mt-5">{row.event && <p className="mb-3 font-semibold">{row.event}</p>}<dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{section.columns.map((field, fieldIndex) => <div key={field.name} className={`min-w-0 rounded-xl p-3 ${row.values[fieldIndex]?.trim() ? "bg-muted" : "border bg-transparent"}`}><dt className="text-sm font-semibold" title={field.name}>{field.label}</dt><dd className="mt-1 whitespace-pre-wrap break-words text-sm">{row.values[fieldIndex] || "—"}</dd></div>)}</dl></div>)}
+        {section.rows.map((row, index) => <div key={`${row.event}-${index}`} className="mt-5">{!appointment && section.hasData && record.editableForms?.includes(section.name) && <Button type="button" variant="outline" className="mb-4" onClick={() => setEditing({ uic: record.uic, form: section.name, instance: row.instance, event: row.event, label: section.label })}>{section.name === "client_enrollment" ? "Edit client details" : "Edit entry"}</Button>}{row.event && <p className="mb-3 font-semibold">{row.event}</p>}<dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{section.columns.map((field, fieldIndex) => <div key={field.name} className={`min-w-0 rounded-xl p-3 ${row.values[fieldIndex]?.trim() ? "bg-muted" : "border bg-transparent"}`}><dt className="text-sm font-semibold" title={field.name}>{field.label}</dt><dd className="mt-1 whitespace-pre-wrap break-words text-sm">{row.values[fieldIndex] || "—"}</dd></div>)}</dl></div>)}
       </details>)}
       <h2 className="mt-3 text-2xl font-bold">Repeating instruments</h2>
-      {sections.filter(section => section.repeating).map(section => <RepeatTable key={`${record.uic}-${section.name}`} section={section} />)}
+      {sections.filter(section => section.repeating).map(section => <RepeatTable key={`${record.uic}-${section.name}`} section={section} onEdit={!appointment && record.editableForms?.includes(section.name) ? row => setEditing({ uic: record.uic, form: section.name, instance: row.instance, event: row.event, label: section.label }) : undefined} />)}
       {(record.restrictedClinicalAccess || (!appointment && record.restrictedRiskViolenceAccess)) && <section aria-labelledby="lookup-privacy-title" className="flex items-start gap-4 rounded-2xl border-2 border-amber-500/60 bg-amber-50 p-5 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100"><LockKeyhole aria-hidden="true" className="mt-1 size-6 shrink-0" /><div><h2 id="lookup-privacy-title" className="text-lg font-bold">Some information is restricted for privacy</h2><p className="mt-2 text-sm">Some data is not viewable for privacy reasons. Your role does not have access to all sections of this record.</p></div></section>}
     </>}
   </div>;
 }
 
-function RepeatTable({ section }: { section: LookupSection }) {
+function RepeatTable({ section, onEdit }: { section: LookupSection; onEdit?: (row: LookupSection["rows"][number]) => void }) {
   const [sort, setSort] = useState<LookupSort>({ column: "instance", direction: "descending" });
   const rows = useMemo(() => sortLookupRows(section, sort), [section, sort]);
   const hasEvent = section.rows.some(row => row.event);
@@ -98,9 +102,9 @@ function RepeatTable({ section }: { section: LookupSection }) {
       <p className="mt-4 text-sm text-muted-foreground">Select a column heading to sort; select it again to reverse the order.</p>
       <div role="region" aria-label={section.label} tabIndex={0} className="mt-3 max-h-[36rem] overflow-auto rounded-xl border">
         <table className="w-full text-left text-sm"><caption className="sr-only">{section.label}</caption>
-          <thead className="sticky top-0 bg-secondary"><tr>{header("instance", "Instance")}{hasEvent && header("event", "Event")}{section.columns.map(field => header(field.name, field.label))}</tr></thead>
+          <thead className="sticky top-0 bg-secondary"><tr>{onEdit && <th scope="col" className="p-3">Update</th>}{header("instance", "Instance")}{hasEvent && header("event", "Event")}{section.columns.map(field => header(field.name, field.label))}</tr></thead>
           <tbody className="divide-y">{rows.map(row => <tr key={`${row.event}-${row.instance}`}>
-            <th scope="row" className="p-3 align-top">{row.instance}</th>{hasEvent && <td className="p-3 align-top">{row.event || "—"}</td>}
+            {onEdit && <td className="p-3 align-top"><Button type="button" variant="outline" onClick={() => onEdit(row)}>Edit entry</Button></td>}<th scope="row" className="p-3 align-top">{row.instance}</th>{hasEvent && <td className="p-3 align-top">{row.event || "—"}</td>}
             {row.values.map((value, index) => <td key={section.columns[index].name} className="min-w-48 max-w-72 whitespace-pre-wrap break-words p-3 align-top">{value || "—"}</td>)}
           </tr>)}</tbody>
         </table>

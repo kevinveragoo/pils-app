@@ -4,6 +4,7 @@
 //
 //  Created by Elisa Kevin Veragoo + ChatGPT on 11/10/2026.
 //
+import { canEditLookup } from "@/lib/lookup-edit-access";
 import { isPilsUser } from "@/lib/organization-access";
 import { filterRestrictedLookupData } from "@/lib/lookup-privacy";
 import { NextResponse } from "next/server";
@@ -37,7 +38,7 @@ export async function GET(request: Request) {
     const canViewClinical = hasAnyRole(user, ["HEALTHCARE_ASSISTANT", "HEALTHCARE_NAVIGATOR", "ADMIN"]);
     const canViewRiskViolence = hasAnyRole(user, ["OUTREACH_WORKER", "HEALTHCARE_ASSISTANT", "ADMIN"]);
     const visible = filterRestrictedLookupData(rows, metadata as LookupField[], instruments as LookupInstrument[], repeating as { form_name: string }[], {clinical:canViewClinical,riskViolence:canViewRiskViolence});
-    return NextResponse.json({ uic, restrictedClinicalAccess: !canViewClinical, restrictedRiskViolenceAccess: !canViewRiskViolence, sections: buildLookupSections(visible.rows, visible.metadata, visible.instruments, visible.repeating).filter(section => new URL(request.url).searchParams.get("scope") !== "appointment" || ["client_enrollment", "clinic_enrollment", "clinic_visit", "prep_visit"].includes(section.name)) }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json({ uic, restrictedClinicalAccess: !canViewClinical, restrictedRiskViolenceAccess: !canViewRiskViolence, editableForms: (instruments as LookupInstrument[]).filter(form => canEditLookup(user, form.instrument_name)).map(form => form.instrument_name), sections: buildLookupSections(visible.rows, visible.metadata, visible.instruments, visible.repeating).filter(section => new URL(request.url).searchParams.get("scope") !== "appointment" || ["client_enrollment", "clinic_enrollment", "clinic_visit", "prep_visit"].includes(section.name)) }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ error: "Unable to load the record from REDCap." }, { status: 502 });
   }

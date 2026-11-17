@@ -1658,6 +1658,39 @@
       "options": []
     },
     {
+      "name": "cnv_med_collected_proxy",
+      "label": "Medication collected by someone else?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(9)] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "cnv_med_proxy_name",
+      "label": "Name of person collecting medication",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": true,
+      "branch": "(([cnv_no_show] <> '1') and ([cnv_visit_purpose(9)] = '1')) and ([cnv_med_collected_proxy] = '1')",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
       "name": "cnv_next_med_date",
       "label": "Next medication collection date",
       "type": "date_dmy",
@@ -3981,6 +4014,39 @@
       "section": "",
       "required": false,
       "branch": "[pv_visit_purpose(3)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": []
+    },
+    {
+      "name": "pv_med_collected_proxy",
+      "label": "Medication collected by someone else?",
+      "type": "yesno",
+      "kind": "yesno",
+      "section": "",
+      "required": false,
+      "branch": "[pv_visit_purpose(3)] = '1'",
+      "note": "",
+      "annotation": "",
+      "options": [
+        [
+          "0",
+          "No"
+        ],
+        [
+          "1",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "name": "pv_med_proxy_name",
+      "label": "Name of person collecting medication",
+      "type": "text",
+      "kind": "text",
+      "section": "",
+      "required": true,
+      "branch": "([pv_visit_purpose(3)] = '1') and ([pv_med_collected_proxy] = '1')",
       "note": "",
       "annotation": "",
       "options": []

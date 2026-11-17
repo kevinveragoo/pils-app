@@ -5413,5 +5413,39 @@
     "form": "prep_visit",
     "type": "date_dmy",
     "branch": "[pv_visit_purpose(4)] = '1'"
+  },
+  "cnv_med_collected_proxy": {
+    "label": "Medication collected by someone else?",
+    "form": "clinic_visit",
+    "type": "yesno",
+    "branch": "([cnv_no_show] <> '1') and ([cnv_visit_purpose(9)] = '1')",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "cnv_med_proxy_name": {
+    "label": "Name of person collecting medication",
+    "form": "clinic_visit",
+    "type": "text",
+    "branch": "(([cnv_no_show] <> '1') and ([cnv_visit_purpose(9)] = '1')) and ([cnv_med_collected_proxy] = '1')",
+    "required": true
+  },
+  "pv_med_collected_proxy": {
+    "label": "Medication collected by someone else?",
+    "form": "prep_visit",
+    "type": "yesno",
+    "branch": "[pv_visit_purpose(3)] = '1'",
+    "choices": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_med_proxy_name": {
+    "label": "Name of person collecting medication",
+    "form": "prep_visit",
+    "type": "text",
+    "branch": "([pv_visit_purpose(3)] = '1') and ([pv_med_collected_proxy] = '1')",
+    "required": true
   }
 }

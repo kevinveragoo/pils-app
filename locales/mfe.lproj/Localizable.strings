@@ -1599,3 +1599,33 @@
 "Outreach — reactive HIV result" = "Outreach — rezilta VIH reaktif";
 
 "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Bann alert Outreach demann ou ouver PILS pou swivi san afis non pasyan ouswa rezilta VIH lor lekran bloke.";
+
+"Medication collected by someone else?" = "Enn lot dimounn finn pran bann medikaman?";
+
+"Name of person collecting medication" = "Nom dimounn ki pe pran bann medikaman";
+
+"Name of person collecting medication is required." = "Bizin nom dimounn ki pe pran bann medikaman.";
+
+"Edit client details" = "Modifie detay kliyan";
+
+"Edit entry" = "Modifie sa lantrée-la";
+
+"Save changes" = "Anrezistre bann sanzman";
+
+"Data grouped by instrument" = "Done groupe par instriman";
+
+"Update" = "Modifie";
+
+"Client record lookup with role-controlled editing." = "Konsilt dosie ek modifie dapre rol.";
+
+"Changes update this existing entry. Identifiers and calculated fields cannot be edited." = "Bann sanzman aplik lor sa lantrée ki deza existe. Pa kapav modifie bann idantifian ek bann san kalkile.";
+
+"Loading entry…" = "Pe sarz lantrée…";
+
+"This entry changed since you opened it. Close and reopen it before saving." = "Sa lantrée-la finn sanze depi ou finn ouver li. Ferm li ek reouver li avan anrezistre.";
+
+"Unable to confirm the update. Reload the entry to check its current values before trying again." = "Pa finn kapav konfirme sanzman. Resarz lantrée pou verifye so bann valer avan reeseye.";
+
+"You cannot edit this instrument." = "Ou pa kapav modifie sa instriman-la.";
+
+"Unable to open this entry for editing." = "Pa finn kapav ouver sa lantrée-la pou modifie.";

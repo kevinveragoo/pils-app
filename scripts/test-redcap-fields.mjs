@@ -103,6 +103,22 @@ assert.equal(filteredInjection.cne_inject_1w, undefined);
 assert.equal(filteredInjection.cne_share_needle_1w, undefined);
 assert.equal(filteredInjection.cne_sti_treated, '1');
 const { fieldVisible, instrumentFields, visibleInstrumentValues, instrumentInitial } = load('lib/instrument-forms.ts');
+// Proxy collection is medication-only and requires a name only for Yes.
+for (const [prefix, form, purpose] of [['cnv', 'clinic_visit', '9'], ['pv', 'prep_visit', '3']]) {
+  const flag = `${prefix}_med_collected_proxy`, name = `${prefix}_med_proxy_name`;
+  const values = { [`${prefix}_visit_purpose`]: purpose, [flag]: '1', [name]: '' };
+  assert.equal(validateFields(values, [flag, name]), 'Name of person collecting medication is required.');
+  assert.equal(validateFields({ ...values, [name]: 'Friend Example' }, [flag, name]), null);
+  assert.equal(validateFields({ ...values, [flag]: '0' }, [flag, name]), null);
+  assert.equal(validateFields({ ...values, [flag]: '' }, [flag, name]), null);
+  assert.equal(validateFields({ ...values, [flag]: '2' }, [flag, name]), 'Medication collected by someone else?: choose a valid option.');
+  assert.equal(visibleInstrumentValues(form, { ...values, [name]: 'Friend Example' })[name], 'Friend Example');
+  assert.equal(Object.hasOwn(visibleInstrumentValues(form, { ...values, [flag]: '0', [name]: 'Stale name' }), name), false);
+  const unrelated = { ...values, [`${prefix}_visit_purpose`]: '1', [name]: 'Stale name' };
+  assert.equal(Object.hasOwn(visibleInstrumentValues(form, unrelated), flag), false);
+  assert.equal(Object.hasOwn(visibleInstrumentValues(form, unrelated), name), false);
+  if (prefix === 'cnv') assert.equal(Object.hasOwn(visibleInstrumentValues(form, { ...values, cnv_no_show: '1' }), flag), false);
+}
 assert.equal(fieldVisible("[ce_kp_type(2)] = '1' or [ce_kp_type(5)] = '1'", { ce_kp_type: '1,5' }), true);
 for (const field of ['pv_creatinine_result', 'pv_hb_result', 'pv_cholesterol_result', 'pv_triglycerides_result']) {
   assert.equal(visibleInstrumentValues('prep_visit', { pv_visit_purpose: '2,3', [field]: '1' })[field], undefined);
@@ -273,12 +289,14 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   assert.equal(imported()[0].ce_middle_name_2, 'Beta');
   existing = [];
   const prepProfile = { ptp_start_date: '2026-09-23', ptp_primary_reason: 'Prevention', ptp_previous_use: '0', ptp_previous_provider: '', ptp_status: '1', ptp_ltfu: '0', ptp_update_date: '2026-09-23', ptp_recorded_by: 'Tester', ptp_change_reason: '' };
-  const prepVisit = { pv_blood_collected: '1', pv_blood_collected_date: '2026-09-23', pv_hbv_referral: '1', pv_hcv_vaccination_status: '5', pv_hbv_vaccination_status: '4', pv_side_effects: 'None reported', pv_visit_date: '2026-09-23', pv_visit_purpose: '1,2,3,4', pv_worker_1: 'Tester',  pv_followup_stage: '0', pv_next_doctor_date: '2026-09-23', pv_doctor: 'Dr Test', pv_medication: '1', pv_medication_dispensed: '30', pv_prescription_months: '1', ptp_status: '1' };
+  const prepVisit = { pv_med_collected_proxy: '1', pv_med_proxy_name: 'Friend Example', pv_blood_collected: '1', pv_blood_collected_date: '2026-09-23', pv_hbv_referral: '1', pv_hcv_vaccination_status: '5', pv_hbv_vaccination_status: '4', pv_side_effects: 'None reported', pv_visit_date: '2026-09-23', pv_visit_purpose: '1,2,3,4', pv_worker_1: 'Tester',  pv_followup_stage: '0', pv_next_doctor_date: '2026-09-23', pv_doctor: 'Dr Test', pv_medication: '1', pv_medication_dispensed: '30', pv_prescription_months: '1', ptp_status: '1' };
   assert.equal((await post('prep', { mode: 'new', recordId: submission.recordId, enrollment, profile: prepProfile, includeProfile: true, visit: prepVisit })).status, 200);
   assert.equal(imported()[1].redcap_repeat_instrument, 'prep_treatment_profile');
   assert.equal(imported()[1].redcap_repeat_instance, '1');
   assert.equal(imported()[2].redcap_repeat_instrument, 'prep_visit');
   assert.equal(imported()[2].pv_medication_dispensed, '30');
+  assert.equal(imported()[2].pv_med_collected_proxy, '1');
+  assert.equal(imported()[2].pv_med_proxy_name, 'Friend Example');
   assert.equal(imported()[2].pv_visit_purpose___2, '1');
   assert.equal(imported()[2].pv_visit_purpose___3, '1');
   assert.equal(imported()[2].pv_profile_updated, '1');
@@ -318,13 +336,15 @@ function imported() { return JSON.parse(requests.find(body => body.get('action')
   existing = [];
   assert.equal((await post('clinic', noShow)).status, 409);
   existing = previousRows;
-  const arvVisit = { cnv_syp_treat: '1', cnv_sti_treat_where: 'Banian Pils', cnv_hcv_vaccination_status: '5', cnv_weight: '65.5', cnv_bp_systolic: '120', cnv_bp_diastolic: '80', cnv_doctor: 'Doctor Example', cnv_doctor_comments: 'Review completed', cnv_worker_1: 'Tester', cnv_worker_2: 'Second worker', cnv_worker_3: 'Third worker', cnv_worker_4: 'Fourth worker', cnv_date: '2026-10-04', cnv_visit_purpose: '3,4,8,9,11,99', cnv_medication_supplied: '1,2,10', cnv_art_prescription_months: '3', cnv_next_med_date: '2027-01-04', cnv_blood_collected: '1', cnv_syphilis_referral: '1', cnv_syphilis_refer_where: 'PILS clinic', cnv_hcv_reported: '1', cnv_hcv_treat: '1', cnv_hcv_vl_date: '2026-10-03', cnv_hcv_vl_result: 'Not detected', cnv_hbv_vaccination_status: '1', cnv_gbv_screen: '1', cl_gbv_refer: '1', cnv_gbv_refer_where: 'Partner organisation', cnv_alcohol_screen: '1', cnv_alcohol_refer: '1', cnv_alcohol_refer_where: 'Counselling service', cnv_ost_screen: '1', cnv_ost_refer: '1', cnv_ost_refer_where: 'Methadone centre', cnv_cervical_screen: '1', cnv_cervical_refer: '1', cnv_cervical_refer_where: 'Hospital', cnv_abscess_screen: '1', cnv_abscess_refer: '1', cnv_abscess_refer_where: 'Clinic', cnv_other_screen: '1', cnv_other_refer: '1', cnv_other_refer_where: 'Other facility' };
+  const arvVisit = { cnv_med_collected_proxy: '1', cnv_med_proxy_name: 'Friend Example', cnv_syp_treat: '1', cnv_sti_treat_where: 'Banian Pils', cnv_hcv_vaccination_status: '5', cnv_weight: '65.5', cnv_bp_systolic: '120', cnv_bp_diastolic: '80', cnv_doctor: 'Doctor Example', cnv_doctor_comments: 'Review completed', cnv_worker_1: 'Tester', cnv_worker_2: 'Second worker', cnv_worker_3: 'Third worker', cnv_worker_4: 'Fourth worker', cnv_date: '2026-10-04', cnv_visit_purpose: '3,4,8,9,11,99', cnv_medication_supplied: '1,2,10', cnv_art_prescription_months: '3', cnv_next_med_date: '2027-01-04', cnv_blood_collected: '1', cnv_syphilis_referral: '1', cnv_syphilis_refer_where: 'PILS clinic', cnv_hcv_reported: '1', cnv_hcv_treat: '1', cnv_hcv_vl_date: '2026-10-03', cnv_hcv_vl_result: 'Not detected', cnv_hbv_vaccination_status: '1', cnv_gbv_screen: '1', cl_gbv_refer: '1', cnv_gbv_refer_where: 'Partner organisation', cnv_alcohol_screen: '1', cnv_alcohol_refer: '1', cnv_alcohol_refer_where: 'Counselling service', cnv_ost_screen: '1', cnv_ost_refer: '1', cnv_ost_refer_where: 'Methadone centre', cnv_cervical_screen: '1', cnv_cervical_refer: '1', cnv_cervical_refer_where: 'Hospital', cnv_abscess_screen: '1', cnv_abscess_refer: '1', cnv_abscess_refer_where: 'Clinic', cnv_other_screen: '1', cnv_other_refer: '1', cnv_other_refer_where: 'Other facility' };
   Object.assign(arvVisit, { cnv_complaints: 'Routine review', cnv_referred_by: '2', cnv_exam_done: '1', cnv_exam_findings: 'Stable', cnv_hiv_reported: '1', cnv_hiv_lab_test_done: '1', cnv_hiv_lab_test_date: '2026-10-03', cnv_hiv_lab_result_received: '1', cnv_hiv_lab_result: '2', cnv_hbv_reported: '2', cnv_hbv_lab_test_done: '1', cnv_hbv_lab_test_date: '2026-10-03', cnv_hbv_lab_result_received: '1', cnv_hbv_lab_result: '2', cnv_hbv_treat: '0', cnv_syp_reported: '2', cnv_syp_lab_test_done: '1', cnv_syp_lab_test_date: '2026-10-03', cnv_syp_lab_result_received: '1', cnv_syp_lab_result: '2', cnv_sti_syndrome: '1,4', cnv_sti_screened: '1', cnv_sti_treatment: 'Counselling', cnv_sti_treated: '1', cnv_fp_counselling: '1', cnv_post_abortion: '0', cnv_risk_reduction: '1', cnv_condom_demo: '1', cnv_num_male_condoms: '12', cnv_num_female_condoms: '4', cnv_num_lube: '12', cnv_num_hiv_selftest_kits: '2', cnv_num_needles: '5', cnv_lab_ref: '1', cnv_lab_tests: '2,3,4', cnv_lab_location: 'Central laboratory', cnv_other_fac_ref: '1', cnv_other_facility: 'Regional hospital', cnv_next_appointment_date: '2026-11-04', cnv_next_reason: 'Review' });
   const arvMonitoring = { htm_date: '2026-10-04', htm_is_baseline: '0', htm_art_status: '1', htm_cd4_date: '2026-10-03', htm_cd4_level: '450' };
   assert.equal((await post('clinic', { mode: 'existing', recordId: 'TEST', includeProfile: false, visit: arvVisit, includeMonitoring: true, monitoring: arvMonitoring })).status, 200);
   assert.equal(imported()[0].redcap_repeat_instrument, 'clinic_visit');
   assert.equal(imported()[0].cnv_visit_purpose___9, '1');
   assert.equal(imported()[0].cnv_medication_supplied___2, '1');
+  assert.equal(imported()[0].cnv_med_collected_proxy, '1');
+  assert.equal(imported()[0].cnv_med_proxy_name, 'Friend Example');
   assert.equal(imported()[0].cnv_medication_supplied___10, '1');
   assert.equal(imported()[0].cnv_hcv_vl_result, 'Not detected');
   assert.equal(imported()[0].cnv_blood_collected, '1');

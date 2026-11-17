@@ -1599,3 +1599,33 @@
 "Outreach — reactive HIV result" = "Terrain — résultat VIH réactif";
 
 "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Les alertes de terrain vous invitent à ouvrir PILS pour le suivi sans afficher de nom de patient ni de résultat VIH sur votre écran verrouillé.";
+
+"Medication collected by someone else?" = "Médicaments récupérés par une autre personne ?";
+
+"Name of person collecting medication" = "Nom de la personne qui récupère les médicaments";
+
+"Name of person collecting medication is required." = "Le nom de la personne qui récupère les médicaments est obligatoire.";
+
+"Edit client details" = "Modifier les informations du client";
+
+"Edit entry" = "Modifier cette entrée";
+
+"Save changes" = "Enregistrer les modifications";
+
+"Data grouped by instrument" = "Données regroupées par instrument";
+
+"Update" = "Modifier";
+
+"Client record lookup with role-controlled editing." = "Consultation des dossiers avec modification selon le rôle.";
+
+"Changes update this existing entry. Identifiers and calculated fields cannot be edited." = "Les modifications concernent cette entrée existante. Les identifiants et les champs calculés ne peuvent pas être modifiés.";
+
+"Loading entry…" = "Chargement de l’entrée…";
+
+"This entry changed since you opened it. Close and reopen it before saving." = "Cette entrée a été modifiée depuis son ouverture. Fermez-la et rouvrez-la avant d’enregistrer.";
+
+"Unable to confirm the update. Reload the entry to check its current values before trying again." = "Impossible de confirmer la modification. Rechargez cette entrée pour vérifier ses valeurs avant de réessayer.";
+
+"You cannot edit this instrument." = "Vous ne pouvez pas modifier cet instrument.";
+
+"Unable to open this entry for editing." = "Impossible d’ouvrir cette entrée pour la modifier.";

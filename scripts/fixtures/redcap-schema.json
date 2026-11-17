@@ -3811,5 +3811,29 @@
   "pv_next_lab_review_date": {
     "form": "prep_visit",
     "type": "text"
+  },
+  "cnv_med_collected_proxy": {
+    "form": "clinic_visit",
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
+  },
+  "cnv_med_proxy_name": {
+    "form": "clinic_visit",
+    "type": "text"
+  },
+  "pv_med_collected_proxy": {
+    "form": "prep_visit",
+    "type": "yesno",
+    "codes": [
+      "0",
+      "1"
+    ]
+  },
+  "pv_med_proxy_name": {
+    "form": "prep_visit",
+    "type": "text"
   }
 }

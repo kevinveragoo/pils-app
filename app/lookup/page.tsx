@@ -9,7 +9,7 @@ import AppHeader from "@/components/AppHeader";
 import RecordLookup from "@/components/RecordLookup";
 import { requirePilsUser } from "@/lib/auth";
 
-export const metadata: Metadata = { title: "Lookup | PILS", description: "Read-only client record lookup." };
+export const metadata: Metadata = { title: "Lookup | PILS", description: "Client record lookup with role-controlled editing." };
 
 export default async function LookupPage() {
   await requirePilsUser();

@@ -114,7 +114,9 @@ function visibleTest(row: Values, source: Source) {
   if (!sourceMatches(row, source.result)) return false;
   if (source.prep) {
     const infection = source.result === "pv_syphilis_result" ? "syp" : source.result.split("_")[1];
-    return purposeAllows(row, "pv_visit_purpose", "4") && row[`pv_${infection}_lab_test_done`] !== "0";
+    // Older app versions saved results during Doctor/Medication visits without
+    // the lab-review purpose. Count the recorded result unless explicitly not tested.
+    return row[`pv_${infection}_lab_test_done`] !== "0";
   }
   if (!source.result.startsWith("cnv_")) return true;
   return row.cnv_no_show !== "1" && purposeAllows(row, "cnv_visit_purpose", "3") && row[source.result.replace("_lab_result", "_lab_test_done")] !== "0";
@@ -141,7 +143,19 @@ function emptyOutcomes() {
 function bucket(date: string, period: Period) {
   return ["day", "week", "month"].includes(period) ? date : date.slice(0, 7);
 }
+type Contributor = { uic: string; count: number };
+function addContributor(target: Record<string, Contributor[]>, key: string, uic: string, count = 1) {
+  const list = target[key] ??= [];
+  const existing = list.find(item => item.uic === uic);
+  if (existing) existing.count += count;
+  else list.push({ uic, count });
+}
+function sortedContributors(target: Record<string, Contributor[]>) {
+  for (const list of Object.values(target)) list.sort((a, b) => a.uic.localeCompare(b.uic));
+  return target;
+}
 function aggregateTests(rows: Values[], sources: Record<Infection, Source[]>, demographics: Map<string, Demographics>, genders: string[], kps: string[], period: Period, start: string | null, end: string) {
+  const contributors: Record<string, Contributor[]> = {};
   const totals = emptyTotals(), firstTime = emptyTotals(), outcomeTotals = emptyOutcomes();
   const trend = new Map<string, number>(), clients = new Set<string>();
   // Each method is aggregated separately: a rapid and a laboratory test on
@@ -172,6 +186,9 @@ function aggregateTests(rows: Values[], sources: Record<Infection, Source[]>, de
     const outcome = test.outcomes.size > 1 ? "conflicting" : [...test.outcomes][0];
     totals[test.infection]++;
     outcomeTotals[test.infection][outcome]++;
+    addContributor(contributors, test.infection, test.recordId);
+    addContributor(contributors, `${test.infection}:${outcome}`, test.recordId);
+    if (test.firstTime) addContributor(contributors, `${test.infection}:firstTime`, test.recordId);
     if (test.firstTime) firstTime[test.infection]++;
     const label = bucket(test.date, period);
     trend.set(label, (trend.get(label) ?? 0) + 1);
@@ -179,10 +196,11 @@ function aggregateTests(rows: Values[], sources: Record<Infection, Source[]>, de
     encounterDays.add(JSON.stringify([test.recordId, test.date]));
   }
   const encounters = encounterDays.size;
-  return { totals, firstTime, outcomes: outcomeTotals, encounters, clients, trend };
+  return { totals, firstTime, outcomes: outcomeTotals, encounters, clients, trend, contributors: sortedContributors(contributors) };
 }
 function aggregateCommodities(rows: Values[], demographics: Map<string, Demographics>, genders: string[], kps: string[], start: string | null, end: string) {
   const totals: Record<Commodity, number> = { maleCondoms: 0, femaleCondoms: 0, lube: 0, syringes: 0, needles: 0 };
+  const contributors: Record<string, Contributor[]> = {};
   const clients = new Set<string>();
   for (const row of rows) {
     const recordId = row.uic_ori?.trim();
@@ -195,10 +213,11 @@ function aggregateCommodities(rows: Values[], demographics: Map<string, Demograp
       if (!Number.isSafeInteger(quantity) || quantity <= 0) continue;
       if (!inRange(row[source.date]?.trim() ?? "", start, end)) continue;
       totals[commodity] += quantity;
+      addContributor(contributors, commodity, recordId, quantity);
       clients.add(recordId);
     }
   }
-  return { totals, clients, sources: Object.fromEntries((Object.keys(commoditySources) as Commodity[]).map(commodity => [commodity, commoditySources[commodity].map(({ label, quantity }) => `${label} — ${quantity}`)])) };
+  return { totals, clients, contributors: sortedContributors(contributors), sources: Object.fromEntries((Object.keys(commoditySources) as Commodity[]).map(commodity => [commodity, commoditySources[commodity].map(({ label, quantity }) => `${label} — ${quantity}`)])) };
 }
 function trendLabels(period: Period, start: string | null, end: string, rapid: Map<string, number>, lab: Map<string, number>) {
   const observed = [...rapid.keys(), ...lab.keys()].sort();
@@ -233,10 +252,10 @@ export function buildDashboard(rows: Values[], filters: { period: Period; gender
   return {
     filters, range,
     summary: { clients: new Set([...rapid.clients, ...lab.clients, ...commodities.clients]).size, rapidEncounters: rapid.encounters, labEncounters: lab.encounters, commodityUnits: Object.values(commodities.totals).reduce((sum, value) => sum + value, 0) },
-    rapid: { totals: rapid.totals, firstTime: rapid.firstTime, outcomes: rapid.outcomes, sources: sources(rapidSources) },
-    lab: { totals: lab.totals, outcomes: lab.outcomes, sources: sources(labSources) },
+    rapid: { contributors: rapid.contributors, totals: rapid.totals, firstTime: rapid.firstTime, outcomes: rapid.outcomes, sources: sources(rapidSources) },
+    lab: { contributors: lab.contributors, totals: lab.totals, outcomes: lab.outcomes, sources: sources(labSources) },
     trend: { labels, rapid: labels.map(label => rapid.trend.get(label) ?? 0), laboratory: labels.map(label => lab.trend.get(label) ?? 0) },
-    commodities: { totals: commodities.totals, sources: commodities.sources },
+    commodities: { contributors: commodities.contributors, totals: commodities.totals, sources: commodities.sources },
     generatedAt: now.toISOString(),
   };
 }

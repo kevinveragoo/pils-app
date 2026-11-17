@@ -1599,3 +1599,23 @@
 "Outreach — reactive HIV result" = "Outreach — rezilta VIH reaktif";
 
 "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Bann alert Outreach demann ou ouver PILS pou swivi san afis non pasyan ouswa rezilta VIH lor lekran bloke.";
+
+"Contributing UICs" = "Bann UIC ki kontribie dan total";
+
+"About this card" = "Lor sa kart-la";
+
+"Back to card" = "Retourn lor kart";
+
+"Calculation" = "Kalkil";
+
+"Assumptions" = "Sipozision";
+
+"REDCap fields" = "Bann san REDCap";
+
+"An asterisk matches the infection-specific fields for HIV, syphilis, HCV and HBV." = "En asterisk reprezant bann san spesifik pou HIV, sifilis, HCV ek HBV.";
+
+"Reset grid positions" = "Reinisializ pozision bann kart";
+
+"Move card" = "Deplas kart";
+
+"Drag to move; use arrow keys to reorder" = "Ris pou deplase; servi bann fles pou sanz lord";

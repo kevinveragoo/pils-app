@@ -44,7 +44,7 @@ assert.equal(build([{...prep,pv_hiv_lab_test_date:'2026-10-23'}]).lab.totals.hiv
 assert.equal(build([{...prep,pv_blood_collected_date:'2026-10-23',pv_hiv_lab_test_date:'2026-10-24'}]).lab.totals.hiv,1);
 assert.equal(build([{...prep,pv_hiv_lab_test_date:'invalid'}]).lab.totals.hiv,0,'Invalid preferred date does not fall back');
 assert.equal(build([{...prep,pv_hiv_lab_test_done:'0'}]).lab.totals.hiv,0);
-assert.equal(build([{...prep,pv_visit_purpose___1:'1',pv_visit_purpose___4:'0'}]).summary.labEncounters,0);
+assert.equal(build([{...prep,pv_visit_purpose___1:'1',pv_visit_purpose___4:'0'}]).summary.labEncounters,1,'Recorded PrEP results count even without the lab-review purpose');
 assert.equal(build([{...prep,pv_visit_purpose___4:'1'}]).summary.labEncounters,1);
 for (const text of ['1:8', 'TPHA reactive, RPR negative']) {
   data = build([{ ...prep, pv_syphilis_result: text }]);
@@ -91,7 +91,7 @@ for(const outcome of ['2','3','4']) {
  assert.deepEqual(build(rows.reverse()).lab,report.lab);
 }
 assert.equal(build([...copies,{...justPrepHiv,pv_hiv_lab_test_done:'0',pv_hiv_result:'2'}]).lab.outcomes.hiv.conflicting,0,'Excluded copies cannot create conflicts');
-assert.equal(build([...copies,{...justPrepHiv,pv_visit_purpose___1:'1',pv_hiv_result:'2'}]).lab.outcomes.hiv.conflicting,0);
+assert.equal(build([...copies,{...justPrepHiv,pv_visit_purpose___1:'1',pv_hiv_result:'2'}]).lab.outcomes.hiv.conflicting,1,'Recorded PrEP results without lab-review purpose still participate in conflict detection');
 assert.equal(build([...copies,{...justPrepHiv,uic_ori:'OTHER'}]).lab.totals.hiv,2,'Different people remain distinct');
 assert.equal(build([...copies,{...justPrepHiv,pv_hiv_lab_test_date:'2026-10-23'}],{period:'week'}).lab.totals.hiv,2,'Different days remain distinct');
 assert.equal(build([...copies,{...justPrepHiv,pv_hiv_lab_test_date:'2026-10-23'}],{period:'week'}).summary.labEncounters,2);
@@ -108,7 +108,7 @@ let actor = { role: 'ADMIN' }, requested = [], exportsCount = 0;
 const route = { exports: {} };
 vm.runInNewContext(ts.transpileModule(fs.readFileSync('app/api/redcap/dashboard/route.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, {
   module: route, exports: route.exports, URL, URLSearchParams, console, process: { env: { REDCAP_API_URL: 'https://mock.invalid', REDCAP_API_TOKEN: 'mock' } },
-  require: name => name === 'next/server' ? { NextResponse: Response } : name === '@/lib/dashboard' ? loaded.exports : { getCurrentUser: async () => actor, hasRole: () => actor?.role === 'ADMIN' },
+  require: name => name === 'next/server' ? { NextResponse: Response } : name === '@/lib/dashboard' ? loaded.exports : { getCurrentUser: async () => actor, hasAnyRole: (_user, roles) => roles.includes(actor?.role) },
   fetch: async (_url, options) => { exportsCount++; assert.equal(options.body.get('action'), 'export'); requested = [...options.body].filter(([key]) => key.startsWith('fields[')).map(([, value]) => value); return Response.json([]); },
 });
 const request = params => route.exports.GET(new Request(`https://app.test/api/redcap/dashboard?${params}`));
@@ -116,6 +116,7 @@ assert.equal((await request('period=week')).status, 200);
 assert.ok(['cnv_no_show','cnv_visit_purpose','cnv_hiv_lab_test_done','hcs_status_only','pv_visit_date','pv_blood_collected_date','pv_syphilis_result','pv_hiv_lab_test_date','pv_hcv_lab_test_done','pv_visit_purpose'].every(field => requested.includes(field)));
 assert.equal((await request('period=invalid')).status, 400);
 assert.equal((await request('gender=99')).status, 400);
+actor = { role: 'HEALTHCARE_ASSISTANT' }; assert.equal((await request('period=week')).status, 200);
 const before = exportsCount;
 actor = { role: 'FACILITY_STAFF' }; assert.equal((await request('')).status, 403);
 actor = null; assert.equal((await request('')).status, 401);
@@ -128,9 +129,10 @@ let locale = 'en';
 const charts = [];
 function MockChart(_canvas, options) { charts.push(options); this.destroy = () => {}; }
 const ui = { exports: {} };
-const uiSource = fs.readFileSync('components/Dashboard.tsx', 'utf8')+'\nexport const chartAudit = { ComparisonChart, TrendChart, CommodityChart };';
+const uiSource = fs.readFileSync('components/Dashboard.tsx', 'utf8')+'\nexport const chartAudit = { ComparisonChart, TrendChart, CommodityChart, barTooltip };';
 vm.runInNewContext(ts.transpileModule(uiSource, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText, {
-  module: ui, exports: ui.exports,
+  module: ui, exports: ui.exports, setTimeout, clearTimeout,
+  document: { createElement: () => ({ children: [], textContent: '', hidden: false, setAttribute() {}, appendChild(node) { this.children.push(node); }, replaceChildren() { this.children = []; }, matches() { return false; }, remove() {} }) },
   require: name => {
     if (name === 'react') return { useRef: () => ({ current: {} }), useEffect: effect => effect(), useMemo: compute => compute() };
     if (name === 'react/jsx-runtime') return { jsx: (type, props) => ({type,props}), jsxs: (type, props) => ({type,props}) };
@@ -162,3 +164,32 @@ for (locale of ['en','fr','mfe']) {
   }
 }
 console.log('Canvas chart configuration translations passed in English, French and Mauritian Creole.');
+
+const clinicAndPrep = build([
+ { ...clinic, uic_ori: 'CLINIC-PATIENT' },
+ { ...prep, uic_ori: 'PREP-PATIENT', pv_visit_purpose___2: '1', pv_visit_purpose___3: '1', pv_visit_purpose___4: '0', pv_hiv_result: '1' },
+]);
+assert.equal(clinicAndPrep.lab.outcomes.hiv.positive, 2, 'Clinic and PrEP positives are combined');
+assert.equal(clinicAndPrep.lab.totals.hiv, 2);
+assert.equal(build([{ ...prep, pv_visit_purpose___2: '1', pv_hiv_lab_test_done: '0' }]).lab.totals.hiv, 0, 'Explicit not-tested still excludes PrEP results');
+
+const contributorData = build([...copies, { ...justPrepHiv, pv_hiv_lab_test_date: '2026-10-23' }], { period: 'week' });
+assert.equal(contributorData.lab.contributors.hiv.length, 1);
+assert.equal(contributorData.lab.contributors.hiv[0].uic, 'CLIENT');
+assert.equal(contributorData.lab.contributors.hiv[0].count, 2, 'One UIC contributing on two dates has two tests');
+assert.equal(contributorData.lab.contributors['hiv:positive'][0].count, contributorData.lab.outcomes.hiv.positive);
+assert.equal(build([clinic]).commodities.contributors.maleCondoms[0].count, 25, 'Commodity contribution is units, not tests');
+for (const metrics of [contributorData.rapid, contributorData.lab]) for (const infection of ['hiv','syphilis','hcv','hbv']) {
+ assert.equal((metrics.contributors[infection] ?? []).reduce((sum, item) => sum + item.count, 0), metrics.totals[infection]);
+}
+assert.equal(build([identity, clinic], { genders: ['2'] }).lab.contributors.hiv, undefined, 'Filtered clients do not leak into contributors');
+console.log('Contributor checks passed: UICs match bar totals, repeats deduplicate, multiple dates show counts, filters exclude identifiers and HCA access is allowed.');
+
+const tooltipNodes = [];
+const tooltip = ui.exports.chartAudit.barTooltip({ parentElement: { appendChild: node => tooltipNodes.push(node) } }, [[[ { uic: 'UIC-ONE', count: 2 }, { uic: 'UIC-TWO', count: 1 } ]], [[{ uic: 'LAB-ONLY', count: 1 }]]], text => text);
+tooltip.custom({ opacity: 1, title: ['HIV'], body: [{ lines: ['Rapid: 3'] }], dataPoints: [{ datasetIndex: 0, index: 0 }] });
+assert.deepEqual(tooltipNodes[0].children.map(node => node.textContent), ['HIV — Rapid: 3', 'Contributing UICs', 'UIC-ONE — 2', 'UIC-TWO — 1']);
+tooltip.custom({ opacity: 1, title: ['HIV'], body: [{ lines: ['Laboratory: 1'] }], dataPoints: [{ datasetIndex: 1, index: 0 }] });
+assert.equal(tooltipNodes[0].children.at(-1).textContent, 'LAB-ONLY — 1', 'Tooltip selects the hovered dataset');
+tooltip.destroy();
+console.log('Scrollable tooltip rendering passed: correct method, labels and per-UIC counts.');

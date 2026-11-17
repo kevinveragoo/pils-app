@@ -1,0 +1,12 @@
+/* Dashboard cards rotate around their vertical centre without unmounting charts. */
+.card { perspective: 1200px; min-width: 0; }
+.inner { position: relative; height: 100%; min-height: 10rem; transform-style: preserve-3d; transition: transform 450ms ease; }
+.inner[data-flipped="true"] { transform: rotateY(180deg); }
+.front, .back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.front { position: relative; height: 100%; min-height: 10rem; transform: rotateY(0deg); }
+.front > h2, .front > h3 { padding-right: 2rem; }
+.back { position: absolute; inset: 0; transform: rotateY(180deg); overflow-y: auto; overscroll-behavior: contain; }
+.infoButton { position: absolute; top: 0.75rem; right: 0.75rem; z-index: 30; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 999px; color: var(--muted-foreground); background: var(--card); cursor: pointer; }
+.infoButton:hover { color: var(--foreground); background: var(--muted); }
+.infoButton:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .inner { transition: none; } }

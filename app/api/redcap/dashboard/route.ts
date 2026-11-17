@@ -5,7 +5,7 @@
 //  Created by Elisa Kevin Veragoo + ChatGPT on 07/10/2026.
 //
 import { NextResponse } from "next/server";
-import { getCurrentUser, hasRole } from "@/lib/auth";
+import { getCurrentUser, hasAnyRole } from "@/lib/auth";
 import { buildDashboard, dashboardFields, genderCodes, kpCodes, parseMultiFilter, periods, type Period, type Values } from "@/lib/dashboard";
 
 const REDCAP_API_URL = process.env.REDCAP_API_URL;
@@ -27,7 +27,7 @@ async function redcap(params: Record<string, string>) {
 export async function GET(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
-  if (!hasRole(user, "ADMIN")) return NextResponse.json({ error: "Administrator access required." }, { status: 403 });
+  if (!hasAnyRole(user, ["HEALTHCARE_ASSISTANT", "ADMIN"])) return NextResponse.json({ error: "Healthcare Assistant or Administrator access required." }, { status: 403 });
 
   const search = new URL(request.url).searchParams;
   const period = search.get("period") ?? "all";

@@ -1599,3 +1599,23 @@
 "Outreach — reactive HIV result" = "Terrain — résultat VIH réactif";
 
 "Outreach alerts ask you to open PILS for follow-up without displaying patient names or HIV results on your lock screen." = "Les alertes de terrain vous invitent à ouvrir PILS pour le suivi sans afficher de nom de patient ni de résultat VIH sur votre écran verrouillé.";
+
+"Contributing UICs" = "UIC contribuant au total";
+
+"About this card" = "À propos de cette carte";
+
+"Back to card" = "Retour à la carte";
+
+"Calculation" = "Calcul";
+
+"Assumptions" = "Hypothèses";
+
+"REDCap fields" = "Champs REDCap";
+
+"An asterisk matches the infection-specific fields for HIV, syphilis, HCV and HBV." = "Un astérisque correspond aux champs propres à chaque infection : VIH, syphilis, VHC et VHB.";
+
+"Reset grid positions" = "Réinitialiser la disposition";
+
+"Move card" = "Déplacer la carte";
+
+"Drag to move; use arrow keys to reorder" = "Faites glisser pour déplacer ; utilisez les flèches pour réorganiser";

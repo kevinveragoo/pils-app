@@ -8,6 +8,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Chart from "chart.js";
+import { DashboardGrid } from "@/components/DashboardGrid";
+import { DashboardCard } from "@/components/DashboardCard";
 import { useLocalization } from "@/components/Localization";
 import { Activity, AlertCircle, Beaker, Boxes, FlaskConical, Users } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,14 +18,15 @@ type Period = "all" | "year" | "quarter" | "month" | "week" | "day";
 type Infection = "hiv" | "syphilis" | "hcv" | "hbv";
 type Outcome = "positive" | "negative" | "indeterminate" | "invalid" | "unclassified" | "conflicting";
 type Commodity = "maleCondoms" | "femaleCondoms" | "lube" | "syringes" | "needles";
-type TestMetrics = { totals: Record<Infection, number>; firstTime?: Record<Infection, number>; outcomes: Record<Infection, Record<Outcome, number>>; sources: Record<Infection, string[]> };
+type Contributor = { uic: string; count: number };
+type TestMetrics = { contributors: Record<string, Contributor[]>; totals: Record<Infection, number>; firstTime?: Record<Infection, number>; outcomes: Record<Infection, Record<Outcome, number>>; sources: Record<Infection, string[]> };
 type DashboardData = {
   range: { start: string | null; end: string; label: string };
   summary: { clients: number; rapidEncounters: number; labEncounters: number; commodityUnits: number };
   rapid: TestMetrics;
   lab: TestMetrics;
   trend: { labels: string[]; rapid: number[]; laboratory: number[] };
-  commodities: { totals: Record<Commodity, number>; sources: Record<Commodity, string[]> };
+  commodities: { contributors: Record<string, Contributor[]>; totals: Record<Commodity, number>; sources: Record<Commodity, string[]> };
   generatedAt: string;
 };
 
@@ -56,19 +59,60 @@ function toggleSelection(current: string[], value: string) {
   return current.includes(value) ? current.filter((item) => item !== value) : [...current, value];
 }
 
-function ComparisonChart({ labels, rapid, laboratory, rapidLabel = "Rapid test", laboratoryLabel = "Laboratory", color, horizontal = false, ariaLabel }: { labels: string[]; rapid: number[]; laboratory: number[]; rapidLabel?: string; laboratoryLabel?: string; color?: string; horizontal?: boolean; ariaLabel: string }) {
+// HTML tooltip allows long contributor lists to scroll instead of being clipped by the canvas.
+function barTooltip(canvas: HTMLCanvasElement, lists: Contributor[][][], t: (key: string) => string) {
+  let element: HTMLDivElement | null = null;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  return {
+    custom(model: Chart.ChartTooltipModel) {
+      if (!model.opacity) {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => { if (element && !element.matches(":hover")) element.hidden = true; }, 200);
+        return;
+      }
+      if (timer) clearTimeout(timer);
+      if (!canvas.parentElement) return;
+      if (!element) {
+        element = document.createElement("div");
+        element.className = "absolute left-2 top-2 z-20 max-h-[calc(100%-1rem)] max-w-[calc(100%-1rem)] overflow-auto rounded-lg border bg-card p-3 text-xs text-foreground shadow-lg";
+        element.setAttribute("role", "tooltip");
+        element.onmouseenter = () => { if (timer) clearTimeout(timer); };
+        element.onmouseleave = () => { if (element) element.hidden = true; };
+        canvas.parentElement.appendChild(element);
+      }
+      element.replaceChildren();
+      element.hidden = false;
+      const heading = document.createElement("div");
+      heading.className = "mb-2 font-bold";
+      heading.textContent = [...(model.title ?? []), ...(model.body ?? []).flatMap(item => item.lines)].join(" — ");
+      element.appendChild(heading);
+      const point = model.dataPoints?.[0];
+      const contributors = point ? lists[point.datasetIndex ?? 0]?.[point.index ?? 0] ?? [] : [];
+      const label = document.createElement("div"); label.textContent = t("Contributing UICs"); element.appendChild(label);
+      for (const { uic, count } of contributors) {
+        const line = document.createElement("div");
+        line.textContent = `${uic} — ${count}`;
+        element.appendChild(line);
+      }
+    },
+    destroy() { if (timer) clearTimeout(timer); element?.remove(); },
+  };
+}
+
+function ComparisonChart({ labels, rapid, laboratory, rapidLabel = "Rapid test", laboratoryLabel = "Laboratory", color, horizontal = false, ariaLabel, contributors = [[], []] }: { contributors?: Contributor[][][]; labels: string[]; rapid: number[]; laboratory: number[]; rapidLabel?: string; laboratoryLabel?: string; color?: string; horizontal?: boolean; ariaLabel: string }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const { t, locale } = useLocalization();
   useEffect(() => {
     if (!canvas.current) return;
+    const tooltip = barTooltip(canvas.current, contributors, t);
     const chart = new Chart(canvas.current, {
       type: horizontal ? "horizontalBar" : "bar",
       data: { labels: labels.map(t), datasets: [{ label: t(rapidLabel), data: rapid, backgroundColor: color ?? "#c0264b", borderWidth: 0 }, { label: t(laboratoryLabel), data: laboratory, backgroundColor: color ? `${color}66` : "#247b78", borderColor: color, borderWidth: color ? 1 : 0 }] },
-      options: { responsive: true, maintainAspectRatio: false, legend: { display: true, position: "bottom", labels: { usePointStyle: true, boxWidth: 10 } }, tooltips: { displayColors: true, callbacks: { label: (item, chartData) => ` ${chartData.datasets?.[item.datasetIndex ?? 0]?.label}: ${Number(item.value ?? item.xLabel ?? item.yLabel ?? 0).toLocaleString(locale === "mfe" ? "fr-MU" : locale)}` } }, scales: horizontal ? { xAxes: [{ ticks: { beginAtZero: true, precision: 0 } }], yAxes: [{ gridLines: { display: false } }] } : { yAxes: [{ ticks: { beginAtZero: true, precision: 0 } }], xAxes: [{ gridLines: { display: false } }] } },
+      options: { responsive: true, maintainAspectRatio: false, legend: { display: true, position: "bottom", labels: { usePointStyle: true, boxWidth: 10 } }, tooltips: { enabled: false, mode: "nearest", intersect: true, custom: tooltip.custom, displayColors: true, callbacks: { label: (item, chartData) => ` ${chartData.datasets?.[item.datasetIndex ?? 0]?.label}: ${Number(item.value ?? item.xLabel ?? item.yLabel ?? 0).toLocaleString(locale === "mfe" ? "fr-MU" : locale)}` } }, scales: horizontal ? { xAxes: [{ ticks: { beginAtZero: true, precision: 0 } }], yAxes: [{ gridLines: { display: false } }] } : { yAxes: [{ ticks: { beginAtZero: true, precision: 0 } }], xAxes: [{ gridLines: { display: false } }] } },
     });
-    return () => { chart.destroy(); };
-  }, [ariaLabel, color, horizontal, labels, laboratory, laboratoryLabel, rapid, rapidLabel, t, locale]);
-  return <div className="h-72 w-full"><canvas ref={canvas} role="img" aria-label={t(ariaLabel)}>{labels.map((label, index) => `${label}, ${rapidLabel} ${rapid[index]}, ${laboratoryLabel} ${laboratory[index]}`).join("; ")}</canvas></div>;
+    return () => { tooltip.destroy(); chart.destroy(); };
+  }, [contributors, ariaLabel, color, horizontal, labels, laboratory, laboratoryLabel, rapid, rapidLabel, t, locale]);
+  return <div className="relative h-72 w-full"><canvas ref={canvas} role="img" aria-label={t(ariaLabel)}>{labels.map((label, index) => `${label}, ${rapidLabel} ${rapid[index]}, ${laboratoryLabel} ${laboratory[index]}`).join("; ")}</canvas></div>;
 }
 
 function TrendChart({ data }: { data: DashboardData }) {
@@ -93,10 +137,11 @@ function CommodityChart({ data }: { data: DashboardData }) {
   const values = useMemo(() => commodities.map(({ key }) => data.commodities.totals[key]), [data.commodities.totals]);
   useEffect(() => {
     if (!canvas.current) return;
-    const chart = new Chart(canvas.current, { type: "bar", data: { labels: commodities.map(({ label }) => t(label)), datasets: [{ label: t("Units provided"), data: values, backgroundColor: commodities.map(({ color }) => color), borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, legend: { display: false }, scales: { yAxes: [{ ticks: { beginAtZero: true, precision: 0 } }], xAxes: [{ gridLines: { display: false } }] } } });
-    return () => { chart.destroy(); };
-  }, [values, t, locale]);
-  return <div className="h-72 w-full"><canvas ref={canvas} role="img" aria-label={t("Quantities of commodities provided")}>{commodities.map(({ label }, index) => `${label} ${values[index]}`).join(", ")}</canvas></div>;
+    const tooltip = barTooltip(canvas.current, [commodities.map(({ key }) => data.commodities.contributors[key] ?? [])], t);
+    const chart = new Chart(canvas.current, { type: "bar", data: { labels: commodities.map(({ label }) => t(label)), datasets: [{ label: t("Units provided"), data: values, backgroundColor: commodities.map(({ color }) => color), borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, legend: { display: false }, tooltips: { enabled: false, mode: "nearest", intersect: true, custom: tooltip.custom }, scales: { yAxes: [{ ticks: { beginAtZero: true, precision: 0 } }], xAxes: [{ gridLines: { display: false } }] } } });
+    return () => { tooltip.destroy(); chart.destroy(); };
+  }, [data.commodities.contributors, values, t, locale]);
+  return <div className="relative h-72 w-full"><canvas ref={canvas} role="img" aria-label={t("Quantities of commodities provided")}>{commodities.map(({ label }, index) => `${label} ${values[index]}`).join(", ")}</canvas></div>;
 }
 
 function Summary({ data }: { data: DashboardData }) {
@@ -106,7 +151,7 @@ function Summary({ data }: { data: DashboardData }) {
     { label: "Laboratory encounters", value: data.summary.labEncounters, icon: Beaker },
     { label: "Commodity units", value: data.summary.commodityUnits, icon: Boxes },
   ];
-  return <section aria-label="Dashboard summary" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{items.map(({ label, value, icon: Icon }) => <article key={label} className="dashboard-card"><div className="flex items-center justify-between gap-3"><div><p className="text-sm text-muted-foreground">{label}</p><strong className="mt-1 block text-3xl">{value.toLocaleString()}</strong></div><Icon className="size-8 text-primary" aria-hidden="true" /></div></article>)}</section>;
+  return items.map(({ label, value, icon: Icon }, index) => <DashboardCard key={label} title={label} infoKey={["clients", "rapidEncounters", "labEncounters", "commodityUnits"][index]}><div className="flex items-center justify-between gap-3 pt-7"><div><p className="text-sm text-muted-foreground">{label}</p><strong className="mt-1 block text-3xl">{value.toLocaleString()}</strong></div><Icon className="size-8 text-primary" aria-hidden="true" /></div></DashboardCard>);
 }
 
 export default function Dashboard() {
@@ -137,7 +182,9 @@ export default function Dashboard() {
 
   return <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
     <div className="mb-6"><p className="text-sm font-bold uppercase tracking-widest text-primary">Programme overview</p><h1 className="mt-1 text-3xl font-bold sm:text-4xl">Dashboard</h1><p className="mt-2 text-muted-foreground">Filter testing activity and commodity distribution across the programme.</p></div>
-    <section aria-label="Dashboard filters" className="dashboard-card mb-6 grid items-start gap-5 lg:grid-cols-[minmax(12rem,0.6fr)_1fr_1.3fr]">
+    {data && !loading && <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">{t(data.range.label)}</p><span className="rounded-full bg-secondary px-3 py-1 text-sm font-bold text-secondary-foreground">Updated {new Date(data.generatedAt).toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Indian/Mauritius" })}</span></div>}
+    <DashboardGrid>
+    <DashboardCard key="filters" title="Dashboard filters" infoKey="filters"><section aria-label="Dashboard filters" className="grid items-start gap-5 pt-8 lg:grid-cols-[minmax(12rem,0.6fr)_1fr_1.3fr]">
       <label className="outreach-field"><span>Time</span><select value={period} onChange={(event) => { beginFilterChange(); setPeriod(event.target.value as Period); }}><option value="all">All time</option><option value="year">Last year</option><option value="quarter">Last quarter</option><option value="month">Last month</option><option value="week">Last week</option><option value="day">Today</option></select></label>
       <fieldset className="rounded-xl border border-border p-4">
         <legend className="px-1 text-sm font-bold">Gender</legend>
@@ -153,17 +200,19 @@ export default function Dashboard() {
           {kpOptions.map(([value, label]) => <label key={value} className="flex cursor-pointer items-center gap-2 text-sm"><Checkbox checked={kps.includes(value)} onCheckedChange={() => { beginFilterChange(); setKps((current) => toggleSelection(current, value)); }} /><span>{label}</span></label>)}
         </div>
       </fieldset>
-    </section>
+    </section></DashboardCard>
 
+    {data && !loading ? Summary({ data }) : null}
+    {data && !loading ? [
+      <DashboardCard key="testing" title="Tests by infection and method" infoKey="testing"><section aria-labelledby="testing-heading"><p className="dashboard-kicker pr-20">Testing volume</p><h2 id="testing-heading" className="text-2xl font-bold">Tests by infection and method</h2><p className="mt-1 text-sm text-muted-foreground">Every bar reflects the filters above.</p><ComparisonChart contributors={[infections.map(({ key }) => data.rapid.contributors[key] ?? []), infections.map(({ key }) => data.lab.contributors[key] ?? [])]} labels={infections.map(({ label }) => t(label))} rapid={infections.map(({ key }) => data.rapid.totals[key])} laboratory={infections.map(({ key }) => data.lab.totals[key])} ariaLabel="Rapid and laboratory results for HIV, syphilis, HCV and HBV" /></section></DashboardCard>,
+      ...infections.map((infection) => <DashboardCard key={infection.key} title={infection.label} infoKey={infection.key}><h3 className="pr-20 text-2xl font-bold">{infection.label}</h3><ComparisonChart contributors={[[...outcomeLabels.map(({ key }) => data.rapid.contributors[`${infection.key}:${key}`] ?? []), data.rapid.contributors[`${infection.key}:firstTime`] ?? []], [...outcomeLabels.map(({ key }) => data.lab.contributors[`${infection.key}:${key}`] ?? []), []]]} horizontal labels={resultChartLabels.map(t)} rapid={[...outcomeLabels.map(({ key }) => data.rapid.outcomes[infection.key][key]), data.rapid.firstTime?.[infection.key] ?? 0]} laboratory={[...outcomeLabels.map(({ key }) => data.lab.outcomes[infection.key][key]), 0]} color={infection.color} ariaLabel={`${infection.label} — ${t("Results by infection")}`} /><p className="mt-3 text-xs text-muted-foreground">Rapid: {data.rapid.sources[infection.key].map(t).join("; ")}<br />Laboratory: {data.lab.sources[infection.key].map(t).join("; ")}</p></DashboardCard>),
+      <DashboardCard key="trend" title="Testing trend" infoKey="trend"><section aria-labelledby="trend-heading"><p className="dashboard-kicker pr-20">Activity over time</p><h2 id="trend-heading" className="text-2xl font-bold">Testing trend</h2><p className="mt-1 text-sm text-muted-foreground">Daily for shorter periods and monthly for quarter, year, and all-time views.</p><TrendChart data={data} /></section></DashboardCard>,
+      <DashboardCard key="commodities" title="Commodities provided" infoKey="commodities"><section aria-labelledby="commodities-heading"><p className="dashboard-kicker pr-20">Prevention commodities</p><h2 id="commodities-heading" className="text-2xl font-bold">Commodities provided</h2><p className="mt-1 text-sm text-muted-foreground">Total units matching the selected time, gender, and key population.</p><CommodityChart data={data} /></section></DashboardCard>
+    ] : null}
+    </DashboardGrid>
     {error && <div role="alert" className="mb-5 flex gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"><AlertCircle className="mt-0.5 size-5 shrink-0" />{error}</div>}
     {loading && <div className="dashboard-card flex min-h-52 items-center justify-center text-muted-foreground"><Activity className="mr-3 size-5 animate-pulse" />Loading REDCap aggregates…</div>}
-    {!loading && data && <div className="grid gap-8">
-      <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">{t(data.range.label)}</p><span className="rounded-full bg-secondary px-3 py-1 text-sm font-bold text-secondary-foreground">Updated {new Date(data.generatedAt).toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Indian/Mauritius" })}</span></div>
-      <Summary data={data} />
-      <section className="dashboard-card" aria-labelledby="testing-heading"><p className="dashboard-kicker">Testing volume</p><h2 id="testing-heading" className="text-2xl font-bold">Tests by infection and method</h2><p className="mt-1 text-sm text-muted-foreground">Every bar reflects the filters above.</p><ComparisonChart labels={infections.map(({ label }) => t(label))} rapid={infections.map(({ key }) => data.rapid.totals[key])} laboratory={infections.map(({ key }) => data.lab.totals[key])} ariaLabel="Rapid and laboratory results for HIV, syphilis, HCV and HBV" /></section>
-      <section className="grid gap-5" aria-labelledby="outcomes-heading"><div><p className="dashboard-kicker">Test outcomes</p><h2 id="outcomes-heading" className="text-2xl font-bold">Results by infection</h2><p className="mt-1 text-sm text-muted-foreground">“First time tested” counts rapid tests where previous status was recorded as “Never tested.”</p></div><div className="grid gap-5 lg:grid-cols-2">{infections.map((infection) => <article key={infection.key} className="dashboard-card"><h3 className="text-2xl font-bold">{infection.label}</h3><ComparisonChart horizontal labels={resultChartLabels.map(t)} rapid={[...outcomeLabels.map(({ key }) => data.rapid.outcomes[infection.key][key]), data.rapid.firstTime?.[infection.key] ?? 0]} laboratory={[...outcomeLabels.map(({ key }) => data.lab.outcomes[infection.key][key]), 0]} color={infection.color} ariaLabel={`${infection.label} — ${t("Results by infection")}`} /><p className="mt-3 text-xs text-muted-foreground">Rapid: {data.rapid.sources[infection.key].map(t).join("; ")}<br />Laboratory: {data.lab.sources[infection.key].map(t).join("; ")}</p></article>)}</div></section>
-      <section className="dashboard-card" aria-labelledby="trend-heading"><p className="dashboard-kicker">Activity over time</p><h2 id="trend-heading" className="text-2xl font-bold">Testing trend</h2><p className="mt-1 text-sm text-muted-foreground">Daily for shorter periods and monthly for quarter, year, and all-time views.</p><TrendChart data={data} /></section>
-      <section className="dashboard-card" aria-labelledby="commodities-heading"><p className="dashboard-kicker">Prevention commodities</p><h2 id="commodities-heading" className="text-2xl font-bold">Commodities provided</h2><p className="mt-1 text-sm text-muted-foreground">Total units matching the selected time, gender, and key population.</p><CommodityChart data={data} /><details className="mt-4 rounded-xl border p-3 text-xs text-muted-foreground"><summary className="cursor-pointer font-bold text-foreground">Data sources</summary><div className="mt-2 grid gap-2 sm:grid-cols-2">{commodities.map(({ key, label }) => <p key={key}><strong>{label}:</strong> {data.commodities.sources[key].map(source => { const split = source.lastIndexOf(" — "); return `${t(source.slice(0, split))} — ${source.slice(split + 3)}`; }).join("; ")}</p>)}</div><p className="mt-2">Clinic Visit and HIV Care Support store needles and syringes in a combined field; each quantity is included once under Needles.</p></details></section>
+    {!loading && data && <div className="mt-6 grid gap-4">
       <p className="text-sm text-muted-foreground">PrEP laboratory results use each test’s date, with collection then visit date as fallbacks for historical records. All PrEP laboratory results use Clinic-style choices. Unexpected legacy syphilis text appears as Recorded / unclassified. Explicitly ineligible tests are excluded; legacy records without purposes or tested flags are retained.</p>
       <p className="text-sm text-muted-foreground">Tests are counted once per patient, infection, method and test date through today in Mauritius. Clinic and PrEP laboratory entries on the same date are merged. Different outcomes appear once as Conflicting results. Encounters count patient days per method. Same-day repeat specimens cannot be distinguished without specimen identifiers. KP filtering uses membership; records without the selected demographic value are excluded.</p>
     </div>}

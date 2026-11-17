@@ -1,0 +1,13 @@
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; align-items: stretch; }
+.item { position: relative; min-width: 0; }
+.item > article { height: 100%; }
+.compact { grid-column: span 1; }
+.chart { grid-column: span 2; }
+.full { grid-column: 1 / -1; }
+.handle { position: absolute; z-index: 40; right: 3rem; top: .75rem; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; cursor: grab; touch-action: none; color: var(--muted-foreground); background: var(--card); }
+.handle:hover { background: var(--muted); color: var(--foreground); }
+.handle:active { cursor: grabbing; }
+.handle:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.dragging { outline: 2px dashed var(--primary); outline-offset: 3px; border-radius: 24px; opacity: .7; }
+@media (max-width: 1023px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .chart { grid-column: 1 / -1; } }
+@media (max-width: 639px) { .grid { grid-template-columns: minmax(0, 1fr); } .compact { grid-column: 1 / -1; } }

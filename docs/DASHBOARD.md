@@ -88,8 +88,10 @@ Demographic filter groups intersect; selections within one group use OR semantic
 - Explicit Clinic no-shows do not contribute tests or commodities.
 - Clinic or PrEP laboratory results marked “not tested” are excluded.
 - If Clinic purposes are selected, laboratory results require laboratory review
-  purpose 3; commodity quantities require purpose 16. Selected PrEP purposes
-  require laboratory review purpose 4 for laboratory results.
+  purpose 3; commodity quantities require purpose 16. Recorded PrEP laboratory
+  results count regardless of selected visit purpose, because older app versions
+  saved results under Doctor/Medication without lab-review purpose 4. Explicit
+  not-tested flags still exclude those results.
 - Legacy records with no selected purpose (including all-zero exported checkbox
   sets) or no tested flag remain eligible if their result/date are otherwise valid.
   Missing historical flags do not prove the test was not performed. Explicit
@@ -129,3 +131,20 @@ mapping, free-text classifications, eligibility flags, legacy records, zero
 buckets, demographics, API access/export fields, and actual canvas chart
 configuration labels in all three locales. Real browser/REDCap verification is
 still needed when changing a schema, source classification or date policy.
+
+## Contributor tooltips and access
+
+Approved PILS Healthcare Assistants and Admins can access the dashboard and its
+API. Other roles and external organisations cannot receive contributor UICs.
+Testing-volume, outcome, first-time and commodity bars show a scrollable list of
+contributing UICs on hover. Counts alongside each UIC sum to the hovered bar:
+test counts use the same client/infection/day deduplication as the aggregate;
+commodity counts represent units. All contributor lists use the active period,
+gender and key-population filters. Conflicting results contribute only to their
+conflict bar. The trend line remains an aggregate series.
+
+### Card explanations
+
+Every summary, filter and chart card has an information button. It rotates the card around its vertical centre to display its calculation, eligibility and date assumptions, deduplication rules and REDCap field names. The reverse face scrolls within the card; its return button and Escape restore the chart and keyboard focus. Hidden faces are inert, charts stay mounted, and reduced-motion preferences disable the transition. Card-specific explanations are maintained in `lib/dashboard-card-info.ts`.
+
+Cards share a responsive draggable grid. Use the grip beside the info button to drop a card onto another position, or focus the grip and use arrow keys. The browser stores only the ordered card identifiers under `pils.dashboard.grid.v1` in local storage. Reset grid positions clears that preference. Invalid or unavailable storage falls back to the default layout; filters and patient data are not stored.
